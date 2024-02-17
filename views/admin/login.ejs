@@ -1,0 +1,62 @@
+<% include('../layouts/header.ejs') %>
+
+<main class="admin-login-container">
+    <style>
+        .admin-login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        h3 {
+            color: #d9534f;
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #5bc0de;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+
+    <h1>Admin Login</h1>
+
+    <% if (typeof message !== 'undefined') { %>
+        <h3><%= message %></h3>
+    <% } %>
+
+    <form action="" method="POST">
+        <input type="email" name="email" placeholder="Enter Email">
+        <br><br>
+        <input type="password" name="password" placeholder="Enter Password">
+        <br><br>
+        <input type="submit" value="Login">
+    </form>
+
+</main>
+
+<% include('../layouts/footer.ejs') %>

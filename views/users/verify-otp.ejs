@@ -1,0 +1,136 @@
+<% include('../layouts/header.ejs') %>
+
+    <main class="registration-container">
+        <style>
+            .registration-container {
+                max-width: 400px;
+                margin: 50px auto;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                background-color: #fff;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            h1 {
+                color: #333;
+                text-align: center;
+            }
+
+            form {
+                margin-top: 20px;
+            }
+
+            input {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 10px;
+                box-sizing: border-box;
+            }
+
+            input[type="file"] {
+                margin-top: 5px;
+            }
+
+            input[type="submit"] {
+                background-color: #5bc0de;
+                color: #fff;
+                padding: 10px;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            p {
+                color: #d9534f;
+                text-align: center;
+            }
+
+            #resend-otp-btn {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
+        </style>
+
+        <h1>User Registration Form</h1>
+
+        <form action="/verify-otp" method="post">
+            <input type="text" name="otp" placeholder="Enter OTP" required>
+            <br><br>
+            <input type="submit" value="Verify OTP">
+            <br><br>
+            <button type="button" id="resend-otp-btn" disabled>Resend OTP</button>
+            <span id="resend-countdown"></span>
+            <br><br>
+            <span>OTP will expire in 2 minutes</span>
+        </form>
+
+        <% if (typeof message !=='undefined' ) { %>
+            <p>
+                <%= message %>
+            </p>
+            <% } %>
+
+    </main>
+
+    <script>
+        let resendCountdownValue = 60; // Resend countdown value in seconds (1 minute)
+        let resendCountdownInterval; // Interval ID for resend countdown timer
+        let resendCountdownRunning = false; // Flag to track if the countdown is running
+    
+        function startResendCountdown() {
+            if (!resendCountdownRunning) {
+                resendCountdownInterval = setInterval(updateResendCountdown, 1000);
+                resendCountdownRunning = true;
+            }
+        }
+    
+        function updateResendCountdown() {
+            if (resendCountdownValue > 0) {
+                document.getElementById('resend-countdown').textContent = `Resend in ${resendCountdownValue} seconds`;
+                resendCountdownValue--;
+            } else {
+                clearInterval(resendCountdownInterval);
+                document.getElementById('resend-countdown').textContent = '';
+                document.getElementById('resend-otp-btn').disabled = false;
+                document.getElementById('resend-otp-btn').style.cursor = 'pointer';
+                document.getElementById('resend-otp-btn').style.opacity = '1';
+                resendCountdownRunning = false;
+            }
+        }
+    
+        document.getElementById('resend-otp-btn').addEventListener('click', async function () {
+            try {
+                const response = await fetch('/resend-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({}) // No need to send any data in the body
+                });
+    
+                if (response.ok) {
+                    console.log('OTP resent successfully');
+                    resendCountdownValue = 60; // Reset resend countdown value to 60 seconds
+                    startResendCountdown(); // Start resend countdown again
+                    document.getElementById('resend-otp-btn').disabled = true; // Disable resend OTP button
+                    document.getElementById('resend-otp-btn').style.cursor = 'not-allowed';
+                    document.getElementById('resend-otp-btn').style.opacity = '0.5';
+                } else {
+                    console.error('Failed to resend OTP');
+                }
+            } catch (error) {
+                console.error('Error resending OTP:', error);
+            }
+        });
+    
+        window.onload = function () {
+            document.getElementById('resend-otp-btn').disabled = true; // Initially disable resend OTP button
+            startResendCountdown(); // Start resend countdown when page loads
+        };
+    </script>
+    
+    
+    
+
+    <% include('../layouts/footer.ejs') %>

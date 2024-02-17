@@ -1,0 +1,96 @@
+<% include('../layouts/header.ejs') %>
+
+<main class="welcome-container">
+    <style>
+        .welcome-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .verified {
+            color: #5cb85c;
+        }
+
+        .edit-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: #5bc0de;
+            padding: 10px;
+            border-radius: 3px;
+        }
+
+        .logout-link {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: #d9534f;
+            padding: 10px;
+            border-radius: 3px;
+        }
+    </style>
+
+    <h1>Welcome, <%= user.name %></h1>
+
+    <table>
+        <tr>
+            <td><img src="userImages/<%= user.image %>" alt="<%= user.image %>"></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td><%= user.email %></td>
+        </tr>
+        <tr>
+            <td>Mobile</td>
+            <td><%= user.mobile %></td>
+        </tr>
+        <tr>
+            <td>Verified</td>
+            <td>
+                <% if (user.is_verified == 1) { %>
+                    <p class="verified">True</p>
+                <% } else { %>
+                    <p>False</p>
+                <% } %>
+            </td>
+        </tr>
+    </table>
+
+    <a href="/edit?id=<%= user._id %>" class="edit-link">Edit</a>
+    <a href="/logout" class="logout-link">Logout</a>
+</main>
+
+<% include('../layouts/footer.ejs') %>

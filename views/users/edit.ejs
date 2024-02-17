@@ -1,0 +1,63 @@
+<% include('../layouts/header.ejs') %>
+
+<main class="profile-update-container">
+    <style>
+        /* Add these styles to your CSS file or within <style> tags in your HTML */
+        .profile-update-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #5bc0de;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+
+    <img src="userImages/<%= user.image %>" alt="<%= user.image %>">
+    <br><br>
+
+    <form action="" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image">
+        <input type="hidden" name="user_id" value="<%= user._id %>">
+        <br><br>
+        <input type="text" name="name" value="<%= user.name %>" placeholder="Enter Name" required>
+        <br><br>
+        <input type="email" name="email" value="<%= user.email %>" placeholder="Enter Email" required>
+        <br><br>
+        <input type="text" name="mobile" value="<%= user.mobile %>" placeholder="Enter Mobile Number" required>
+        <br><br>
+        <input type="submit" value="Update Profile">
+    </form>
+
+</main>
+
+<% include('../layouts/footer.ejs') %>

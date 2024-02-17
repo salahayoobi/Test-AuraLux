@@ -1,0 +1,233 @@
+<% include('../layouts/header.ejs') %>
+
+    <main class="registration-container">
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background-image: url('/assets/imgs/page/Login-BG2.jpg');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+
+            .registration-container {
+                max-width: 400px;
+                margin: 50px auto;
+                padding: 10px 30px;
+                border-radius: 10px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                background-color: rgba(255, 255, 255, 0.8);
+                position: relative;
+                text-align: center;
+                color: #000;
+                margin-top: 20px;
+                /* Adjusted margin-top */
+            }
+
+            h1,
+            h2 {
+                color: #d4af37;
+                margin-bottom: 10px;
+            }
+
+            form {
+                margin-top: 10px;
+            }
+
+            input {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 10px;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            input[type="file"] {
+                margin-top: 5px;
+            }
+
+            input[type="submit"] {
+                background-color: #800080;
+                color: #fff;
+                padding: 10px;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                width: 100%;
+                /* Adjusted width */
+            }
+
+            input[type="submit"]:hover {
+                background-color: #4b0082;
+                /* Darker purple on hover */
+            }
+
+            p {
+                color: green;
+                text-align: center;
+            }
+
+            .error {
+                color: red;
+            }
+
+            .password-info {
+                background-color: #f9f9f9;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 5px;
+            }
+
+            .password-info p {
+                font-weight: bold;
+            }
+
+            .password-info ul {
+                list-style-type: none;
+                padding-left: 0;
+            }
+
+            .password-info li {
+                margin-bottom: 5px;
+            }
+        </style>
+
+        <div class="registration-container">
+            <h1>AuraLux</h1>
+            <h2>User Registration Form</h2>
+
+            <form id="registrationForm" action="/generate-otp" method="post" onsubmit="return validateForm()">
+                <input type="text" id="name" name="name" placeholder="Enter Name" required
+                    onblur="validateName(this.value)" onfocus="clearError('nameError')">
+                <span id="nameError" class="error"></span>
+                <br><br>
+                <input type="email" id="email" name="email" placeholder="Enter Email" required
+                    onblur="validateEmail(this.value)" onfocus="clearError('emailError')">
+                <span id="emailError" class="error"></span>
+                <br><br>
+                <input type="text" id="mobile" name="mobile" placeholder="Enter Mobile" required
+                    onblur="validateMobile(this.value)" onfocus="clearError('mobileError')">
+                <span id="mobileError" class="error"></span>
+                <br><br>
+                <input type="text" id="userName" name="userName" placeholder="Enter User Name" required
+                    onblur="validateUserName(this.value)" onfocus="clearError('userNameError')">
+                <span id="userNameError" class="error"></span>
+                <br><br>
+                <input type="password" id="password" name="password" placeholder="Enter Password" required
+                    onblur="validatePassword(this.value)" onfocus="clearError('passwordError')">
+                <br>
+                <span id="passwordError" class="error"></span>
+                <div class="password-info">
+                    <p>Password should have:</p>
+                    <ul>
+                        <li>Length of 8 characters</li>
+                        <li>At least one uppercase letter</li>
+                        <li>At least one lowercase letter</li>
+                        <li>At least one number</li>
+                        <li>At least one special character</li>
+                    </ul>
+                </div>
+                <input type="submit" value="Generate OTP">
+                <br><br>
+            </form>
+
+            <% if (typeof message !=='undefined' ) { %>
+                <p>
+                    <%= message %>
+                </p>
+                <% } %>
+
+        </div>
+    </main>
+
+    <% include('../layouts/footer.ejs') %>
+
+        <script>
+            function validateName(name) {
+                const nameError = document.getElementById('nameError');
+                nameError.textContent = '';
+
+                // Validation for name
+                const nameRegex = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/;
+
+                if (!name || !name.match(nameRegex) || /^\s+$/.test(name)) {
+                    nameError.textContent = 'Valid name is required';
+                    return false;
+                }
+                return true;
+            }
+
+            function validateEmail(email) {
+                const emailError = document.getElementById('emailError');
+                emailError.textContent = '';
+
+                // Validation for email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email || !email.match(emailRegex)) {
+                    emailError.textContent = 'Valid email is required';
+                    return false;
+                }
+                return true;
+            }
+
+            function validateMobile(mobile) {
+                const mobileError = document.getElementById('mobileError');
+                mobileError.textContent = '';
+
+                // Validation for mobile
+                const mobileRegex = /^[0-9]{10}$/;
+                if (!mobile || !mobile.match(mobileRegex) || mobile === '0000000000') {
+                    mobileError.textContent = 'Valid mobile number is required';
+                    return false;
+                }
+                return true;
+            }
+
+            function validateUserName(userName) {
+                const userNameError = document.getElementById('userNameError');
+                userNameError.textContent = '';
+
+                // Validation for user name
+                const userNameRegex = /^[a-zA-Z0-9]+$/;
+                if (!userName || !userName.match(userNameRegex)) {
+                    userNameError.textContent = 'Valid user name is required';
+                    return false;
+                }
+                return true;
+            }
+
+            function validatePassword(password) {
+                const passwordError = document.getElementById('passwordError');
+                passwordError.textContent = '';
+
+                // Validation for password
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
+
+                if (!password || !password.match(passwordRegex)) {
+                    passwordError.textContent = 'Valid password is required';
+                    return false;
+                }
+                return true;
+            }
+
+            function clearError(errorId) {
+                document.getElementById(errorId).textContent = '';
+            }
+
+            function validateForm() {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const mobile = document.getElementById('mobile').value;
+                const userName = document.getElementById('userName').value;
+                const password = document.getElementById('password').value;
+
+                if (!validateName(name) || !validateEmail(email) || !validateMobile(mobile) || !validateUserName(userName) || !validatePassword(password)) {
+                    return false;
+                }
+                return true;
+            }
+        </script>
