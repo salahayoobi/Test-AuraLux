@@ -1,52 +1,53 @@
 const User = require("../models/userModel");
 const Product = require("../models/productModel")
+const Order = require("../models/orderModel");
 const Category = require("../models/categoryModel");
 const randomstring = require('randomstring');
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
 
-const addUsermail = async(name, email, password, user_id) => {
+const addUsermail = async (name, email, password, user_id) => {
     try {
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
             secure: false,
-            requireTLS:  true,
+            requireTLS: true,
             auth: {
                 user: 'salahudheena4@gmail.com',
-                pass:'wubqgexowqrgfdol'
+                pass: 'wubqgexowqrgfdol'
             }
         });
         const mailOptions = {
             from: 'salahudheena4@gmail.com',
             to: email,
             subject: 'Admin added you and verify your Email',
-            html: '<p>Hi '+name+', please click here to <a href="http://localhost:3000/verify?id='+user_id+'"> verify </a> your mail. </p> <br><br> <b>Email: </b>'+email+'<br><b>Password: </b>'+password+''
+            html: '<p>Hi ' + name + ', please click here to <a href="http://localhost:3000/verify?id=' + user_id + '"> verify </a> your mail. </p> <br><br> <b>Email: </b>' + email + '<br><b>Password: </b>' + password + ''
         }
-        transporter.sendMail(mailOptions, function(error, info){
-            if(error) {
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
                 console.log(error);
-            }else {
+            } else {
                 console.log("Email has been sent:-", info.response);
             }
         })
-    } catch(error) {
+    } catch (error) {
         console.log(error.message);
     }
 
 }
 
-const securePassword = async(password)=> {
+const securePassword = async (password) => {
     try {
-        const passwordHash = await bcrypt.hash(password,10);
+        const passwordHash = await bcrypt.hash(password, 10);
         return passwordHash;
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const loadLogin = async(req, res) => {
+const loadLogin = async (req, res) => {
     try {
         res.render('login');
     } catch (error) {
@@ -54,43 +55,43 @@ const loadLogin = async(req, res) => {
     }
 }
 
-const verifyLogin = async(req, res) =>{
+const verifyLogin = async (req, res) => {
     try {
         const email = req.body.email;
         const password = req.body.password;
-        const userData = await User.findOne({email: email});
-        if(userData){
+        const userData = await User.findOne({ email: email });
+        if (userData) {
             const passwordMatch = await bcrypt.compare(password, userData.password);
-            if(passwordMatch){
-                if(userData.is_admin === 0){
-                    res.render('login',{message:"Email and password in incorrect"});
-                }else{
+            if (passwordMatch) {
+                if (userData.is_admin === 0) {
+                    res.render('login', { message: "Email and password in incorrect" });
+                } else {
                     req.session.user_id = userData._id;
                     res.redirect("/admin/home");
                 }
-            }else{
-                res.render('login',{message:"Email and password in incorrect"});
+            } else {
+                res.render('login', { message: "Email and password in incorrect" });
             }
-        }else{
-            res.render('login',{message:"Email and password in incorrect"});
+        } else {
+            res.render('login', { message: "Email and password in incorrect" });
         }
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const loadDashboard = async(req, res) => {
+const loadDashboard = async (req, res) => {
     try {
-        const userData = await User.findById({_id: req.session.user_id});
-        res.render('adminDashboard', {admin: userData});
+        const userData = await User.findById({ _id: req.session.user_id });
+        res.render('adminDashboard', { admin: userData });
     } catch (error) {
         console.log(error.message);
     }
 }
 const loadAdminProfile = async (req, res) => {
     try {
-        const userData = await User.findById({_id: req.session.user_id});
-        res.render('home', {admin: userData});
+        const userData = await User.findById({ _id: req.session.user_id });
+        res.render('home', { admin: userData });
     } catch (error) {
         console.log(error.message)
     }
@@ -100,7 +101,7 @@ const loadAdminProfile = async (req, res) => {
 const loadProductsListPage = async (req, res) => {
     try {
         const productsData = await Product.find().populate('category');
-        res.render('page-products-list',{products: productsData});
+        res.render('page-products-list', { products: productsData });
     } catch (error) {
         console.log(error.message);
     }
@@ -118,7 +119,7 @@ const addProductLoad = async (req, res) => {
 const addNewProduct = async (req, res) => {
     try {
         const categories = await Category.find();
-        
+
         const productName = req.body.productName;
         const productBrand = req.body.productBrand;
         const description = req.body.productDescription;
@@ -133,12 +134,12 @@ const addNewProduct = async (req, res) => {
         const price = req.body.price;
         const category = req.body.category;
         const subCategory = req.body.subCategory;
-        
+
         const productNameExists = await Product.exists({ productName });
         if (productNameExists) {
             return res.render('add-new-product', { message: 'Product name already in use', categories });
         }
-        
+
 
         const product = new Product({
             productName: productName,
@@ -151,10 +152,10 @@ const addNewProduct = async (req, res) => {
         });
 
         const productsData = await product.save();
-        if(productsData){
+        if (productsData) {
             res.redirect('/admin/page-products-list');
-        }else{
-            res.render('new-user', {message:'Something went wrong'});
+        } else {
+            res.render('new-user', { message: 'Something went wrong' });
         }
 
     } catch (error) {
@@ -162,18 +163,18 @@ const addNewProduct = async (req, res) => {
     }
 }
 
-const editProductLoad = async(req, res) => {
+const editProductLoad = async (req, res) => {
     try {
         const productId = req.query.id;
         const productData = await Product.findById(productId);
         const categories = await Category.find();
-        res.render('edit-product', { product:  productData, categories});
+        res.render('edit-product', { product: productData, categories });
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const updateProduct = async (req, res)=> {
+const updateProduct = async (req, res) => {
     try {
         const productId = req.body.productId;
         const productName = req.body.productName;
@@ -183,7 +184,7 @@ const updateProduct = async (req, res)=> {
         const price = req.body.price;
         const category = req.body.category;
         const subCategory = req.body.subCategory;
-        const productData = await Product.findByIdAndUpdate({_id:productId}, {$set:{ productName: productName, productBrand: productBrand, description: description, image: filenames, price: price, category:category, subCategory:subCategory }});
+        const productData = await Product.findByIdAndUpdate({ _id: productId }, { $set: { productName: productName, productBrand: productBrand, description: description, image: filenames, price: price, category: category, subCategory: subCategory } });
         console.log(productData);
         res.redirect('/admin/page-products-list');
     } catch (error) {
@@ -191,17 +192,17 @@ const updateProduct = async (req, res)=> {
     }
 }
 
-const deleteProduct = async(req, res)=> {
+const deleteProduct = async (req, res) => {
     try {
         const productId = req.query.id;
-        await Product.deleteOne({_id: productId});
+        await Product.deleteOne({ _id: productId });
         res.redirect('/admin/page-products-list');
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const logout = async(req, res) => {
+const logout = async (req, res) => {
     try {
         req.session.destroy();
         res.redirect('/admin');
@@ -210,28 +211,28 @@ const logout = async(req, res) => {
     }
 }
 
-const adminDashboard = async(req, res) => {
+const adminDashboard = async (req, res) => {
     try {
         var search = '';
-        if(req.query.search){
+        if (req.query.search) {
             search = req.query.search;
         }
         const usersData = await User.find({
-            is_admin:0,
-            $or:[
-                { name:{ $regex:'.*'+search+'.*', $options: 'i' } },
-                { email:{ $regex:'.*'+search+'.*', $options: 'i' } },
-                { mobile:{ $regex:'.*'+search+'.*', $options: 'i' } }
+            is_admin: 0,
+            $or: [
+                { name: { $regex: '.*' + search + '.*', $options: 'i' } },
+                { email: { $regex: '.*' + search + '.*', $options: 'i' } },
+                { mobile: { $regex: '.*' + search + '.*', $options: 'i' } }
             ]
 
         });
-        res.render('dashboard',{users: usersData});
+        res.render('dashboard', { users: usersData });
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const newUserLoad = async(req, res) => {
+const newUserLoad = async (req, res) => {
     try {
         res.render('new-user');
     } catch (error) {
@@ -259,11 +260,11 @@ const addUser = async (req, res) => {
         });
 
         const userData = await user.save();
-        if(userData){
+        if (userData) {
             addUsermail(name, email, password, userData._id);
             res.redirect('/admin/dashboard');
-        }else{
-            res.render('new-user', {message:'Something went wrong'});
+        } else {
+            res.render('new-user', { message: 'Something went wrong' });
         }
 
     } catch (error) {
@@ -271,13 +272,13 @@ const addUser = async (req, res) => {
     }
 }
 
-const editUserLoad = async(req, res) =>{
+const editUserLoad = async (req, res) => {
     try {
         const id = req.query.id;
-        const userData = await User.findById({_id: id});
-        if(userData){
-            res.render('edit-user',{user: userData});
-        }else{
+        const userData = await User.findById({ _id: id });
+        if (userData) {
+            res.render('edit-user', { user: userData });
+        } else {
             res.redirect('/admin/dashboard');
         }
     } catch (error) {
@@ -285,19 +286,19 @@ const editUserLoad = async(req, res) =>{
     }
 }
 
-const updateUser = async(req, res) => {
+const updateUser = async (req, res) => {
     try {
-        const userData = await User.findByIdAndUpdate({_id:req.body.id},{$set:{ name: req.body.name, email: req.body.email, mobile: req.body.mobile, is_verified: req.body.verify }});
+        const userData = await User.findByIdAndUpdate({ _id: req.body.id }, { $set: { name: req.body.name, email: req.body.email, mobile: req.body.mobile, is_verified: req.body.verify } });
         res.redirect('/admin/dashboard');
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const deleteUser = async (req, res) =>{
+const deleteUser = async (req, res) => {
     try {
         const id = req.query.id;
-        await User.deleteOne({_id: id});
+        await User.deleteOne({ _id: id });
         res.redirect('/admin/dashboard');
     } catch (error) {
         console.log(error.message);
@@ -326,16 +327,16 @@ const unblockUser = async (req, res) => {
 
 
 
-const categories = async (req, res) =>{
+const categories = async (req, res) => {
     try {
         const categoryList = await Category.find();
-        res.render('categories', {category: categoryList})
+        res.render('categories', { category: categoryList })
     } catch (error) {
         console.log(error.message)
     }
 }
 
-const addCategory =  async (req, res) =>{
+const addCategory = async (req, res) => {
     try {
         console.log("hello")
         const categoryName = req.body.categoryName;
@@ -356,7 +357,7 @@ const addCategory =  async (req, res) =>{
             isListed: isListed
         });
         const categoryData = await category.save();
-        if(categoryData){
+        if (categoryData) {
             const categoryList = await Category.find();
             res.redirect('/admin/categories')
         }
@@ -366,38 +367,79 @@ const addCategory =  async (req, res) =>{
     }
 }
 
-const editCategoryLoad = async(req, res)=>{
+const editCategoryLoad = async (req, res) => {
     try {
         const categoryId = req.query.id;
         const categoryData = await Category.findById(categoryId);
-        res.render('edit-category', {category: categoryData})
+        res.render('edit-category', { category: categoryData })
     } catch (error) {
         console.log(error.message)
     }
 }
 
-const updateCategory = async (req, res)=>{
+const updateCategory = async (req, res) => {
     try {
-        const updatedCategory = await Category.findByIdAndUpdate({_id: req.query.id}, {$set:{ name: req.body.categoryName, description: req.body.categoryDescription, isListed: req.body.isListed }});
+        const updatedCategory = await Category.findByIdAndUpdate({ _id: req.query.id }, { $set: { name: req.body.categoryName, description: req.body.categoryDescription, isListed: req.body.isListed } });
         res.redirect('/admin/categories');
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const deleteCategory = async (req, res)=>{
+const deleteCategory = async (req, res) => {
     try {
         const id = req.query.id;
-        const deletedProduct = await Category.deleteOne({_id: id});
+        const deletedProduct = await Category.deleteOne({ _id: id });
         res.redirect('/admin/categories')
     } catch (error) {
         console.log(error.message);
     }
 }
 
+const loadOrders = async (req, res) => {
+    try {
+        const ordersData = await Order.find().populate({
+            path: 'userId',
+            select: 'name email'
+        }).populate('items.productId').sort({createdAt: -1});
+        res.render('orders', { orders: ordersData });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
+const loadOrderDetails = async (req, res) => {
+    try {
+        const orderId = req.query.id;
+        // Find the order by orderId
+        const order = await Order.findOne({ 'items.orderId': orderId })
+            .populate('items.productId')
+            .populate('addressId')
+            .populate('billingAddressId');
 
-module.exports =  {
+        if (!order) {
+            // If order is not found, handle accordingly (e.g., render an error page)
+            return res.render('order-not-found');
+        }
+
+        // Find the item with the given orderId
+        const item = order.items.find(item => item.orderId === orderId);
+
+        if (!item) {
+            // If item is not found, handle accordingly (e.g., render an error page)
+            return res.render('item-not-found');
+        }
+
+        // Render the order details page with the item detail
+        res.render('order-details', { order, item });
+    } catch (error) {
+        console.log(error.message);
+        // Handle any errors
+        res.render('error-page', { error: 'An error occurred while loading order details.' });
+    }
+};
+
+module.exports = {
     loadLogin,
     verifyLogin,
     loadDashboard,
@@ -421,5 +463,7 @@ module.exports =  {
     updateUser,
     deleteUser,
     blockUser,
-    unblockUser
+    unblockUser,
+    loadOrders,
+    loadOrderDetails
 }

@@ -118,19 +118,19 @@
                 <span id="userNameError" class="error"></span>
                 <br><br>
                 <input type="password" id="password" name="password" placeholder="Enter Password" required
-                    onblur="validatePassword(this.value)" onfocus="clearError('passwordError')">
+                    onblur="validatePassword(this.value)" onfocus="showTooltip()" title="Password requirements">
+
+                <div class="password-tooltip" id="passwordTooltip" style="display: none;">
+                    Password should have:<br>
+                    - Length of 8 characters<br>
+                    - At least one uppercase letter<br>
+                    - At least one lowercase letter<br>
+                    - At least one number<br>
+                    - At least one special character
+                </div>
+
                 <br>
                 <span id="passwordError" class="error"></span>
-                <div class="password-info">
-                    <p>Password should have:</p>
-                    <ul>
-                        <li>Length of 8 characters</li>
-                        <li>At least one uppercase letter</li>
-                        <li>At least one lowercase letter</li>
-                        <li>At least one number</li>
-                        <li>At least one special character</li>
-                    </ul>
-                </div>
                 <input type="submit" value="Generate OTP">
                 <br><br>
             </form>
@@ -230,4 +230,14 @@
                 }
                 return true;
             }
+
+            // JavaScript to show/hide tooltip
+            function showTooltip() {
+                document.getElementById("passwordTooltip").style.display = "block";
+            }
+
+            document.getElementById("password").addEventListener("blur", function () {
+                document.getElementById("passwordTooltip").style.display = "none";
+            });
+
         </script>

@@ -27,12 +27,17 @@ const userSchema = new mongoose.Schema({
     },
     is_blocked: {
         type: Number,
-        required: 0
+        required: true,
+        default: 0
     },
     is_verified: {
         type: Number,
         default: 0
-    }
+    },
+    addresses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address'
+    }]
 });
 
 module.exports = mongoose.model('User', userSchema);

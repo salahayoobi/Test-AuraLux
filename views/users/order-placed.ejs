@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confirmation-message {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .confirmation-message h1 {
+            color: #28a745;
+            font-size: 32px;
+            margin: 10px 0;
+        }
+
+        .confirmation-message p {
+            font-size: 18px;
+            color: #666;
+            margin: 0;
+        }
+
+        .order-details {
+            border-top: 2px solid #007bff;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .order-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            margin-bottom: 30px;
+        }
+
+        .tick-mark {
+            width: 100px;
+            display: block;
+            margin: 0 auto;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 1.5s ease-in-out forwards;
+        }
+
+        .info {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .action-link {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .action-link:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes draw {
+            0% {
+                stroke-dashoffset: 1000;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="confirmation-message">
+            <svg class="tick-mark" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                <circle class="path circle" fill="none" stroke="#28a745" stroke-width="6" stroke-miterlimit="10"
+                    cx="65.1" cy="65.1" r="62.1" />
+                <polyline class="path check" fill="none" stroke="#28a745" stroke-width="6" stroke-linecap="round"
+                    stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+            </svg>
+            <h1>Your order has been placed succesfully!</h1>
+            <p>An email confirmation has been sent to you.</p>
+        </div>
+        <div class="order-details" style="text-align: center;">
+            <div class="order-number">Order Number: <%= order._id %></div>
+            <div class="order-item">
+                <div class="info">
+                    <p><strong>Product:</strong> 
+                        <% for (let i=0; i < order.items.length; i++) { %>
+                            <%= order.items[i].productId.productName %> <br>
+                            <% } %>
+                    </p>
+                    <p><strong>Shipped by:</strong> AuraLux</p>
+                    <p><strong>Guaranteed delivery:</strong> <%= formattedGuaranteedDeliveryDate %></p>
+                </div>
+            </div>
+            <div class="order-item">
+                <div class="info">
+                    <p><strong>Shipping Address:</strong></p>
+                    <p><%= order.addressId.street %>, <%= order.addressId.city %></p>
+                    <p><%= order.addressId.state %>, <%= order.addressId.country %>, <%= order.addressId.postalCode %></p>
+                </div>
+            </div>
+            <a href="/account" class="action-link">Go to your Account</a>
+        </div>
+        
+    </div>
+</body>
+
+</html>

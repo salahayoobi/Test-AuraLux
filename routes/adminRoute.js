@@ -1,35 +1,19 @@
 const express = require("express");
 const session = require("express-session");
 const config = require("../config/config");
-const bodyParser = require("body-parser");
 const adminController =  require("../controllers/adminController")
 const auth = require("../middleware/adminAuth");
+const storage = require("../config/multerStorage");
 
 const admin_route = express();
-admin_route.use(bodyParser.json());
-admin_route.use(bodyParser.urlencoded({extended: true}));
 
 const multer = require("multer");
-const path = require("path");
-const { route } = require("./userRoute");
 
 admin_route.use(express.static('public'));
 
-const storage = multer.diskStorage({
-    destination:function(req, file, cb) {
-        cb(null,path.join(__dirname, '../public/productImages'));
-
-    },
-    filename:function(req, file, cb) {
-        const name = Date.now()+'-'+file.originalname;
-        cb(null,name);
-    }
-});
-
-const upload = multer({storage: storage})
+const upload = multer({storage: storage.productStorage})
 
 admin_route.use(session({session:config.sessionSecret}));
-admin_route.set('view engine', 'ejs');
 admin_route.set('views', './views/admin');
 
 admin_route.get('/', auth.isLogout, auth.preventCaching, adminController.loadLogin);
@@ -59,6 +43,9 @@ admin_route.post('/categories', adminController.addCategory);
 admin_route.get('/categories/edit-category', adminController.editCategoryLoad);
 admin_route.post('/categories/edit-category', adminController.updateCategory);
 admin_route.get('/categories/delete-category', adminController.deleteCategory);
+
+admin_route.get('/orders', adminController.loadOrders);
+admin_route.get('/orders/order-details', adminController.loadOrderDetails);
 
 admin_route.get('*', (req, res) => {
     res.redirect('/admin');

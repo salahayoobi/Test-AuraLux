@@ -1,8 +1,11 @@
 const User = require("../models/userModel");
+const Address = require("../models/addressModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const otpGenerator = require('otp-generator');
 const Product = require("../models/productModel")
+const Cart = require("../models/cartModel");
+const Order = require("../models/orderModel");
 const jwt = require("jsonwebtoken");
 const secretKey = 'your-secret-key';
 
@@ -394,7 +397,16 @@ const loadHome = async (req, res) => {
     try {
         const productsData = await Product.find();
         const userData = await User.findById({ _id: req.session.user_id });
-        res.render('userLogin', { user: userData, products: productsData });
+        const userId = req.session.user_id;
+        const cartData = await Cart.findOne({ userId })
+            .populate({
+                path: 'items.productId',
+                populate: {
+                    path: 'category',
+                    model: 'Category'
+                }
+            });
+        res.render('userLogin', { user: userData, products: productsData, cart: cartData });
     } catch (error) {
         console.log(error.message);
     }
@@ -507,21 +519,254 @@ const loadProductDetails = async (req, res) => {
     try {
         const id = req.query.id;
         const productDetail = await Product.findById(id).populate('category');
+        const userId = req.session.user_id;
+        const cartData = await Cart.findOne({ userId })
+            .populate({
+                path: 'items.productId',
+                populate: {
+                    path: 'category',
+                    model: 'Category'
+                }
+            });
+        const isUserLogin = req.session.user_id;
 
         if (!productDetail) {
-            return res.status(404).send('Product not found');
+            return res.render('page404', { isUserLogin });
         }
 
-        console.log("Product details:", productDetail);
-        // Check if category is populated before rendering the view
         if (!productDetail.category) {
             return res.status(500).send('Product category is missing');
         }
 
-        res.render('home-product-details', { product: productDetail });
+        res.render('home-product-details', { product: productDetail, isUserLogin, cart: cartData });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
+    }
+}
+
+const loadPage404 = async (req, res) => {
+    try {
+        res.render('page404');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+//********************************************** User Account ********************************/
+
+const loadUserAccount = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const userDetails = await User.findById(userId).populate('addresses');
+        const orders = await Order.find({ userId }).sort({ createdAt: -1 }).populate('items.productId');
+        res.render('user-account', { user: userDetails, orders: orders, redirectToAddress: req.query.redirectToAddress });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const addAddress = async (req, res) => {
+    try {
+        const address = new Address({
+            street: req.body.street,
+            city: req.body.city,
+            state: req.body.state,
+            postalCode: req.body.postalCode,
+            country: req.body.country
+        });
+        const userAddress = await address.save();
+        if (userAddress) {
+            console.log(userAddress);
+            await User.findByIdAndUpdate(req.session.user_id, { $push: { addresses: userAddress._id } });
+            const userData = await User.findById(req.session.user_id).populate('addresses');
+            // console.log(userData.addresses[0].street);
+            console.log(userData);
+            // Redirect the user back to the same page with the appropriate query parameter
+            res.redirect('/account?redirectToAddress=true');
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+const editAddress = async (req, res) => {
+    try {
+        const addressdata = await Address.findById(req.query.id);
+        res.render('edit-address', { address: addressdata });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const updateAddress = async (req, res) => {
+    try {
+        const street = req.body.street;
+        const city = req.body.city;
+        const state = req.body.state;
+        const postalCode = req.body.postalCode;
+        const country = req.body.country;
+        const updatedAddress = await Address.findByIdAndUpdate({ _id: req.query.id },
+            { $set: { street: street, city: city, state: state, postalCode: postalCode, country: country } });
+        if (updateAddress) {
+            res.redirect('/account?redirectToAddress=true');
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const deleteAddress = async (req, res) => {
+    try {
+        const deletedAddress = await Address.findByIdAndDelete(req.query.id);
+        if (!deletedAddress) {
+            return res.status(404).json({ error: "Address not found" });
+        }
+        res.redirect('/account?redirectToAddress=true&deleted=true');
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const orderDetails = async (req, res) => {
+    try {
+        const orderNumber = req.query.id; // Assuming 'id' is the parameter for the order number
+        const orderData = await Order.findById(orderNumber)
+            .populate('userId')
+            .populate('addressId')
+            .populate('billingAddressId')
+            .populate({
+                path: 'items.productId',
+                model: 'Product', // Reference to the Product model
+                populate: {
+                    path: 'category', // Populate the 'category' field of the 'Product' model
+                    model: 'Category' // Reference to the Category model
+                }
+            });
+
+        // Fetch address data separately
+        const addressData = await Address.findById(orderData.addressId);
+        const billingAddressData = await Address.findById(orderData.billingAddressId);
+
+        console.log(orderData);
+        console.log(addressData);
+
+        res.render('order-details', { order: orderData, address: addressData, billingAddress: billingAddressData }); // Pass both orderData and addressData to the view for rendering
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error fetching order details');
+    }
+}
+
+const cancelOrder = async (req, res) => {
+    try {
+        const { orderId, codCancelReason } = req.body;
+
+        // Find the order by ID and update its status to 'Cancelled' and add codCancelReason
+        const order = await Order.findByIdAndUpdate(orderId, { status: 'Cancelled', codCancelReason }, { new: true });
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // Respond with success message and updated order
+        res.status(200).json({ message: 'Order cancelled successfully', order });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to cancel order' });
+    }
+};
+
+const loadShop = async (req, res) => {
+    try {
+        let sortOption = req.query.sort || 'featured'; // Default sort by featured
+        let sortOrder = 1; // Default sort order ascending (Low to High)
+
+        if (sortOption === 'priceLowToHigh') {
+            sortOption = 'price';
+            sortOrder = 1;
+        } else if (sortOption === 'priceHighToLow') {
+            sortOption = 'price';
+            sortOrder = -1;
+        }
+
+        // Fetch products and sort based on the selected option
+        let productsData;
+        if (sortOption === 'featured') {
+            productsData = await Product.find();
+        } else {
+            productsData = await Product.find().sort({ [sortOption]: sortOrder });
+        }
+
+        // Fetch user data and cart data
+        const userData = await User.findById(req.session.user_id);
+        const userId = req.session.user_id;
+        const cartData = await Cart.findOne({ userId }).populate({
+            path: 'items.productId',
+            populate: {
+                path: 'category',
+                model: 'Category'
+            }
+        });
+
+        // Render the shop view with data
+        res.render('shop', { user: userData, products: productsData, cart: cartData });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Failed to load products');
+    }
+};
+
+const shopFilter = async (req, res) => {
+    try {
+        let sortOption = req.query.sort || 'featured'; // Default sort by featured
+        let sortOrder = 1; // Default sort order ascending (Low to High)
+
+        if (sortOption === 'priceLowToHigh') {
+            sortOption = 'price';
+            sortOrder = 1;
+        } else if (sortOption === 'priceHighToLow') {
+            sortOption = 'price';
+            sortOrder = -1;
+        }
+
+        // Fetch products and sort based on the selected option
+        let productsData;
+        if (sortOption === 'featured') {
+            productsData = await Product.find();
+        } else {
+            productsData = await Product.find().sort({ [sortOption]: sortOrder });
+        }
+
+        res.json(productsData); // Send products data as JSON response
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: 'Failed to load products' });
+    }
+};
+
+
+const productSearch = async(req, res)=> {
+    try {
+        const query = req.query.query; // Get the search query from request query parameters
+        // Perform a case-insensitive search for products whose name or brand matches the query
+        
+        const products = await Product.find({
+            $or: [
+                { productName: { $regex: query, $options: 'i' } }, // Match product name
+                { productBrand: { $regex: query, $options: 'i' } } // Match product brand
+            ]
+        }).limit(10); // Limit the number of results to 10
+        console.log("Testing",products);
+        // Send the matching products as JSON response
+        res.json(products);
+    } catch (error) {
+        // Handle errors
+        console.error('Error searching for products:', error);
+        res.status(500).json({ error: 'Failed to search for products' });
     }
 }
 
@@ -544,5 +789,16 @@ module.exports = {
     userLogout,
     editLoad,
     updateProfile,
-    loadProductDetails
+    loadProductDetails,
+    loadUserAccount,
+    addAddress,
+    editAddress,
+    updateAddress,
+    deleteAddress,
+    orderDetails,
+    cancelOrder,
+    loadShop,
+    shopFilter,
+    productSearch
+
 };

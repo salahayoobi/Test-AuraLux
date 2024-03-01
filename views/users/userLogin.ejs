@@ -15,7 +15,80 @@
     <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="/assets/css/main.css?v=3.4">
+    <style>
+        .product-badges {
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
 
+        .out-of-stock {
+            background-color: #ff0000;
+            /* Red background for out of stock */
+        }
+
+        .only-left {
+            background-color: #ffa500;
+            /* Orange background for low stock */
+        }
+
+        .hot {
+            background-color: #ff4500;
+            /* Orange-red background for hot items */
+        }
+
+        #searchResultsContainer {
+            position: relative;
+        }
+
+        #searchResults {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 85.5%;
+            font-size: medium;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-top: none;
+            z-index: 999;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Add a subtle box shadow */
+            border-radius: 4px;
+            /* Add border radius for rounded corners */
+            max-height: 300px;
+            /* Limit the height of search results */
+            overflow-y: auto;
+            /* Enable vertical scrolling if needed */
+        }
+
+        #searchResults div {
+            padding: 10px 20px;
+            /* Add padding for spacing */
+            color: #333;
+            /* Text color */
+            cursor: pointer;
+            /* Change cursor to pointer on hover */
+        }
+
+        #searchResults div:hover {
+            background-color: #f4f4f4;
+            /* Change background color on hover */
+        }
+
+        #searchResults div a {
+            text-decoration: none;
+            /* Remove underline from links */
+            color: inherit;
+            /* Inherit text color */
+        }
+
+        #searchResults div a:hover {
+            text-decoration: underline;
+            /* Underline links on hover */
+        }
+    </style>
 
 </head>
 
@@ -220,9 +293,8 @@
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
                                         <a class="dropdown-item" href="#"><i
                                                 class="material-icons md-perm_identity"></i>Edit Profile</a>
-                                        <a class="dropdown-item" href="#"><i
-                                                class="material-icons md-settings"></i>Account
-                                            Settings</a>
+                                        <a class="dropdown-item" href="/account"><i
+                                                class="material-icons md-settings"></i>Account</a>
                                         <a class="dropdown-item" href="#"><i
                                                 class="material-icons md-account_balance_wallet"></i>Wallet</a>
                                         <a class="dropdown-item" href="#"><i
@@ -246,7 +318,7 @@
             <div class="container">
                 <div class="header-wrap">
                     <div class="logo logo-width-1">
-                        <a href="index.html"><img src="/assets/imgs/theme/logo.svg" alt="logo"></a>
+                        <a href="/home"><img src="/assets/imgs/theme/AuraLux_Logo.svg" alt="logo"></a>
                     </div>
                     <div class="header-right">
                         <div class="search-style-2">
@@ -264,8 +336,14 @@
                                     <option>Shoes</option>
                                     <option>Mother & Kids</option>
                                 </select>
-                                <input type="text" placeholder="Search for items...">
+                                <input type="text" id="searchInput" placeholder="Search for items...">
                             </form>
+                            <!-- Container for search results -->
+                            <div id="searchResultsContainer">
+                                <a id="searchResultsLink" href="#">
+                                    <div id="searchResults"></div>
+                                </a>
+                            </div>
                         </div>
                         <div class="header-action-right">
                             <div class="header-action-2">
@@ -277,9 +355,11 @@
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="shop-cart.html">
+                                    <a class="mini-cart-icon" href="/cart">
                                         <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg">
-                                        <span class="pro-count blue">2</span>
+                                        <span class="pro-count blue">
+                                            <%= cart.items.length %>
+                                        </span>
                                     </a>
                                     <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                         <ul>
@@ -599,28 +679,7 @@
                                     <li>
                                         <a href="page-about.html">About</a>
                                     </li>
-                                    <li><a href="shop-grid-right.html">Shop <i class="fi-rs-angle-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
-                                            <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
-                                            <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
-                                            <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
-                                            <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                                            <li><a href="#">Single Product <i class="fi-rs-angle-right"></i></a>
-                                                <ul class="level-menu">
-                                                    <li><a href="shop-product-right.html">Product – Right Sidebar</a>
-                                                    </li>
-                                                    <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
-                                                    <li><a href="shop-product-full.html">Product – No sidebar</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="shop-filter.html">Shop – Filter</a></li>
-                                            <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                            <li><a href="shop-cart.html">Shop – Cart</a></li>
-                                            <li><a href="shop-checkout.html">Shop – Checkout</a></li>
-                                            <li><a href="shop-compare.html">Shop – Compare</a></li>
-                                        </ul>
-                                    </li>
+                                    <li><a href="/home/shop">Shop</a></li>
                                     <li class="position-static"><a href="#">Mega menu <i
                                                 class="fi-rs-angle-down"></i></a>
                                         <ul class="mega-menu">
@@ -728,7 +787,7 @@
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
-                                <a class="mini-cart-icon" href="shop-cart.html">
+                                <a class="mini-cart-icon" href="/cart">
                                     <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg">
                                     <span class="pro-count white">2</span>
                                 </a>
@@ -1023,7 +1082,8 @@
                             </div>
                             <div class="col-lg-7 col-md-6">
                                 <div class="single-slider-img single-slider-img-1">
-                                    <img class="animated slider-1-3" src="https://www.sephora.com/productimages/sku/s260885-main-zoom.jpg?" alt="">
+                                    <img class="animated slider-1-3"
+                                        src="https://www.sephora.com/productimages/sku/s260885-main-zoom.jpg?" alt="">
                                 </div>
                             </div>
                         </div>
@@ -1059,30 +1119,49 @@
                 <div class="tab-content wow fadeIn animated" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
                         <div class="row product-grid-4">
-                            <% for (let i = 0; i < products.length; i++) { %>
+                            <% for (let i=0; i < products.length; i++) { %>
                                 <div class="col-lg-3 col-md-4 col-12 col-sm-6">
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
                                                 <a href="/home-product-details?id=<%= products[i]._id %>">
-                                                    <img class="default-img" src="/productImages/<%= products[i].image[0] %>" alt="<%= products[i].image[0] %>">
-                                                    <img class="hover-img" src="/productImages/<%= products[i].image[1] %>" alt="<%= products[i].image[1] %>">
+                                                    <img class="default-img"
+                                                        src="/productImages/<%= products[i].image[0] %>"
+                                                        alt="<%= products[i].image[0] %>">
+                                                    <img class="hover-img"
+                                                        src="/productImages/<%= products[i].image[1] %>"
+                                                        alt="<%= products[i].image[1] %>">
                                                 </a>
                                             </div>
                                             <div class="product-action-1">
-                                                <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                                <a aria-label="Quick view" class="action-btn hover-up"
+                                                    data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
+                                                        class="fi-rs-eye"></i></a>
+                                                <a aria-label="Add To Wishlist" class="action-btn hover-up"
+                                                    href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                <a aria-label="Compare" class="action-btn hover-up"
+                                                    href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
                                             <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="hot">Hot</span>
+                                                <% if (products[i].stock===0) { %>
+                                                    <span class="out-of-stock">Out of Stock</span>
+                                                    <% } else if (products[i].stock <=5) { %>
+                                                        <span class="only-left">Only <%= products[i].stock %> piece(s)
+                                                                left</span>
+                                                        <% } else { %>
+                                                            <span class="hot">Hot</span>
+                                                            <% } %>
                                             </div>
                                         </div>
                                         <div class="product-content-wrap">
                                             <div class="product-category">
-                                                <a href="shop-grid-right.html"><%= products[i].productBrand %></a>
+                                                <a href="shop-grid-right.html">
+                                                    <%= products[i].productBrand %>
+                                                </a>
                                             </div>
-                                            <h2><a href="/home-product-details"><%= products[i].productName %></a></h2>
+                                            <h2><a href="/home-product-details">
+                                                    <%= products[i].productName %>
+                                                </a></h2>
                                             <div class="rating-result" title="90%">
                                                 <span><span>90%</span></span>
                                             </div>
@@ -1091,19 +1170,21 @@
                                                 <span class="old-price">$245.8</span>
                                             </div>
                                             <div class="product-action-1 show">
-                                                <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                <a aria-label="Add To Cart" class="action-btn hover-up"
+                                                    href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <% if ((i + 1) % 4 === 0) { %>
-                                    </div><div class="row product-grid-4">
-                                <% } %>
+                                <% if ((i + 1) % 4===0) { %>
+                        </div>
+                        <div class="row product-grid-4">
                             <% } %>
+                                <% } %>
                         </div>
                         <!--End product-grid-4-->
                     </div>
-                    
+
                     <!--En tab one (Featured)-->
                     <div class="tab-pane fade" id="tab-two" role="tabpanel" aria-labelledby="tab-two">
                         <div class="row product-grid-4">
@@ -3364,6 +3445,49 @@
         </div>
     </div>
     <!-- Vendor JS-->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#searchInput').on('input', function () {
+                var query = $(this).val();
+                if (query.length > 0) {
+                    $.ajax({
+                        url: '/search', // Endpoint to handle search query
+                        method: 'GET',
+                        data: { query: query },
+                        success: function (response) {
+                            // Clear previous search results
+                            $('#searchResults').empty();
+                            // Iterate over each product in the response and append its name as a clickable link
+                            response.forEach(function (product) {
+                                var productHtml = '<div>';
+                                productHtml += product.productName;
+                                productHtml += '</div>';
+                                $('#searchResults').append(productHtml);
+                            });
+                            // Set the href attribute of the anchor tag to the product page URL
+                            if (response.length > 0) {
+                                $('#searchResultsLink').attr('href', '/home-product-details?id=' + response[0]._id);
+                            } else {
+                                // If no results, remove href attribute
+                                $('#searchResultsLink').removeAttr('href');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                } else {
+                    // Clear search results if search input is empty
+                    $('#searchResults').empty();
+                    // Remove href attribute if search input is empty
+                    $('#searchResultsLink').removeAttr('href');
+                }
+            });
+        });
+
+    </script>
     <script src="/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
