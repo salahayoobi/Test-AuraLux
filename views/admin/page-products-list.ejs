@@ -85,7 +85,7 @@
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
-            <a href="index.html" class="brand-wrap">
+            <a href="/admin/home" class="brand-wrap">
                 <img src="/adminAssets/imgs/theme/AuraLux_Logo.svg" class="logo" alt="Evara Dashboard">
             </a>
             <div>
@@ -96,7 +96,7 @@
         <nav>
             <ul class="menu-aside">
                 <li class="menu-item">
-                    <a class="menu-link" href="index.html"> <i class="icon material-icons md-home"></i>
+                    <a class="menu-link" href="/admin/home"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
@@ -107,43 +107,23 @@
                     </a>
                     <div class="submenu">
                         <a href="#" class="active">Product List</a>
-                        <a href="page-products-grid.html">Product grid</a>
-                        <a href="page-products-grid-2.html">Product grid 2</a>
                         <a href="/admin/categories">Categories</a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu ">
-                    <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-person"></i>
                         <span class="text">Orders</span>
                     </a>
-                    <div class="submenu">
-                        <a href="page-orders-1.html">Order list 1</a>
-                        <a href="page-orders-2.html">Order list 2</a>
-                        <a href="page-orders-detail.html">Order detail</a>
-                        <a href="page-orders-tracking.html">Order tracking</a>
-                        <a href="page-invoice.html">Invoice</a>
-                    </div>
                 </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
-                        <span class="text">Sellers</span>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupons"> <i class="icon material-icons md-person"></i>
+                        <span class="text">Coupons</span>
                     </a>
-                    <div class="submenu">
-                        <a href="page-sellers-cards.html">Sellers cards</a>
-                        <a href="page-sellers-list.html">Sellers list</a>
-                        <a href="page-seller-detail.html">Seller profile</a>
-                    </div>
                 </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Add product</span>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/offers"> <i class="icon material-icons md-person"></i>
+                        <span class="text">Offer Management</span>
                     </a>
-                    <div class="submenu">
-                        <a href="page-form-product-1.html">Add product 1</a>
-                        <a href="page-form-product-2.html">Add product 2</a>
-                        <a href="page-form-product-3.html">Add product 3</a>
-                        <a href="page-form-product-4.html">Add product 4</a>
-                    </div>
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-transactions-1.html"> <i
@@ -291,34 +271,21 @@
             <div class="card mb-4">
                 <header class="card-header">
                     <div class="row align-items-center">
-                        <div class="col col-check flex-grow-0">
-                            <div class="form-check ms-2">
-                                <input class="form-check-input" type="checkbox" value="">
-                            </div>
-                        </div>
                         <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                            <select class="form-select">
-                                <option selected>All category</option>
-                                <option>Electronics</option>
-                                <option>Clothes</option>
-                                <option>Automobile</option>
+                            <select class="form-select" onchange="filterProducts(this.value)">
+                                <option value="All category" <% if (!category || category === 'All category') { %>selected<% } %>>All categories</option>
+                                <% categories.forEach(cat => { %>
+                                    <option value="<%= cat.name %>" <% if (cat.name === category) { %>selected<% } %>>
+                                        <%= cat.name %>
+                                    </option>
+                                <% }); %>
                             </select>
                         </div>
-                        <div class="col-md-2 col-6">
-                            <input type="date" value="02.05.2022" class="form-control">
-                        </div>
-                        <div class="col-md-2 col-6">
-                            <select class="form-select">
-                                <option selected>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
-                            </select>
-                        </div>
+                                           
                     </div>
                 </header> <!-- card-header end// -->
                 <div class="card-body">
-                    <table>
+                    <table id="product-table">
                         <tr>
                             <th style="text-align: center; width: 10%;">
                                 <h4>Name</h4>
@@ -340,6 +307,9 @@
                             </th>
                             <th style="text-align: center; width: 10%;">
                                 <h4>SubCategory</h4>
+                            </th>
+                            <th style="text-align: center; width: 10%;">
+                                <h4>Stock</h4>
                             </th>
                             <th style="text-align: center; width: 25%;">
                                 <h4>Action</h4>
@@ -385,7 +355,7 @@
                                                     <a class="itemside" href="#">
                                                         <div class="info">
                                                             <h6 class="mb-0">
-                                                                <%= products[i].description %>
+                                                                <%= truncateDescription(products[i].description, 20) %>
                                                             </h6>
                                                         </div>
                                                     </a>
@@ -393,78 +363,114 @@
                                             </div>
                                         </article>
                                     </td>
-                                    <td>
-                                        <article class="itemlist">
-                                            <div class="row align-items-center">
-                                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                                    <a class="itemside" href="#">
-                                                        <div class="info">
-                                                            <h6 class="mb-0">
-                                                                <%= products[i].price %>
-                                                            </h6>
-                                                        </div>
+                                    <% function truncateDescription(description, maxLength) { if (description.length>
+                                        maxLength) {
+                                        return description.substring(0, maxLength) + '...';
+                                        }
+                                        return description;
+                                        } %>
+                                        <td>
+                                            <article class="itemlist">
+                                                <div class="row align-items-center">
+                                                    <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                                                        <a class="itemside" href="#">
+                                                            <div class="info">
+                                                                <h6 class="mb-0">
+                                                                    <%= products[i].price %>
+                                                                </h6>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </td>
+                                        <td>
+                                            <article class="itemlist">
+                                                <div class="row align-items-center">
+                                                    <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                                                        <a class="itemside" href="#">
+                                                            <div class="info">
+                                                                <img class="cover-image"
+                                                                    src="/productImages/<%= products[i].image[0] %>"
+                                                                    alt="<%= products[i].image[0] %>">
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </td>
+                                        <td>
+                                            <article class="itemlist">
+                                                <div class="row align-items-center">
+                                                    <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                                                        <a class="itemside" href="#">
+                                                            <div class="info">
+                                                                <h6 class="mb-0">
+                                                                    <%= products[i].category.name %>
+                                                                </h6>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </td>
+                                        <td>
+                                            <article class="itemlist">
+                                                <div class="row align-items-center">
+                                                    <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                                                        <a class="itemside" href="#">
+                                                            <div class="info">
+                                                                <h6 class="mb-0">
+                                                                    <%= products[i].subCategory %>
+                                                                </h6>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </td>
+                                        <td>
+                                            <article class="itemlist">
+                                                <div class="row align-items-center">
+                                                    <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                                                        <a class="itemside" href="#">
+                                                            <div class="info">
+                                                                <% if (products[i].stock===0) { %>
+                                                                    <h6 class="mb-0" style="color: red;">
+                                                                        Out of Stock
+                                                                    </h6>
+                                                                    <% } else if (products[i].stock <=5) { %>
+                                                                        <h6 class="mb-0"
+                                                                            style="color: rgb(255, 81, 0);">
+                                                                            <%= products[i].stock %>
+                                                                        </h6>
+                                                                        <% } else { %>
+                                                                            <h6 class="mb-0">
+                                                                                <%= products[i].stock %>
+                                                                            </h6>
+                                                                            <% } %>
+
+
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </td>
+                                        <td class="text-end">
+                                            <article class="itemlist">
+                                                <div class="action-buttons">
+                                                    <a href="/admin/page-products-list/edit-product?id=<%= products[i]._id %>"
+                                                        class="btn btn-sm font-sm rounded btn-brand">
+                                                        <i class="material-icons md-edit"></i> Edit
+                                                    </a>
+                                                    <a href="/admin/page-products-list/delete-product?id=<%= products[i]._id %>"
+                                                        class="btn btn-sm font-sm btn-light rounded">
+                                                        <i class="material-icons md-delete_forever"></i> Delete
                                                     </a>
                                                 </div>
-                                            </div>
-                                        </article>
-                                    </td>
-                                    <td>
-                                        <article class="itemlist">
-                                            <div class="row align-items-center">
-                                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                                    <a class="itemside" href="#">
-                                                        <div class="info">
-                                                            <img class="cover-image"
-                                                                src="/productImages/<%= products[i].image[0] %>"
-                                                                alt="<%= products[i].image[0] %>">
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </article>
-                                    </td>
-                                    <td>
-                                        <article class="itemlist">
-                                            <div class="row align-items-center">
-                                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                                    <a class="itemside" href="#">
-                                                        <div class="info">
-                                                            <h6 class="mb-0">
-                                                                <%= products[i].category.name %>
-                                                            </h6>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </article>
-                                    </td>
-                                    <td>
-                                        <article class="itemlist">
-                                            <div class="row align-items-center">
-                                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                                    <a class="itemside" href="#">
-                                                        <div class="info">
-                                                            <h6 class="mb-0">
-                                                                <%= products[i].subCategory %>
-                                                            </h6>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </article>
-                                    </td>
-                                    <td class="text-end">
-                                        <article class="itemlist">
-                                            <div class="action-buttons">
-                                                <a href="/admin/page-products-list/edit-product?id=<%= products[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
-                                                    <i class="material-icons md-edit"></i> Edit
-                                                </a>
-                                                <a href="/admin/page-products-list/delete-product?id=<%= products[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
-                                                    <i class="material-icons md-delete_forever"></i> Delete
-                                                </a>
-                                            </div>
-                                        </article>
-                                    </td>
+                                            </article>
+                                        </td>
                                 </tr>
                                 <% } %>
                                     <% } else { %>
@@ -475,19 +481,35 @@
                     </table>
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
-            <div class="pagination-area mt-30 mb-50">
+            <!-- At the bottom of your table -->
+            <div class="pagination-area mt-30 mb-50" id="pagination-area">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i
-                                    class="material-icons md-chevron_right"></i></a></li>
+                        <% if (currentPage> 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= currentPage - 1 %>">
+                                    <i class="material-icons md-chevron_left"></i>
+                                </a>
+                            </li>
+                            <% } %>
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                        <a class="page-link" href="?page=<%= i %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                    <% } %>
+                                        <% if (currentPage < totalPages) { %>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=<%= currentPage + 1 %>">
+                                                    <i class="material-icons md-chevron_right"></i>
+                                                </a>
+                                            </li>
+                                            <% } %>
                     </ul>
                 </nav>
             </div>
+
         </section> <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
@@ -504,6 +526,36 @@
             </div>
         </footer>
     </main>
+    <script>
+        function filterProducts(category) {
+            // Get the select element
+            var selectElement = document.querySelector('.form-select');
+    
+            // If "All categories" is selected, remove the category query parameter
+            if (category === 'All category') {
+                // Remove category query parameter
+                var url = window.location.href.split('?')[0];
+                window.location.href = url;
+                return;
+            }
+    
+            // Loop through options to find the one with matching value
+            for (var i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === category) {
+                    // Set the selected attribute of the matching option
+                    selectElement.options[i].selected = true;
+                }
+            }
+    
+            // Redirect to the same page with the selected category as a query parameter
+            window.location.href = `/admin/page-products-list?page=1&category=${encodeURIComponent(category)}`;
+        }
+    </script>
+    
+    
+
+
+
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/js/vendors/select2.min.js"></script>

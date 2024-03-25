@@ -329,9 +329,11 @@
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="shop-cart.html">
+                                    <a class="mini-cart-icon" href="/cart">
                                         <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg">
-                                        <span class="pro-count blue">2</span>
+                                        <span class="pro-count blue">
+                                            <%= cart.items.length %>
+                                        </span>
                                     </a>
                                     <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                         <ul>
@@ -1137,16 +1139,37 @@
                         <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-start">
-                                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                                    <li class="page-item"><a class="page-link" href="#"><i
-                                                class="fi-rs-angle-double-small-right"></i></a></li>
+                                    <% if (currentPage> 1) { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=1&sort=<%= sortOption %>">First</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?page=<%= currentPage - 1 %>&sort=<%= sortOption %>">Previous</a>
+                                        </li>
+                                        <% } %>
+                                            <% for (let i=1; i <=totalPages; i++) { %>
+                                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                                    <a class="page-link" href="?page=<%= i %>&sort=<%= sortOption %>">
+                                                        <%= i %>
+                                                    </a>
+                                                </li>
+                                                <% } %>
+                                                    <% if (currentPage < totalPages) { %>
+                                                        <li class="page-item">
+                                                            <a class="page-link"
+                                                                href="?page=<%= currentPage + 1 %>&sort=<%= sortOption %>">Next</a>
+                                                        </li>
+                                                        <li class="page-item">
+                                                            <a class="page-link"
+                                                                href="?page=<%= totalPages %>&sort=<%= sortOption %>">Last</a>
+                                                        </li>
+                                                        <% } %>
                                 </ul>
                             </nav>
                         </div>
+
+
                     </div>
                     <div class="col-lg-3 primary-sidebar sticky-sidebar">
                         <div class="widget-category mb-30">
@@ -1410,29 +1433,32 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const sortOptions = document.querySelectorAll('#sortOptions li a');
+        const sortOptions = document.querySelectorAll('#sortOptions li a');
+        const selectedSortOption = document.getElementById('selectedSortOption');
+        let currentSortOption = ""; // Variable to store the current sort option
 
-            // Function to load products based on sort option
-            const loadProducts = async (sortOption) => {
-                try {
-                    const response = await fetch(`/shop/search?sort=${sortOption}`);
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch products');
-                    }
-                    const productsData = await response.json();
-                    updateProductGrid(productsData);
-                } catch (error) {
-                    console.error(error);
+        // Function to load products based on sort option
+        const loadProducts = async (sortOption) => {
+            try {
+                const currentPage = new URLSearchParams(window.location.search).get('page') || 1; // Extracting page parameter from URL
+                const response = await fetch(`/shop/search?sort=${sortOption}&page=${currentPage}`); // Appending page parameter to the URL
+                if (!response.ok) {
+                    throw new Error('Failed to fetch products');
                 }
-            };
-
-            // Function to update product grid with new data
-            const updateProductGrid = (products) => {
-                const productGrid = document.getElementById('productGrid');
-                productGrid.innerHTML = ''; // Clear previous content
-                products.forEach(product => {
-                    const productHTML = `
+                const productsData = await response.json();
+                updateProductGrid(productsData);
+                selectedSortOption.textContent = sortOption.charAt(0).toUpperCase() + sortOption.slice(1); // Update selected sort option text
+                currentSortOption = sortOption; // Update current sort option
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        // Function to update product grid with new data
+        const updateProductGrid = (products) => {
+            const productGrid = document.getElementById('productGrid');
+            productGrid.innerHTML = ''; // Clear previous content
+            products.forEach(product => {
+                const productHTML = `
             <div class="col-lg-4 col-md-4 col-12 col-sm-6">
                 <div class="product-cart-wrap mb-30">
                     <div class="product-img-action-wrap">
@@ -1455,8 +1481,8 @@
                         </div>
                         <div class="product-badges product-badges-position product-badges-mrg">
                             ${product.stock === 0 ? '<span class="out-of-stock">Out of Stock</span>' :
-                            product.stock <= 5 ? `<span class="only-left">Only ${product.stock} piece(s) left</span>` :
-                                '<span class="hot">Hot</span>'}
+                        product.stock <= 5 ? `<span class="only-left">Only ${product.stock} piece(s) left</span>` :
+                            '<span class="hot">Hot</span>'}
                         </div>
                     </div>
                     <div class="product-content-wrap">
@@ -1479,25 +1505,29 @@
                     </div>
                 </div>
             </div>`;
-                    productGrid.innerHTML += productHTML;
-                });
-            };
-
-
-            // Event listener for sort options
-            sortOptions.forEach(option => {
-                option.addEventListener('click', function (event) {
-                    event.preventDefault(); // Prevent default link behavior
-                    const sortOption = this.getAttribute('href').split('=')[1];
-                    loadProducts(sortOption);
-                });
+                productGrid.innerHTML += productHTML;
             });
+        };
 
-            // Initial load of products on page load
-            loadProducts('featured');
+
+        // Event listener for sort options
+        sortOptions.forEach(option => {
+            option.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent default link behavior
+                const sortOption = this.getAttribute('href').split('=')[1];
+                loadProducts(sortOption);
+                sortOptions.forEach(opt => {
+                    opt.classList.remove('active');
+                });
+
+                // Add 'active' class to the clicked sort option
+                this.classList.add('active');
+            });
         });
 
-        $(document).ready(function () {
+
+
+        $(document).ready(function () { 
             $('#searchInput').on('input', function () {
                 var query = $(this).val();
                 if (query.length > 0) {

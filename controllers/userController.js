@@ -6,8 +6,17 @@ const otpGenerator = require('otp-generator');
 const Product = require("../models/productModel")
 const Cart = require("../models/cartModel");
 const Order = require("../models/orderModel");
+const Wishlist = require("../models/wishlistModel");
+const Wallet = require("../models/walletModel");
+const TransactionModel = require("../models/transactionModel");
+const Coupons = require("../models/couponModel");
 const jwt = require("jsonwebtoken");
 const secretKey = 'your-secret-key';
+const Razorpay = require('razorpay');
+const path = require('path');
+const pdf = require('html-pdf');
+const fs = require('fs');
+const ejs = require('ejs');
 
 const securePassword = async (password) => {
     try {
@@ -395,9 +404,11 @@ const verifyLogin = async (req, res) => {
 
 const loadHome = async (req, res) => {
     try {
+        req.session.sortingOption = 'featured';
         const productsData = await Product.find();
         const userData = await User.findById({ _id: req.session.user_id });
         const userId = req.session.user_id;
+        let wishlistData = await Wishlist.findOne({ userId }).populate('items.productId');
         const cartData = await Cart.findOne({ userId })
             .populate({
                 path: 'items.productId',
@@ -406,7 +417,7 @@ const loadHome = async (req, res) => {
                     model: 'Category'
                 }
             });
-        res.render('userLogin', { user: userData, products: productsData, cart: cartData });
+        res.render('userLogin', { user: userData, products: productsData, cart: cartData, wishlist: wishlistData });
     } catch (error) {
         console.log(error.message);
     }
@@ -520,6 +531,11 @@ const loadProductDetails = async (req, res) => {
         const id = req.query.id;
         const productDetail = await Product.findById(id).populate('category');
         const userId = req.session.user_id;
+
+        let wishlist = await Wishlist.findOne({ userId }).populate('items.productId');
+        const isWishlisted = wishlist && wishlist.items.some(item => item.productId.equals(id));
+        console.log(isWishlisted)
+
         const cartData = await Cart.findOne({ userId })
             .populate({
                 path: 'items.productId',
@@ -538,7 +554,7 @@ const loadProductDetails = async (req, res) => {
             return res.status(500).send('Product category is missing');
         }
 
-        res.render('home-product-details', { product: productDetail, isUserLogin, cart: cartData });
+        res.render('home-product-details', { product: productDetail, isUserLogin, cart: cartData, wishlist, isWishlisted });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
@@ -560,7 +576,16 @@ const loadUserAccount = async (req, res) => {
         const userId = req.session.user_id;
         const userDetails = await User.findById(userId).populate('addresses');
         const orders = await Order.find({ userId }).sort({ createdAt: -1 }).populate('items.productId');
-        res.render('user-account', { user: userDetails, orders: orders, redirectToAddress: req.query.redirectToAddress });
+        const coupons = await Coupons.find({ isActive: true });
+        const cartData = await Cart.findOne({ userId })
+            .populate({
+                path: 'items.productId',
+                populate: {
+                    path: 'category',
+                    model: 'Category'
+                }
+            });
+        res.render('user-account', { user: userDetails, orders: orders, cart: cartData, redirectToAddress: req.query.redirectToAddress, coupons });
     } catch (error) {
         console.log(error.message);
     }
@@ -631,6 +656,61 @@ const deleteAddress = async (req, res) => {
     }
 }
 
+const editAccountDetails = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const { email, mobile } = req.body;
+
+        // Update the email and mobile fields in the user document
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { email: email, mobile: mobile },
+            { new: true } // To return the updated document
+        );
+        if (updatedUser) {
+            res.redirect('/account');
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+
+const changePassword = async (req, res) => {
+    try {
+        console.log("Inside change password");
+        const userId = req.session.user_id;
+        const currentPassword = req.body.currentPassword.trim();
+        const newPassword = req.body.newPassword.trim();
+        const confirmNewPassword = req.body.confirmNewPassword.trim();
+        const userData = await User.findById(userId);
+        console.log("Inside change password", userData);
+
+        const passwordMatch = await bcrypt.compare(currentPassword, userData.password);
+        if (passwordMatch) {
+            console.log("Current password matched");
+            if (newPassword === confirmNewPassword) {
+                const hashedPassword = await securePassword(newPassword);
+                userData.password = hashedPassword;
+                await userData.save();
+                console.log("Password updated successfully");
+                res.send({ success: true, message: "Password changed successfully" });
+            } else {
+                res.send({ success: false, message: "New password and Confirm New Passwword do not match" });
+            }
+        } else {
+            res.send({ success: false, message: "Current Password does not match" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ success: false, message: "An error occurred while changing password" });
+    }
+};
+
+
 const orderDetails = async (req, res) => {
     try {
         const orderNumber = req.query.id; // Assuming 'id' is the parameter for the order number
@@ -651,13 +731,48 @@ const orderDetails = async (req, res) => {
         const addressData = await Address.findById(orderData.addressId);
         const billingAddressData = await Address.findById(orderData.billingAddressId);
 
-        console.log(orderData);
-        console.log(addressData);
 
         res.render('order-details', { order: orderData, address: addressData, billingAddress: billingAddressData }); // Pass both orderData and addressData to the view for rendering
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Error fetching order details');
+    }
+}
+
+const generateInvoice = async (req, res) => {
+    try {
+        const orderId = req.query.orderId;
+        const orderData = await Order.findById(orderId)
+            .populate('userId')
+            .populate('addressId')
+            .populate('billingAddressId')
+            .populate({
+                path: 'items.productId',
+                model: 'Product', // Reference to the Product model
+                populate: {
+                    path: 'category', // Populate the 'category' field of the 'Product' model
+                    model: 'Category' // Reference to the Category model
+                }
+            });
+
+        const templatePath = path.join(__dirname, '..', 'views', 'users', 'invoice.ejs');
+        const template = fs.readFileSync(templatePath, 'utf-8');
+
+        const html = ejs.render(template, { order: orderData });
+
+        pdf.create(html).toFile('invoice.pdf', (err, result) => {
+            if (err) {
+                console.error('Error generating PDF:', err);
+                res.status(500).send('Error generating PDF');
+            } else {
+                console.log('PDF generation completed');
+                res.download('invoice.pdf');
+            }
+        });
+
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        res.status(500).send('Error generating PDF');
     }
 }
 
@@ -671,6 +786,38 @@ const cancelOrder = async (req, res) => {
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
+        const totalRefundAmount = order.totalPrice;
+        const userId = req.session.user_id;
+
+        let wallet = await Wallet.findOne({ userId });
+        console.log("Wallet details", wallet)
+        if (!wallet) {
+            wallet = new Wallet({ userId: userId, balance: totalRefundAmount });
+        } else {
+            if (order.paymentMethod !== "COD") {
+                wallet.balance += totalRefundAmount;
+                wallet.credit += totalRefundAmount;
+            }
+        }
+        // Update product stocks for canceled items
+        for (const item of order.items) {
+            const product = await Product.findById(item.productId);
+            if (!product) {
+                throw new Error(`Product with ID ${item.productId} not found.`);
+            }
+            product.stock += item.quantity;
+            await product.save();
+        }
+        await wallet.save();
+        if (order.paymentMethod !== "COD") {
+            const transaction = new TransactionModel({
+                userId: userId,
+                orderId: orderId,
+                description: 'Order Cancel',
+                amount: totalRefundAmount
+            });
+            await transaction.save();
+        }
 
         // Respond with success message and updated order
         res.status(200).json({ message: 'Order cancelled successfully', order });
@@ -680,10 +827,52 @@ const cancelOrder = async (req, res) => {
     }
 };
 
+// const loadShop = async (req, res) => {
+//     try {
+//         let sortOption = req.query.sort || 'featured'; // Default sort by featured
+//         let sortOrder = 1; // Default sort order ascending (Low to High)
+
+//         if (sortOption === 'priceLowToHigh') {
+//             sortOption = 'price';
+//             sortOrder = 1;
+//         } else if (sortOption === 'priceHighToLow') {
+//             sortOption = 'price';
+//             sortOrder = -1;
+//         }
+
+//         // Fetch products and sort based on the selected option
+//         let productsData;
+//         if (sortOption === 'featured') {
+//             productsData = await Product.find();
+//         } else {
+//             productsData = await Product.find().sort({ [sortOption]: sortOrder });
+//         }
+
+//         // Fetch user data and cart data
+//         const userData = await User.findById(req.session.user_id);
+//         const userId = req.session.user_id;
+//         const cartData = await Cart.findOne({ userId }).populate({
+//             path: 'items.productId',
+//             populate: {
+//                 path: 'category',
+//                 model: 'Category'
+//             }
+//         });
+
+//         // Render the shop view with data
+//         res.render('shop', { user: userData, products: productsData, cart: cartData });
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send('Failed to load products');
+//     }
+// };
+
 const loadShop = async (req, res) => {
     try {
-        let sortOption = req.query.sort || 'featured'; // Default sort by featured
+        let sortOption = req.session.sortingOption || 'featured'; // Default sort by featured
         let sortOrder = 1; // Default sort order ascending (Low to High)
+        console.log("loaShop session", req.session.sortingOption)
+        console.log("loadShop", sortOption)
 
         if (sortOption === 'priceLowToHigh') {
             sortOption = 'price';
@@ -693,15 +882,26 @@ const loadShop = async (req, res) => {
             sortOrder = -1;
         }
 
+        // Pagination
+        const page = parseInt(req.query.page) || 1;
+        const limit = 6;
+        const skip = (page - 1) * limit;
+
         // Fetch products and sort based on the selected option
         let productsData;
         if (sortOption === 'featured') {
-            productsData = await Product.find();
+            productsData = await Product.find().skip(skip).limit(limit);
         } else {
-            productsData = await Product.find().sort({ [sortOption]: sortOrder });
+            productsData = await Product.find().sort({ [sortOption]: sortOrder }).skip(skip).limit(limit);
         }
+        console.log("Count", productsData.length)
 
-        // Fetch user data and cart data
+        // Count total number of products for pagination
+        const totalProducts = await Product.countDocuments();
+
+        // Calculate total pages for pagination
+        const totalPages = Math.ceil(totalProducts / limit);
+
         const userData = await User.findById(req.session.user_id);
         const userId = req.session.user_id;
         const cartData = await Cart.findOne({ userId }).populate({
@@ -711,19 +911,51 @@ const loadShop = async (req, res) => {
                 model: 'Category'
             }
         });
-
+        console.log("Total Pages: ", totalPages, "currentPage:", page, "Sort option", sortOption)
         // Render the shop view with data
-        res.render('shop', { user: userData, products: productsData, cart: cartData });
+        res.render('shop', { user: userData, products: productsData, cart: cartData, totalPages, currentPage: page, sortOption });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Failed to load products');
     }
 };
 
+
+// const shopFilter = async (req, res) => {
+//     try {
+//         let sortOption = req.query.sort || 'featured'; // Default sort by featured
+//         let sortOrder = 1; // Default sort order ascending (Low to High)
+
+//         if (sortOption === 'priceLowToHigh') {
+//             sortOption = 'price';
+//             sortOrder = 1;
+//         } else if (sortOption === 'priceHighToLow') {
+//             sortOption = 'price';
+//             sortOrder = -1;
+//         }
+
+//         // Fetch products and sort based on the selected option
+//         let productsData;
+//         if (sortOption === 'featured') {
+//             productsData = await Product.find();
+//         } else {
+//             productsData = await Product.find().sort({ [sortOption]: sortOrder });
+//         }
+
+//         res.json(productsData); // Send products data as JSON response
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).json({ error: 'Failed to load products' });
+//     }
+// };
+
 const shopFilter = async (req, res) => {
     try {
         let sortOption = req.query.sort || 'featured'; // Default sort by featured
         let sortOrder = 1; // Default sort order ascending (Low to High)
+        console.log("shopFilter sortOption", sortOption);
+        req.session.sortingOption = sortOption;
+        console.log("shopFilter session", req.session.sortingOption)
 
         if (sortOption === 'priceLowToHigh') {
             sortOption = 'price';
@@ -733,12 +965,17 @@ const shopFilter = async (req, res) => {
             sortOrder = -1;
         }
 
+        // Pagination
+        const page = parseInt(req.query.page) || 1;
+        const limit = 6;
+        const skip = (page - 1) * limit;
+
         // Fetch products and sort based on the selected option
         let productsData;
         if (sortOption === 'featured') {
-            productsData = await Product.find();
+            productsData = await Product.find().skip(skip).limit(limit);
         } else {
-            productsData = await Product.find().sort({ [sortOption]: sortOrder });
+            productsData = await Product.find().sort({ [sortOption]: sortOrder }).skip(skip).limit(limit);
         }
 
         res.json(productsData); // Send products data as JSON response
@@ -749,18 +986,18 @@ const shopFilter = async (req, res) => {
 };
 
 
-const productSearch = async(req, res)=> {
+const productSearch = async (req, res) => {
     try {
         const query = req.query.query; // Get the search query from request query parameters
         // Perform a case-insensitive search for products whose name or brand matches the query
-        
+
         const products = await Product.find({
             $or: [
                 { productName: { $regex: query, $options: 'i' } }, // Match product name
                 { productBrand: { $regex: query, $options: 'i' } } // Match product brand
             ]
         }).limit(10); // Limit the number of results to 10
-        console.log("Testing",products);
+        console.log("Testing", products);
         // Send the matching products as JSON response
         res.json(products);
     } catch (error) {
@@ -769,6 +1006,170 @@ const productSearch = async(req, res)=> {
         res.status(500).json({ error: 'Failed to search for products' });
     }
 }
+
+const addToWishlist = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const productId = req.body.productId;
+        console.log("user: ", userId, "Product: ", productId);
+
+        let wishlist = await Wishlist.findOne({ userId }).populate('items.productId');
+        if (!wishlist) {
+            wishlist = new Wishlist({
+                userId,
+                items: [{
+                    productId
+                }]
+            });
+        } else {
+            const existingItem = wishlist.items.find(item => item.productId.equals(productId));
+            if (!existingItem) {
+                wishlist.items.push({
+                    productId
+                });
+            }
+        }
+        await wishlist.save();
+        res.status(200).json({ message: 'Product added to wishlist successfully', wishlist: wishlist });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const removeFromWishlist = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const productId = req.body.productId;
+
+        // Find the wishlist by user ID
+        let wishlist = await Wishlist.findOne({ userId });
+
+        // If the wishlist doesn't exist, return error
+        if (!wishlist) {
+            return res.status(404).json({ message: 'Wishlist not found' });
+        }
+
+        // Remove the product from the items array
+        wishlist.items = wishlist.items.filter(item => !item.productId.equals(productId));
+
+        // Save the updated wishlist
+        await wishlist.save();
+
+        // Return success response
+        res.status(200).json({ message: 'Product removed from wishlist successfully', wishlist: wishlist });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+const loadWishlist = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const cartData = await Cart.findOne({ userId })
+            .populate({
+                path: 'items.productId',
+                populate: {
+                    path: 'category',
+                    model: 'Category'
+                }
+            });
+        const wishlistData = await Wishlist.findOne({ userId })
+            .populate({
+                path: 'items.productId',
+                populate: {
+                    path: 'category',
+                    model: 'Category'
+                }
+            });
+
+
+        res.render('wishlist', { wishlist: wishlistData, cart: cartData });
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const loadWallet = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const currentPage = parseInt(req.query.page) || 1; // Extract the page number from query parameter
+
+        // Find wallet data for the user
+        const walletData = await Wallet.findOne({ userId });
+
+        // Find total count of transactions for the user with description 'Order Cancel'
+        const transactionCount = await TransactionModel.countDocuments({
+            userId,
+            description: { $in: ['Order Cancel', 'Ordered using wallet'] }
+        });
+
+
+        // Find transactions data for the user with description 'Order Cancel'
+        const transactionsData = await TransactionModel.find({
+            userId,
+            description: { $in: ['Order Cancel', 'Ordered using wallet'] }
+        })
+            .populate({
+                path: 'orderId', // Assuming the field in TransactionModel schema that stores order reference is named 'orderId'
+                model: 'Order', // Model name for the Order schema
+                populate: {
+                    path: 'items.productId', // Assuming 'items' array in Order schema contains productId reference
+                    model: 'Product' // Model name for the Product schema
+                }
+            })
+            .sort({ date: -1 }) // Sort transactions by date in descending order
+            .skip((currentPage - 1) * 5) // Skip records based on page number
+            .limit(5); // Limit the number of records per page
+
+        res.render('wallet', { wallet: walletData, transaction: transactionsData, transactionCount, currentPage });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_ID_KEY,
+    key_secret: process.env.RAZORPAY_SECRET_KEY
+});
+
+const walletTopUp = async (req, res) => {
+    try {
+        const amount = req.body.amount;
+        const currency = 'INR';
+
+        const options = {
+            amount: amount * 100, // amount in paise
+            currency: currency,
+            payment_capture: '1', // Auto capture payment
+        };
+
+        const order = await razorpay.orders.create(options);
+        res.json(order);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to create order' });
+    }
+}
+
+const updateWallet = async (req, res) => {
+    try {
+        const amount = req.body.amount;
+        const updatedwallet = await Wallet.findOneAndUpdate(
+            { userId: req.session.user_id }, // Assuming you have authenticated user in req.user
+            { $inc: { balance: amount, credit: amount } }, // Increment balance and credit by the amount
+            { new: true } // Return the updated document
+        );
+        console.log(updatedwallet);
+        res.json(updatedwallet);
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+
 
 
 
@@ -796,9 +1197,18 @@ module.exports = {
     updateAddress,
     deleteAddress,
     orderDetails,
+    generateInvoice,
     cancelOrder,
     loadShop,
     shopFilter,
-    productSearch
+    productSearch,
+    editAccountDetails,
+    changePassword,
+    addToWishlist,
+    removeFromWishlist,
+    loadWishlist,
+    loadWallet,
+    walletTopUp,
+    updateWallet
 
 };

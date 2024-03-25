@@ -9,6 +9,14 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    offerPercentage: {
+        type: Number,
+        required: true
+    },
+    offerExpiryDate: {
+        type: Date,
+        default: Date.now
+    },
     isListed: {
         type: Number,
         required: true

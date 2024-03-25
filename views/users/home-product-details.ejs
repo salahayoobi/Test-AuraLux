@@ -240,61 +240,69 @@
                         </div>
                         <div class="header-action-right">
                             <div class="header-action-2">
-                                <div class="header-action-icon-2">
-                                    <a href="shop-wishlist.html">
-                                        <img class="svgInject" alt="Evara"
-                                            src="/assets/imgs/theme/icons/icon-heart.svg">
-                                        <span class="pro-count blue">4</span>
-                                    </a>
-                                </div>
-                                <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="/cart">
-                                        <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg">
-                                        <span class="pro-count blue" id="cartItemCount">
-                                            <%= cart.items.length %>
-                                        </span>
-                                    </a>
-
-                                    <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                        <ul>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara"
-                                                            src="/assets/imgs/shop/thumbnail-3.jpg"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Daisy Casual Bag</a></h4>
-                                                    <h4><span>1 × </span>$800.00</h4>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara"
-                                                            src="/assets/imgs/shop/thumbnail-2.jpg"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Corduroy Shirts</a></h4>
-                                                    <h4><span>1 × </span>$3200.00</h4>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div class="shopping-cart-footer">
-                                            <div class="shopping-cart-total">
-                                                <h4>Total <span>$4000.00</span></h4>
-                                            </div>
-                                            <div class="shopping-cart-button">
-                                                <a href="shop-cart.html" class="outline">View cart</a>
-                                                <a href="shop-checkout.html">Checkout</a>
-                                            </div>
-                                        </div>
+                                <% if (typeof isUserLogin !=='undefined' ) { %>
+                                    <div class="header-action-icon-2">
+                                        <a href="/home/wishlist">
+                                            <img class="svgInject" alt="Evara"
+                                                src="/assets/imgs/theme/icons/icon-heart.svg">
+                                            <span class="pro-count blue">
+                                                <%= wishlist.items.length %>
+                                            </span>
+                                        </a>
                                     </div>
-                                </div>
+                                    <% } %>
+                                        <div class="header-action-icon-2">
+                                            <% if (typeof isUserLogin !=='undefined' ) { %>
+                                                <a class="mini-cart-icon" href="/cart">
+                                                    <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg">
+                                                    <span class="pro-count blue" id="cartItemCount">
+                                                        <%= cart.items.length %>
+                                                    </span>
+                                                </a>
+                                                <% } %>
+
+                                                    <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                                                        <ul>
+                                                            <li>
+                                                                <div class="shopping-cart-img">
+                                                                    <a href="shop-product-right.html"><img alt="Evara"
+                                                                            src="/assets/imgs/shop/thumbnail-3.jpg"></a>
+                                                                </div>
+                                                                <div class="shopping-cart-title">
+                                                                    <h4><a href="shop-product-right.html">Daisy Casual
+                                                                            Bag</a></h4>
+                                                                    <h4><span>1 × </span>$800.00</h4>
+                                                                </div>
+                                                                <div class="shopping-cart-delete">
+                                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="shopping-cart-img">
+                                                                    <a href="shop-product-right.html"><img alt="Evara"
+                                                                            src="/assets/imgs/shop/thumbnail-2.jpg"></a>
+                                                                </div>
+                                                                <div class="shopping-cart-title">
+                                                                    <h4><a href="shop-product-right.html">Corduroy
+                                                                            Shirts</a></h4>
+                                                                    <h4><span>1 × </span>$3200.00</h4>
+                                                                </div>
+                                                                <div class="shopping-cart-delete">
+                                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                        <div class="shopping-cart-footer">
+                                                            <div class="shopping-cart-total">
+                                                                <h4>Total <span>$4000.00</span></h4>
+                                                            </div>
+                                                            <div class="shopping-cart-button">
+                                                                <a href="shop-cart.html" class="outline">View cart</a>
+                                                                <a href="shop-checkout.html">Checkout</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                        </div>
                             </div>
                         </div>
                     </div>
@@ -689,7 +697,9 @@
                         </div>
                     </div>
                     <div class="hotline d-none d-lg-block">
-                        <p><i class="fi-rs-headset"></i><span>Hotline</span> 1900 - 888 </p>
+                        <p><i class="fi-rs-headset"></i><span>
+                            Hotline
+                            </span> 1900 - 888 </p>
                     </div>
                     <p class="mobile-promotion">Happy <span class="text-brand">Mother's Day</span>. Big Sale Up to 40%
                     </p>
@@ -1115,13 +1125,15 @@
                                                                     <% } %>
                                                                         <a aria-label="Add To Wishlist"
                                                                             class="action-btn hover-up"
-                                                                            href="shop-wishlist.html"><i
-                                                                                class="fi-rs-heart"></i></a>
+                                                                            id="wishlist-icon" href="#"><i
+                                                                                class="fi-rs-heart active"></i></a>
+
                                                                         <a aria-label="Compare"
                                                                             class="action-btn hover-up"
                                                                             href="shop-compare.html"><i
                                                                                 class="fi-rs-shuffle"></i></a>
                                             </div>
+                                            <input style="display: none;" id="isWishlisted" value="<%= isWishlisted %>">
                                         </div>
                                         <ul class="product-meta font-xs color-grey mt-50">
                                             <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
@@ -1958,6 +1970,80 @@
                     console.error('Error:', error);
                 });
         }
+
+        const isWishlisted = document.getElementById('isWishlisted').value.trim();// Get the value from the server-side rendering
+
+        // Select the wishlist icon element
+        const wishlistIcon = document.getElementById('wishlist-icon');
+        console.log(isWishlisted)
+
+        // Set the initial state of the wishlist icon based on isWishlisted
+        if (isWishlisted === 'true') { // Check if isWishlisted is equal to 'true'
+            wishlistIcon.classList.add('active');
+            wishlistIcon.style.backgroundColor = '#088178';
+        }
+
+
+        // Add to wishlist
+
+        document.getElementById('wishlist-icon').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default action of clicking a link
+
+            const wishlistIcon = document.getElementById('wishlist-icon');
+            const isProductInWishlist = wishlistIcon.classList.contains('active');
+
+            // Fetch request
+            fetch(isProductInWishlist ? '/home/remove-from-wishlist' : '/home/add-to-wishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    productId: '<%= product._id %>'
+                })
+            })
+                .then(response => response.json()) // Parse response as JSON
+                .then(data => {
+                    if (data.wishlist) {
+                        if (isProductInWishlist) {
+                            // Remove product from wishlist
+                            wishlistIcon.classList.remove('active');
+                            wishlistIcon.style.backgroundColor = ''; // Reset background color if removed from wishlist
+                            // Show success message
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "Product removed from wishlist",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        } else {
+                            // Add product to wishlist
+                            wishlistIcon.classList.add('active');
+                            wishlistIcon.style.backgroundColor = '#088178';
+                            // Show success message
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "Product added to wishlist",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+
+                        // Update wishlist count dynamically
+                        document.querySelector('.pro-count.blue').textContent = data.wishlist.items.length;
+                        console.log(data.wishlist.items.length);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+
+
+
 
 
     </script>

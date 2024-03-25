@@ -48,4 +48,9 @@ user_route.get('/shop/search', userController.shopFilter);
 
 user_route.get('/search',userController.productSearch);
 
+user_route.get('/home/wishlist', userController.loadWishlist)
+
+user_route.post('/home/add-to-wishlist', userController.addToWishlist);
+user_route.post('/home/remove-from-wishlist', userController.removeFromWishlist);
+
 module.exports = user_route;

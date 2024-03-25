@@ -957,6 +957,7 @@
                     </div>
                     <% } %>
             </div>
+            <input type="hidden" id="cart-id" value="<%= cart._id %>">
             <div class="col-3">
                 <div class="card mb-3">
                     <div class="card-header">
@@ -967,15 +968,25 @@
                         <div class="price-details">
                             <div class="price-detail-item">
                                 <span class="detail-label">Price (<%= cart.items.length %> items):</span>
-                                <span class="detail-value">₹<%= cart.totalPrice %></span>
+                                <% if(typeof discountPrice !=='undefined' ) { %>
+                                    <span class="detail-value">₹<%= totalPriceFromItems %></span>
+                                    <% } else { %>
+                                        <span class="detail-value">₹<%= totalPriceFromItems %></span>
+                                        <% } %>
+
                             </div>
                             <div class="price-detail-item">
                                 <span class="detail-label">Discount:</span>
-                                <span class="detail-value">− ₹0.00</span>
+                                <% if(typeof discountPrice !=='undefined' ) { %>
+                                    <span class="detail-value">− ₹<%= discountPrice %></span>
+                                    <% } else { %>
+                                        <span class="detail-value">− ₹0.00</span>
+                                        <% } %>
+
                             </div>
                             <div class="price-detail-item">
                                 <span class="detail-label">Delivery Charges:</span>
-                                <span class="detail-value">(Free)</span>
+                                <span class="detail-value">₹0</span>
                             </div>
                             <div class="price-detail-item">
                                 <span class="detail-label">Total Amount:</span>
@@ -983,7 +994,7 @@
                             </div>
                             <div class="price-detail-item">
                                 <span class="detail-label">You will save:</span>
-                                <span class="detail-value">₹0 on this order</span>
+                                <span class="detail-value">₹<%= discountPrice %> on this order</span>
                             </div>
                         </div>
                     </div>
@@ -1001,17 +1012,23 @@
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="paymentMethod" id="upi"
-                                        value="UPI">
-                                    <label class="form-check-label" for="upi">
-                                        UPI
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="razorpay"
+                                        value="RAZORPAY">
+                                    <label class="form-check-label" for="razorpay">
+                                        RazorPay
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="paymentMethod" id="card"
-                                        value="card">
-                                    <label class="form-check-label" for="card">
-                                        Card Payment
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="wallet"
+                                        value="WALLET" <% if (wallet.balance < cart.totalPrice) { %> disabled <% } %>>
+                                    <label class="form-check-label" for="wallet">
+                                        Wallet
+                                        <% if (wallet.balance < cart.totalPrice) { %>
+                                            <span class="text-danger">Low wallet balance</span>
+                                            Balance ₹<%= wallet.balance %>
+                                        <% } else { %>
+                                            <span class="text-success">Balance ₹<%= wallet.balance %></span>
+                                        <% } %>
                                     </label>
                                 </div>
                             </form>
@@ -1156,6 +1173,7 @@
     </div>
     <!-- Vendor JS-->
 
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         const placeOrderButton = document.querySelector('#place-order-button');
         placeOrderButton.addEventListener('click', async () => {
@@ -1169,39 +1187,137 @@
                 const billingAddressSelect = document.querySelector('#billing-address');
                 const billingAddressId = billingAddressSelect ? billingAddressSelect.value : null;
 
-                if (!paymentMethod || !addressId) {
+                const cartIdInput = document.querySelector('#cart-id');
+                const cartId = cartIdInput ? cartIdInput.value : null;
+
+                if (!paymentMethod || !addressId || !billingAddressId) { // Check if billingAddressId is also not null
                     throw new Error('Incomplete order data');
                 }
 
-                const response = await fetch('/cart/place-order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ paymentMethod, addressId, billingAddressId })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Order Placed Successfully!',
-                        text: data.message,
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        // Redirect to order success page
-                        window.location.href = '/cart/order-success';
+                if (paymentMethod === 'RAZORPAY') {
+                    // If Razorpay is selected, initiate payment
+                    const response = await fetch('/cart/create-razorpay-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ addressId, billingAddressId }) // Include billingAddressId
                     });
-                } else {
-                    const errorMessage = await response.json();
-                    if (response.status === 400) {
+
+                    if (response.ok) {
+                        const { orderId, amount } = await response.json();
+                        const options = {
+                            key: 'rzp_test_vGryABnhipIEr8',
+                            amount: amount, // Razorpay takes amount in paisa
+                            currency: 'INR',
+                            name: 'AuraLux',
+                            description: 'Payment for your order',
+                            order_id: orderId,
+                            handler: async function (response) {
+                                try {
+                                    // Send the Razorpay payment ID and order ID to your server for verification
+                                    const paymentId = response.razorpay_payment_id;
+                                    const orderId = response.razorpay_order_id;
+
+                                    // Send payment ID, order ID, amount, and billingAddressId to server for verification and saving the order
+                                    const orderResponse = await fetch('/cart/verify-and-save-order', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ paymentId, orderId, billingAddressId, addressId, cartId }) // Include billingAddressId
+                                    });
+
+                                    if (orderResponse.ok) {
+                                        // Redirect to order success page after successful order placement
+                                        window.location.href = '/cart/order-success';
+                                    } else {
+                                        throw new Error('Failed to verify and save order');
+                                    }
+                                } catch (error) {
+                                    console.error(error);
+                                    alert('Failed to place order');
+                                }
+                            },
+                            prefill: {
+                                name: 'Customer Name',
+                                email: 'customer@example.com',
+                                contact: '9999999999'
+                            },
+                            theme: {
+                                color: '#3399cc'
+                            }
+                        };
+                        const rzp1 = new Razorpay(options);
+                        rzp1.open();
+                    } else {
+                        throw new Error('Failed to initiate payment');
+                    }
+                } else if (paymentMethod === 'COD') {
+                    // If COD is selected, proceed with placing order as before
+                    const response = await fetch('/cart/place-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ paymentMethod, addressId, billingAddressId })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage.message
+                            icon: 'success',
+                            title: 'Order Placed Successfully!',
+                            text: data.message,
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            // Redirect to order success page
+                            window.location.href = '/cart/order-success';
                         });
                     } else {
-                        throw new Error('Failed to place order');
+                        const errorMessage = await response.json();
+                        if (response.status === 400) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage.message
+                            });
+                        } else {
+                            throw new Error('Failed to place order');
+                        }
+                    }
+                } else if (paymentMethod === 'WALLET') {
+                    // If Wallet is selected, proceed with placing order
+                    const response = await fetch('/cart/place-wallet-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ paymentMethod, addressId, billingAddressId })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Placed Successfully!',
+                            text: data.message,
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            // Redirect to order success page
+                            window.location.href = '/cart/order-success';
+                        });
+                    } else {
+                        const errorMessage = await response.json();
+                        if (response.status === 400) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage.message
+                            });
+                        } else {
+                            throw new Error('Failed to place order');
+                        }
                     }
                 }
             } catch (error) {
@@ -1209,8 +1325,9 @@
                 alert('Failed to place order');
             }
         });
-
     </script>
+
+
 
 
 

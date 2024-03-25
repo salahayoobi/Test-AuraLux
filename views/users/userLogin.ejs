@@ -295,7 +295,7 @@
                                                 class="material-icons md-perm_identity"></i>Edit Profile</a>
                                         <a class="dropdown-item" href="/account"><i
                                                 class="material-icons md-settings"></i>Account</a>
-                                        <a class="dropdown-item" href="#"><i
+                                        <a class="dropdown-item" href="/account/wallet"><i
                                                 class="material-icons md-account_balance_wallet"></i>Wallet</a>
                                         <a class="dropdown-item" href="#"><i
                                                 class="material-icons md-receipt"></i>Billing</a>
@@ -348,55 +348,56 @@
                         <div class="header-action-right">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
-                                    <a href="shop-wishlist.html">
+                                    <a href="/home/wishlist">
                                         <img class="svgInject" alt="Evara"
                                             src="/assets/imgs/theme/icons/icon-heart.svg">
-                                        <span class="pro-count blue">4</span>
+                                        <span class="pro-count blue" id="wishlistCount">
+                                            <%= wishlist.items.length %>
+                                        </span>
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
                                     <a class="mini-cart-icon" href="/cart">
                                         <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg">
-                                        <span class="pro-count blue">
+                                        <span class="pro-count blue" id="cartItemCount">
                                             <%= cart.items.length %>
                                         </span>
                                     </a>
                                     <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                         <ul>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara"
-                                                            src="/assets/imgs/shop/thumbnail-3.jpg"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Daisy Casual Bag</a></h4>
-                                                    <h4><span>1 × </span>$800.00</h4>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara"
-                                                            src="/assets/imgs/shop/thumbnail-2.jpg"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Corduroy Shirts</a></h4>
-                                                    <h4><span>1 × </span>$3200.00</h4>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
+                                            <% if (cart && cart.items && cart.items.length> 0) { %>
+                                                <% for (let i=0; i < cart.items.length; i++) { %>
+                                                    <li>
+                                                        <div class="shopping-cart-img">
+                                                            <a
+                                                                href="/home-product-details?id=<%= cart.items[i].productId._id %>"><img
+                                                                    alt="Evara"
+                                                                    src="/productImages/<%= cart.items[i].productId.image[0] %>"></a>
+                                                        </div>
+                                                        <div class="shopping-cart-title">
+                                                            <h4><a href="shop-product-right.html">
+                                                                    <%= cart.items[i].productId.productName %>
+                                                                </a></h4>
+                                                            <h4><span>1 × </span>₹<%= cart.items[i].unitPrice %>
+                                                            </h4>
+                                                        </div>
+                                                    </li>
+                                                    <% } %>
+                                                        <% } else { %>
+                                                            <tr>
+                                                                <td colspan="6" class="text-center empty-cart">
+                                                                    <p>Cart Is Empty</p>
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
                                         </ul>
                                         <div class="shopping-cart-footer">
                                             <div class="shopping-cart-total">
-                                                <h4>Total <span>$4000.00</span></h4>
+                                                <h4>Total <span>₹<%= cart.totalPrice %></span></h4>
                                             </div>
                                             <div class="shopping-cart-button">
-                                                <a href="shop-cart.html" class="outline">View cart</a>
-                                                <a href="shop-checkout.html">Checkout</a>
+                                                <a href="/cart" class="outline">View cart</a>
+                                                <a href="/cart/checkout">Checkout</a>
                                             </div>
                                         </div>
                                     </div>
@@ -1137,8 +1138,11 @@
                                                 <a aria-label="Quick view" class="action-btn hover-up"
                                                     data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
                                                         class="fi-rs-eye"></i></a>
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                    href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                <a aria-label="Add To Wishlist"
+                                                    class="action-btn hover-up add-to-wishlist" href="#"
+                                                    data-product-id="<%= products[i]._id %>">
+                                                    <i class="fi-rs-heart"></i>
+                                                </a>
                                                 <a aria-label="Compare" class="action-btn hover-up"
                                                     href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
@@ -1159,20 +1163,29 @@
                                                     <%= products[i].productBrand %>
                                                 </a>
                                             </div>
-                                            <h2><a href="/home-product-details">
+                                            <h2><a href="/home-product-details?id=<%= products[i]._id %>">
                                                     <%= products[i].productName %>
                                                 </a></h2>
                                             <div class="rating-result" title="90%">
                                                 <span><span>90%</span></span>
                                             </div>
+                                            <% if(products[i].price > products[i].offerPrice){ %>
                                             <div class="product-price">
-                                                <span>₹<%= products[i].price %> </span>
-                                                <span class="old-price">$245.8</span>
+                                                <span>₹<%= products[i].offerPrice %> </span>
+                                                <span class="old-price">₹<%= products[i].price %></span>
                                             </div>
+                                            <% }else{ %>
+                                                <div class="product-price">
+                                                    <span>₹<%= products[i].price %> </span>
+                                                </div>
+                                                <% } %>
                                             <div class="product-action-1 show">
-                                                <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                    href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                <a aria-label="Add To Cart" class="action-btn hover-up add-to-cart-btn"
+                                                    href="#" data-product-id="<%= products[i]._id %>">
+                                                    <i class="fi-rs-shopping-bag-add"></i>
+                                                </a>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -3485,9 +3498,141 @@
                     $('#searchResultsLink').removeAttr('href');
                 }
             });
+
+            // Event listener for 'Enter' key press
+            $('#searchInput').on('keypress', function (e) {
+                if (e.which === 13) { // Check if the pressed key is 'Enter' (key code 13)
+                    var query = $(this).val();
+                    if (query.length > 0) {
+                        // Perform search and update product grid
+                        performSearch(query);
+                    }
+                }
+            });
+
+            // Function to perform search
+            function performSearch(query) {
+                $.ajax({
+                    url: '/search', // Endpoint to handle search query
+                    method: 'GET',
+                    data: { query: query },
+                    success: function (response) {
+                        // Clear previous search results
+                        $('#searchResults').empty();
+                        // Iterate over each product in the response and append its name as a clickable link
+                        response.forEach(function (product) {
+                            var productHtml = '<div>';
+                            productHtml += product.productName;
+                            productHtml += '</div>';
+                            $('#searchResults').append(productHtml);
+                        });
+                        // Set the href attribute of the anchor tag to the product page URL
+                        if (response.length > 0) {
+                            $('#searchResultsLink').attr('href', '/home-product-details?id=' + response[0]._id);
+                        } else {
+                            // If no results, remove href attribute
+                            $('#searchResultsLink').removeAttr('href');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+            // Function to clear search results
+            function clearSearchResults() {
+                $('#searchResults').empty();
+                $('#searchResultsLink').removeAttr('href');
+                // Show all products when search input is empty
+                $('.product-cart-wrap').show();
+            }
         });
 
+        document.addEventListener('DOMContentLoaded', function () {
+            const addToWishlistButtons = document.querySelectorAll('.add-to-wishlist');
+            addToWishlistButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent default action of clicking a link
+                    const productId = this.dataset.productId;
+
+                    // Fetch request to add the product to the wishlist
+                    fetch('/home/add-to-wishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            productId: productId
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message === 'Product added to wishlist successfully') {
+                                // Show success message or update UI as needed
+                                document.getElementById('wishlistCount').textContent = data.wishlist.items.length;
+                                console.log('Product added to wishlist successfully');
+                                // Integrate SweetAlert
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: "Added to wishlist",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent default action of clicking a link
+
+                    const productId = this.dataset.productId;
+
+                    // Fetch request to add the product to the cart
+                    fetch('/cart/add-to-cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            productId: productId,
+                            quantity: 1 // You can modify this value to allow the user to choose quantity
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message === 'Product added to cart successfully') {
+                                // Show success message using SweetAlert
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: "Product added to cart successfully",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                document.getElementById('cartItemCount').textContent = data.cart.items.length;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            });
+        });
+
+
+
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>

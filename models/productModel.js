@@ -17,6 +17,14 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    offerPrice: {
+        type: Number,
+        required: true
+    },
+    offerExpiryDate: {
+        type: Date,
+        default: Date.now
+    },
     image: [{
         type: String,
         required: true

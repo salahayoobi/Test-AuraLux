@@ -35,7 +35,11 @@ admin_route.get('/page-products-list', adminController.loadProductsListPage);
 admin_route.get('/add-new-product', adminController.addProductLoad);
 admin_route.post('/add-new-product', upload.array('image', 3), adminController.addNewProduct);
 admin_route.get('/page-products-list/edit-product', adminController.editProductLoad);
-admin_route.post('/page-products-list/edit-product',upload.array('image', 3), adminController.updateProduct);
+admin_route.post('/page-products-list/edit-product', upload.fields([
+    { name: 'image1', maxCount: 1 },
+    { name: 'image2', maxCount: 1 },
+    { name: 'image3', maxCount: 1 }
+]), adminController.updateProduct);
 admin_route.get('/page-products-list/delete-product', adminController.deleteProduct);
 
 admin_route.get('/categories', adminController.categories);
@@ -46,6 +50,24 @@ admin_route.get('/categories/delete-category', adminController.deleteCategory);
 
 admin_route.get('/orders', adminController.loadOrders);
 admin_route.get('/orders/order-details', adminController.loadOrderDetails);
+admin_route.post('/orders/update-order-status', adminController.updateOrderStatus);
+
+//***************************Coupon****************************/
+
+admin_route.get('/coupons', adminController.loadCoupons);
+admin_route.get('/add-new-coupon', adminController.loadAddNewCouponPage);
+admin_route.post('/add-new-coupon', adminController.addNewCoupon);
+admin_route.post('/update-coupon-status', adminController.updateCouponStatus);
+
+admin_route.get('/offers', adminController.loadOffers);
+admin_route.post('/offers/update-product-offer', adminController.updateProductOffer);
+admin_route.post('/offers/remove-product-offer', adminController.removeProductOffer);
+admin_route.post('/offers/update-category-offer', adminController.updateCategoryOffer);
+admin_route.post('/offers/remove-category-offer',adminController.removeCategoryOffer)
+
+admin_route.get('/sales', adminController.loadSales);
+admin_route.get('/sales/generate-sales-report', adminController.generateSalesReport);
+admin_route.get('/sales/generate-sales-report-excel', adminController.generateSalesReportExcel);
 
 admin_route.get('*', (req, res) => {
     res.redirect('/admin');

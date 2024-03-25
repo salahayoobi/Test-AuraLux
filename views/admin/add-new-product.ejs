@@ -16,9 +16,10 @@
     <!-- Template CSS -->
     <link href="/adminAssets/css/main.css" rel="stylesheet" type="text/css" />
     <style>
-        #productNameError {
+        #productNameError, #productPriceError {
             color: red;
         }
+
         .error-message {
             color: #d9534f
         }
@@ -237,82 +238,103 @@
                                         <%= message %>
                                     </p>
                                     <% } %>
-                                    <br>
-                                <div class="mb-4">
-                                    <label for="productName" class="form-label">Product Name</label>
-                                    <!-- <input type="text" placeholder="Enter Product Name" class="form-control" name="productName"> -->
+                                        <br>
+                                        <div class="mb-4">
+                                            <label for="productName" class="form-label">Product Name</label>
+                                            <!-- <input type="text" placeholder="Enter Product Name" class="form-control" name="productName"> -->
 
-                                    <input type="text" id="productName" name="productName"
-                                        placeholder="Enter Product Name" class="form-control" required
-                                        onblur="validateName(this.value)" onfocus="clearError('nameError')">
-                                    <span id="productNameError" class="error"></span>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="productBrand" class="form-label">Product Brand</label>
-                                    <input type="text" placeholder="Enter Product Brand" class="form-control"
-                                        name="productBrand">
-                                </div>
-                                <div class="mb-4">
-                                    <label for="productDescription" class="form-label">Description</label>
-                                    <input type="text" placeholder="Enter Product Description" class="form-control"
-                                        name="productDescription">
-                                </div>
-                                <div class="mb-4">
-                                    <label for="price" class="form-label">Price</label>
-                                    <input type="number" placeholder="Enter Product Price" class="form-control"
-                                        name="price">
-                                </div>
-                                <div class="col-lg-9">
-                                    <div class="card mb-4">
-                                        <div class="card-header">
-                                            <h4>Product Image</h4>
+                                            <input type="text" id="productName" name="productName"
+                                                placeholder="Enter Product Name" class="form-control" required
+                                                onblur="validateName(this.value)" onfocus="clearError('nameError')">
+                                            <span id="productNameError" class="error"></span>
                                         </div>
-                                        <div class="card-body">
-                                            <div class="input-upload">
-                                                <img src="/adminAssets/imgs/theme/upload.svg" alt="">
-                                                <input type="file" class="form-control" name="image" multiple required>
+                                        <div class="mb-4">
+                                            <label for="productBrand" class="form-label">Product Brand</label>
+                                            <input type="text" placeholder="Enter Product Brand" class="form-control"
+                                                name="productBrand">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="productDescription" class="form-label">Description</label>
+                                            <textarea placeholder="Enter Product Description" class="form-control"
+                                                name="productDescription"></textarea>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="price" class="form-label">Price</label>
+                                            <input type="number" id="productPrice" placeholder="Enter Product Price"
+                                            class="form-control" name="price" min="0"
+                                            onblur="validatePrice(this.value)" onfocus="clearError('priceError')">
+                                            <span id="productPriceError" class="error"></span>
+                                        </div>                                        
+                                        <div class="col-lg-9">
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h4>Product Image</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="image-preview-container">
+                                                        <!-- Image previews will be displayed here -->
+                                                    </div>
+                                                    <div>
+                                                        <input type="file" class="form-control" name="image" id="image1"
+                                                            required>
+                                                    </div>
+                                                    <div>
+                                                        <input type="file" class="form-control" name="image" id="image2"
+                                                            required>
+                                                    </div>
+                                                    <div>
+                                                        <input type="file" class="form-control" name="image" id="image3"
+                                                            required>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="card mb-4">
-                                        <div class="card-header">
-                                            <h4>Organization</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row gx-2">
-                                                <div class="col-sm-6 mb-3">
-                                                    <label class="form-label">Category</label>
-                                                    <!-- <select class="form-select" name="category">
+                                            <div class="mb-4 col-5">
+                                                <label for="stock" class="form-label">Stock</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="stock" id="stock"
+                                                        value="6" style="text-align: center; font-size: 15px;">
+                                                </div>
+                                            </div>
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h4>Organization</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row gx-2">
+                                                        <div class="col-sm-6 mb-3">
+                                                            <label class="form-label">Category</label>
+                                                            <!-- <select class="form-select" name="category">
                                                         <option> Men </option>
                                                         <option> Women </option>
                                                         <option> Unisex </option> -->
-                                                    </select>
-                                                    <select class="form-select" name="category">
-                                                        <% categories.forEach(category=> { %>
-                                                            <option value="<%= category._id %>">
-                                                                <%= category.name %>
-                                                            </option>
-                                                            <% }); %>
-                                                    </select>
+                                                            </select>
+                                                            <select class="form-select" name="category">
+                                                                <% categories.forEach(category=> { %>
+                                                                    <option value="<%= category._id %>">
+                                                                        <%= category.name %>
+                                                                    </option>
+                                                                    <% }); %>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-6 mb-3">
+                                                            <label class="form-label">Sub-category</label>
+                                                            <select class="form-select" name="subCategory">
+                                                                <option> EDT </option>
+                                                                <option> EDP </option>
+                                                            </select>
+                                                        </div>
+                                                    </div> <!-- row.// -->
                                                 </div>
-                                                <div class="col-sm-6 mb-3">
-                                                    <label class="form-label">Sub-category</label>
-                                                    <select class="form-select" name="subCategory">
-                                                        <option> EDT </option>
-                                                        <option> EDP </option>
-                                                    </select>
-                                                </div>
-                                            </div> <!-- row.// -->
+                                            </div> <!-- card end// -->
+                                            <div>
+                                                <button type="submit"
+                                                    class="btn btn-light rounded font-sm mr-5 text-body hover-up">Add
+                                                    Product</button>
+                                            </div>
                                         </div>
-                                    </div> <!-- card end// -->
-                                    <div>
-                                        <button type="submit"
-                                            class="btn btn-light rounded font-sm mr-5 text-body hover-up">Add
-                                            Product</button>
-                                    </div>
-                                </div>
                             </form>
-                            
+
                         </div>
                     </div> <!-- card end// -->
                 </div>
@@ -334,6 +356,24 @@
         </footer>
     </main>
     <script>
+
+        function decrementStock() {
+            const stockInput = document.getElementById('stock');
+            let stock = parseInt(stockInput.value);
+            if (stock > 0) {
+                stock--;
+                stockInput.value = stock;
+            }
+        }
+
+        function incrementStock() {
+            const stockInput = document.getElementById('stock');
+            let stock = parseInt(stockInput.value);
+            stock++;
+            stockInput.value = stock;
+        }
+
+
         function validateName(productName) {
             const productNameError = document.getElementById('productNameError');
             productNameError.textContent = '';
@@ -346,18 +386,59 @@
             return true;
         }
 
+        function validatePrice(productPrice){
+            const productPriceError =  document.getElementById('productPriceError');
+            productPriceError.textContent = '';
+
+            if(!productPrice || productPrice<0){
+                productPriceError.textContent = 'Valid price is required';
+                return false;
+            }
+            return true;
+        }
+
         function clearError(errorId) {
+            document.getElementById(errorId).textContent = '';
             document.getElementById(errorId).textContent = '';
         }
 
         function validateForm() {
             const productName = document.getElementById('productName').value;
+            const productPrice = document.getElementById('productPrice').value;
 
-            if (!validateName(productName)) {
+
+            if (!validateName(productName) || !validatePrice(productPrice)) {
                 return false;
             }
             return true;
         }
+
+        // Function to handle file input change and display image preview
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const imagePreview = document.createElement('img');
+                imagePreview.src = reader.result;
+                imagePreview.style.maxWidth = '50%';
+                imagePreview.style.height = 'auto';
+
+                // Create container for image preview and file input field
+                const container = document.createElement('div');
+                container.className = 'image-container';
+                container.appendChild(imagePreview);
+
+                // Insert container immediately after the file input field
+                event.target.parentNode.insertBefore(container, event.target.nextSibling);
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Adding event listeners for file input fields
+        document.getElementById('image1').addEventListener('change', previewImage);
+        document.getElementById('image2').addEventListener('change', previewImage);
+        document.getElementById('image3').addEventListener('change', previewImage);
+
+
     </script>
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>

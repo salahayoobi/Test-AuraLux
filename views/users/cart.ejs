@@ -102,10 +102,12 @@
                         <div class="header-action-right">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
-                                    <a href="shop-wishlist.html">
+                                    <a href="/home/wishlist">
                                         <img class="svgInject" alt="Evara"
                                             src="/assets/imgs/theme/icons/icon-heart.svg">
-                                        <span class="pro-count blue">4</span>
+                                        <span class="pro-count blue">
+                                            <%= wishlist.items.length %>
+                                        </span>
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
@@ -838,31 +840,42 @@
                                                             <%= cart.items[i].productId.category.name %>
                                                     </p>
                                                 </td>
-                                                <td class="price" data-title="Price"><span>₹<%= cart.items[i].unitPrice
-                                                            %> </span></td>
-                                                <td class="text-center" data-title="Stock">
-                                                    <div class="detail-qty border radius m-auto">
-                                                        <a href="#" class="qty-down"
-                                                            onclick="updateQuantity('<%= cart.items[i].productId._id %>', <%= cart.items[i].quantity - 1 %>)">
-                                                            <i class="fi-rs-angle-small-down"></i>
-                                                        </a>
-                                                        <span class="qty-val">
-                                                            <%= cart.items[i].quantity %>
-                                                        </span>
-                                                        <a href="#" class="qty-up"
-                                                            onclick="updateQuantity('<%= cart.items[i].productId._id %>', <%= cart.items[i].quantity + 1 %>)">
-                                                            <i class="fi-rs-angle-small-up"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                                <td class="text-right" data-title="Cart"><span>₹<%= cart.items[i].price
-                                                            %> </span></td>
-                                                <td class="action" data-title="Remove">
-                                                    <a href="#" class="text-muted"
-                                                        onclick="removeCartItem('<%= cart.items[i].productId._id %>')">
-                                                        <i class="fi-rs-trash"></i>
-                                                    </a>
-                                                </td>
+                                                <% if(cart.items[i].productId.price> cart.items[i].productId.offerPrice
+                                                    ){ %>
+                                                    <td class="text-right" data-title="Cart">
+                                                        <p style="font-weight: 600;">₹<%= cart.items[i].price %>
+                                                        </p>
+                                                        <del><span>₹<%= cart.items[i].productId.price %> </span></del>
+                                                    </td>
+                                                    <% } else { %>
+                                                        <td class="text-right" data-title="Cart">
+                                                            <span>₹<%= cart.items[i].price %> </span>
+                                                        </td>
+                                                        <% } %>
+
+                                                            <td class="text-center" data-title="Stock">
+                                                                <div class="detail-qty border radius m-auto">
+                                                                    <a href="#" class="qty-down"
+                                                                        onclick="updateQuantity('<%= cart.items[i].productId._id %>', <%= cart.items[i].quantity - 1 %>)">
+                                                                        <i class="fi-rs-angle-small-down"></i>
+                                                                    </a>
+                                                                    <span class="qty-val">
+                                                                        <%= cart.items[i].quantity %>
+                                                                    </span>
+                                                                    <a href="#" class="qty-up"
+                                                                        onclick="updateQuantity('<%= cart.items[i].productId._id %>', <%= cart.items[i].quantity + 1 %>)">
+                                                                        <i class="fi-rs-angle-small-up"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-right" data-title="Cart"><span>₹<%=
+                                                                        cart.items[i].price %> </span></td>
+                                                            <td class="action" data-title="Remove">
+                                                                <a href="#" class="text-muted"
+                                                                    onclick="removeCartItem('<%= cart.items[i].productId._id %>')">
+                                                                    <i class="fi-rs-trash"></i>
+                                                                </a>
+                                                            </td>
                                             </tr>
                                             <% } %>
                                                 <% } else { %>
@@ -1172,15 +1185,18 @@
                                     <div class="total-amount">
                                         <div class="left">
                                             <div class="coupon">
-                                                <form action="#" target="_blank">
+                                                <form action="#">
                                                     <div class="form-row row justify-content-center">
                                                         <div class="form-group col-lg-6">
-                                                            <input class="font-medium" name="Coupon"
+                                                            <input id="couponInput" class="font-medium" name="coupon"
                                                                 placeholder="Enter Your Coupon">
                                                         </div>
                                                         <div class="form-group col-lg-6">
-                                                            <button class="btn  btn-sm"><i
+                                                            <button id="applyCouponBtn" class="btn btn-sm"><i
                                                                     class="fi-rs-label mr-10"></i>Apply</button>
+                                                                    <button id="removeCouponBtn" class="btn btn-sm" style="display: none;"><i
+                                                                        class="fi-rs-label mr-10"></i>Remove</button>
+                                                            
                                                         </div>
                                                     </div>
                                                 </form>
@@ -1199,22 +1215,46 @@
                                             <tbody>
                                                 <tr>
                                                     <td class="cart_total_label">Cart Subtotal</td>
-                                                    <td class="cart_total_amount"><span
-                                                            class="font-lg fw-900 text-brand">₹<%= cart.totalPrice %>
-                                                        </span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="cart_total_label">Shipping</td>
-                                                    <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free
-                                                        Shipping</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="cart_total_label">Total</td>
-                                                    <td class="cart_total_amount"><strong><span
-                                                                class="font-xl fw-900 text-brand">₹<%= cart.totalPrice
-                                                                    %></span></strong>
+                                                    <td class="cart_total_amount">
+                                                        <span class="font-lg fw-900 text-brand">
+                                                            ₹<%= calculateTotalPrice(cart.items) %>
+                                                        </span>
                                                     </td>
                                                 </tr>
+                                                <% function calculateTotalPrice(items) { %>
+                                                    <% let totalPrice=0; %>
+                                                        <% for (let i=0; i < items.length; i++) { %>
+                                                            <% totalPrice +=items[i].price; %>
+                                                                <% } %>
+                                                                    <% return totalPrice; %>
+                                                                        <% } %>
+
+                                                                            <tr>
+                                                                                <td class="cart_total_label">Shipping
+                                                                                </td>
+                                                                                <td class="cart_total_amount"> <i
+                                                                                        class="ti-gift mr-5"></i> Free
+                                                                                    Shipping</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="cart_total_label">Coupon
+                                                                                    Discount</td>
+                                                                                <td
+                                                                                    class="cart_total_amount coupon_discount_amount">
+                                                                                    <i class="ti-gift mr-5"></i> ₹<%=
+                                                                                        cart.totalPrice %>
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td class="cart_total_label">Total</td>
+                                                                                <td class="cart_total_amount">
+                                                                                    <strong><span
+                                                                                            class="font-xl fw-900 text-brand">₹
+                                                                                            <%= cart.totalPrice %>
+                                                                                        </span></strong>
+                                                                                </td>
+                                                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -1454,12 +1494,28 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        // Update UI based on response
-                        window.location.reload();
-                        document.querySelector(`#item-${productId} .qty-val`).innerText = data.quantity;
-                        document.querySelector(`#item-${productId} .text-right span`).innerText = `₹${data.price}`; // Update item price
-                        document.querySelector('.cart_total_amount .font-lg').innerText = `₹${data.totalPrice}`; // Update total price
-                        document.querySelector('.cart_total_amount .font-xl').innerText = `₹${data.totalPrice}`; // Update total price
+                        if (data.error) {
+                            // Show SweetAlert if there is an error
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.error,
+                                confirmButtonText: 'OK',
+                                allowOutsideClick: false // Prevent closing the alert by clicking outside
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Reload the page only if user confirms
+                                    window.location.reload();
+                                }
+                            });
+
+                        } else {
+                            window.location.reload();
+                            document.querySelector(`#item-${productId} .qty-val`).innerText = data.quantity;
+                            document.querySelector(`#item-${productId} .text-right span`).innerText = `₹${data.price}`; // Update item price
+                            document.querySelector('.cart_total_amount .font-lg').innerText = `₹${data.totalPrice}`; // Update total price
+                            document.querySelector('.cart_total_amount .font-xl').innerText = `₹${data.totalPrice}`; // Update total price
+                        }
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -1520,6 +1576,109 @@
             });
         }
 
+        document.getElementById('applyCouponBtn').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Get the coupon code from the input field
+    const couponCodeInput = document.getElementById('couponInput');
+    const couponCode = couponCodeInput.value.trim();
+
+    // Check if coupon code is empty
+    if (!couponCode) {
+        Swal.fire({
+            title: "Coupon Code Required",
+            text: "Please enter a coupon code.",
+            icon: "error"
+        });
+        return;
+    }
+
+    // Send fetch request to apply coupon
+    fetch('/cart/apply-coupon', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ couponCode: couponCode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update total price on the page
+        document.querySelector('.cart_total_amount .font-xl').innerText = `₹${data.updatedTotal}`;
+        document.querySelector('.cart_total_amount.coupon_discount_amount').innerText = `₹${data.discountPrice}`;
+        const applyButton = document.getElementById('applyCouponBtn');
+        const removeButton = document.getElementById('removeCouponBtn');
+        if (data.discountPrice) {
+        // If coupon is applied, show the Remove button and hide the Apply button
+        removeButton.style.display = 'inline-block';
+        applyButton.style.display = 'none';
+    } else {
+        // If no coupon is applied, show the Apply button and hide the Remove button
+        applyButton.style.display = 'inline-block';
+        removeButton.style.display = 'none';
+    }
+        // Show success message
+        Swal.fire({
+            title: "Coupon Applied!",
+            text: "Your coupon has been applied successfully.",
+            icon: "success"
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Show error message
+        Swal.fire({
+            title: "Error",
+            text: "An error occurred while applying the coupon.",
+            icon: "error"
+        });
+    });
+
+    // Retain the entered coupon value in the input field
+    couponCodeInput.value = couponCode;
+});
+
+
+    // Get a reference to the Remove button
+const removeButton = document.getElementById('removeCouponBtn');
+
+// Add event listener to the Remove button
+removeButton.addEventListener('click', function() {
+    // Send fetch request to remove coupon
+    fetch('/cart/remove-coupon', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // If the coupon is removed successfully, update UI accordingly
+            updateUI({ couponApplied: false }); // Assuming coupon is no longer applied
+            Swal.fire({
+                title: "Coupon Removed",
+                text: "Your coupon has been removed successfully.",
+                icon: "success"
+            });
+        } else {
+            // If there's an error, display error message
+            Swal.fire({
+                title: "Error",
+                text: "Failed to remove coupon.",
+                icon: "error"
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Show error message
+        Swal.fire({
+            title: "Error",
+            text: "An error occurred while removing the coupon.",
+            icon: "error"
+        });
+    });
+});
 
     </script>
 

@@ -515,13 +515,36 @@
                     <p>Details for Order ID: <%= order._id %>
                     </p>
                 </div>
+                <div class="order-status" style="margin-right: 20px;">
+                    <p style="color: black; padding: 5px; background-color: <%= getStatusColor(order.status) %>; border-radius: 10%;"><%= order.status %></p>
+                </div>
+                <%
+                                                                    function getStatusColor(status) {
+                                                                        switch (status) {
+                                                                            case 'Pending':
+                                                                                return 'orange';
+                                                                            case 'Processing':
+                                                                                return 'yellow';
+                                                                            case 'Shipped':
+                                                                                return 'lightblue';
+                                                                            case 'Delivered':
+                                                                                return 'green';
+                                                                            case 'Cancelled':
+                                                                                return 'red';
+                                                                            case 'Returned':
+                                                                                return 'purple';
+                                                                            default:
+                                                                                return 'white'; // Default color
+                                                                        }
+                                                                    }
+                                                                    %>
             </div>
             <div class="card">
                 <header class="card-header">
                     <div class="row align-items-center">
                         <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                             <span>
-                                <i class="material-icons md-calendar_today"></i> <b><%= new Date(order.createdAt).toLocaleString() %></b>
+                                <i class=   "material-icons md-calendar_today"></i> <b><%= new Date(order.createdAt).toLocaleString() %></b>
                             </span> <br>    
                             <!-- <small class="text-muted">Order ID: </small> -->
                         </div>
@@ -533,9 +556,9 @@
                                 <option>Shipped</option>
                                 <option>Delivered</option>
                             </select>
-                            <a class="btn btn-primary" href="#">Save</a>
-                            <a class="btn btn-secondary print ms-2" href="#"><i
-                                    class="icon material-icons md-print"></i></a>
+                            <% if(order.status === "Delivered") { %>
+                                <a class="btn btn-primary" id="downloadInvoiceBtn" href="#">Download Invoice</a>
+                            <% } %>
                         </div>
                     </div>
                 </header> <!-- card-header end// -->
@@ -809,6 +832,33 @@
         </div>
     </div>
 
+
+    <script>
+        document.getElementById('downloadInvoiceBtn').addEventListener('click', async () => {
+        const orderId = <%- JSON.stringify(order._id) %> ;
+
+        try {
+            const response = await fetch(`/account/order-details/generate-invoice?orderId=${orderId}`);
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'invoice.pdf'; // Excel file extension
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                console.error('Failed to generate invoice');
+                alert('Failed to generate generate invoice');
+            }
+        } catch (error) {
+            console.error('Error generating generate invoice:', error);
+            alert('Error generating generate invoice');
+        }
+    });
+
+    </script>
 
     <!-- Vendor JS-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

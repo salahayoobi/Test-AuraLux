@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Invoice - <%= order._id %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        .address {
+            margin-bottom: 20px;
+        }
+
+        .product-details {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        .total {
+            margin-top: 20px;
+            margin-right: 100px;
+            text-align: right;
+        }
+
+        .total dt {
+            font-weight: bold;
+        }
+
+        .status {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Invoice</h1>
+            <h2>Order ID: <%= order._id %></h2>
+        </div>
+        <div class="address">
+            <h3>Billing Address</h3>
+            <p>
+                City: <%= order.billingAddressId.street %>, <%= order.billingAddressId.city %> <br>
+                <%= order.billingAddressId.state %>, <%= order.billingAddressId.country %> <br>
+                Pin: <%= order.billingAddressId.postalCode %>
+            </p>
+        </div>
+        <div class="address">
+            <h3>Shipping Address</h3>
+            <p>
+                City: <%= order.addressId.street %>, <%= order.addressId.city %> <br>
+                <%= order.addressId.state %>, <%= order.addressId.country %> <br>
+                Pin: <%= order.addressId.postalCode %>
+            </p>
+        </div>
+        <div class="product-details">
+            <h3>Product Details</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% order.items.forEach(item=> { %>
+                    <tr>
+                        <td>
+                            <%= item.productId.productName %>
+                        </td>
+                        <td>₹<%= item.unitPrice %></td>
+                        <td><%= item.quantity %></td>
+                        <td>₹<%= item.price %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <div class="total">
+            <dl class="dlist">
+                <dt>Subtotal:</dt>
+                <dd>₹<%= order.totalPrice %></dd>
+            </dl>
+            <dl class="dlist">
+                <dt>Shipping cost:</dt>
+                <dd>₹0.00</dd>
+            </dl>
+            <dl class="dlist">
+                <dt>Grand total:</dt>
+                <dd><b>₹<%= order.totalPrice %></b></dd>
+            </dl>
+        </div>
+        <div class="status">
+            <span class="badge rounded-pill alert-success text-success">Thank You</span>
+        </div>
+    </div>
+</body>
+
+</html>

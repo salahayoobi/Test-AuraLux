@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Sales Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .summary-item {
+            flex: 0 1 calc(33.33% - 20px);
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .summary-item i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .summary-item p {
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .report-duration {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span style="color: rgb(8, 129, 120);">Aura</span><span style="color: black;">Lux</span></h1>
+            <h2>Sales Report</h2>
+            <div class="report-duration">
+                <p>Report Duration: <%= startDate %> to <%= endDate %>
+                </p>
+            </div>
+        </div>
+        <div class="summary">
+            <div class="summary-item">
+                <i class="fas fa-chart-line"></i>
+                <p>Total Sales: ₹<%= totalSales %>
+                </p>
+            </div>
+            <div class="summary-item">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Total Orders: <%= totalOrders %>
+                </p>
+            </div>
+            <div class="summary-item">
+                <i class="fas fa-check-circle"></i>
+                <p>Delivered Orders: <%= deliveredOrders %>
+                </p>
+            </div>
+            <div class="summary-item">
+                <i class="fas fa-times-circle"></i>
+                <p>Cancelled Orders: <%= cancelledOrders %>
+                </p>
+            </div>
+            <div class="summary-item">
+                <i class="fas fa-undo"></i>
+                <p>Returned Orders: <%= returnedOrders %>
+                </p>
+            </div>
+            <div class="summary-item">
+                <i class="fas fa-rupee-sign"></i>
+                <p>Average Order Value: ₹<%= averageOrderValue %></p>
+            </div>            
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Email</th>
+                    <th>Order Date</th>
+                    <th>Total Price (₹)</th>
+                    <th>Payment Mode</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(order=> { %>
+                    <tr>
+                        <td>
+                            <%= order._id %>
+                        </td>
+                        <td>
+                            <%= order.userId.name %>
+                        </td>
+                        <td>
+                            <%= order.userId.email %>
+                        </td>
+                        <td>
+                            <%= order.createdAt.toDateString() %>
+                        </td>
+                        <td>
+                            <%= order.totalPrice %>
+                        </td>
+                        <td>
+                            <%= order.paymentMethod %>
+                        </td>
+                        <td>
+                            <%= order.status %>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+        <div class="total">
+            <p>Total Sales: ₹<%= totalSales %>
+            </p>
+            <p>Total Orders: <%= totalOrders %>
+            </p>
+            <p>Delivered Orders: <%= deliveredOrders %>
+            </p>
+            <p>Cancelled Orders: <%= cancelledOrders %>
+            </p>
+            <p>Returned Orders: <%= returnedOrders %>
+            </p>
+            <p>Average Order Value: ₹<%= averageOrderValue %>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

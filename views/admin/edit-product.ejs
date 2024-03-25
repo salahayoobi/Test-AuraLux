@@ -15,6 +15,16 @@
     <link rel="shortcut icon" type="image/x-icon" href="/adminAssets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/adminAssets/css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        .image-preview img {
+            max-width: 50%;
+            height: auto;
+        }
+        #productNameError, #productPriceError {
+            color: red;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -25,7 +35,8 @@
                 <img src="/adminAssets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
             </a>
             <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
             </div>
         </div>
         <nav>
@@ -36,7 +47,8 @@
                     </a>
                 </li>
                 <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-shopping_bag"></i>
+                    <a class="menu-link" href="page-products-list.html"> <i
+                            class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
                     <div class="submenu">
@@ -55,7 +67,7 @@
                         <a href="page-orders-2.html">Order list 2</a>
                         <a href="page-orders-detail.html">Order detail</a>
                         <a href="page-orders-tracking.html">Order tracking</a>
-<a href="page-invoice.html">Invoice</a>
+                        <a href="page-invoice.html">Invoice</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
@@ -80,7 +92,8 @@
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
+                    <a class="menu-link" href="page-transactions-1.html"> <i
+                            class="icon material-icons md-monetization_on"></i>
                         <span class="text">Transactions</span>
                     </a>
                     <div class="submenu">
@@ -141,7 +154,8 @@
                 <form class="searchform">
                     <div class="input-group">
                         <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                        <button class="btn btn-light bg" type="button"> <i
+                                class="material-icons md-search"></i></button>
                     </div>
                     <datalist id="search_terms">
                         <option value="Products">
@@ -152,7 +166,8 @@
                 </form>
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
+                        class="material-icons md-apps"></i> </button>
                 <ul class="nav">
                     <li class="nav-item">
                         <a class="nav-link btn-icon" href="#">
@@ -161,30 +176,44 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
                     </li>
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage"
+                            aria-expanded="false"><i class="material-icons md-public"></i></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                            <a class="dropdown-item text-brand" href="#"><img src="/adminAssets/imgs/theme/flag-us.png" alt="English">English</a>
-                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-fr.png" alt="Français">Français</a>
-                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
-                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
+                            <a class="dropdown-item text-brand" href="#"><img src="/adminAssets/imgs/theme/flag-us.png"
+                                    alt="English">English</a>
+                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-fr.png"
+                                    alt="Français">Français</a>
+                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-jp.png"
+                                    alt="Français">日本語</a>
+                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-cn.png"
+                                    alt="Français">中国人</a>
                         </div>
                     </li>
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/adminAssets/imgs/people/avatar2.jpg" alt="User"></a>
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                            aria-expanded="false"> <img class="img-xs rounded-circle"
+                                src="/adminAssets/imgs/people/avatar2.jpg" alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit
+                                Profile</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
+                                Settings</a>
+                            <a class="dropdown-item" href="#"><i
+                                    class="material-icons md-account_balance_wallet"></i>Wallet</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help
+                                center</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <a class="dropdown-item text-danger" href="#"><i
+                                    class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
                 </ul>
@@ -203,26 +232,35 @@
                             <h4>Basic</h4>
                         </div>
                         <div class="card-body">
-                            <form action="/admin/page-products-list/edit-product?id=<%= product._id %>" method="post" enctype="multipart/form-data">
+                            <form action="/admin/page-products-list/edit-product?id=<%= product._id %>" method="post"
+                                enctype="multipart/form-data" onsubmit="return validateForm()">
                                 <div class="mb-4">
                                     <label for="productName" class="form-label">Product Name</label>
-                                    <input type="text" placeholder="Enter Product Name" class="form-control" name="productName" value="<%= product.productName %>">
+                                    <input type="text" id="productName" placeholder="Enter Product Name" class="form-control"
+                                        name="productName" value="<%= product.productName %>"
+                                        onblur="validateName(this.value)" onfocus="clearError('nameError')">
+                                    <span id="productNameError" class="error"></span>
                                 </div>
                                 <div class="mb-4">
                                     <label for="productBrand" class="form-label">Product Brand</label>
-                                    <input type="text" placeholder="Enter Product Brand" class="form-control" name="productBrand" value="<%= product.productBrand %>">
+                                    <input type="text" placeholder="Enter Product Brand" class="form-control"
+                                        name="productBrand" value="<%= product.productBrand %>">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="productDescription"  class="form-label">Description</label>
-                                    <input type="text" placeholder="Enter Product Description" class="form-control" name="productDescription" value="<%= product.description %>">
+                                    <label for="productDescription" class="form-label">Description</label>
+                                    <textarea type="text" placeholder="Enter Product Description" class="form-control"
+                                        name="productDescription"><%= product.description %></textarea>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="price"  class="form-label">Price</label>
-                                    <input type="number" placeholder="Enter Product Price" class="form-control" name="price" value="<%= product.price %>">
+                                    <label for="price" class="form-label">Price</label>
+                                    <input type="number" id="productPrice" placeholder="Enter Product Price" class="form-control"
+                                        name="price" min="0" value="<%= product.price %>"
+                                        onblur="validatePrice(this.value)" onfocus="clearError('priceError')">
+                                    <span id="productPriceError" class="error"></span>
                                 </div>
                                 <input type="hidden" name="productId" value="<%= product._id %>">
                                 <div class="col-lg-9">
-                                    <div class="card mb-4">
+                                    <!-- <div class="card mb-4">
                                         <div class="card-header">
                                             <h4>Product Image</h4>
                                         </div>
@@ -231,6 +269,34 @@
                                                 <img src="/adminAssets/imgs/theme/upload.svg" alt="">
                                                 <input type="file" class="form-control" name="image" multiple required>
                                             </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="card mb-4">
+                                        <div class="card mb-4">
+                                            <div class="card-header">
+                                                <h4>Product Images</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <!-- Image previews container -->
+                                                <div id="image-preview-container">
+                                                    <% product.image.forEach((image, index)=> { %>
+                                                        <div class="image-preview">
+                                                            <img src="/productImages/<%= image %>" alt="Product Image">
+                                                            <input type="file" class="form-control"
+                                                                name="image<%= index + 1 %>" accept="image/*"
+                                                                onchange="updatePreview(this)">
+                                                        </div>
+                                                        <% }); %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4 col-5">
+                                        <label for="stock" class="form-label">Stock</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="stock" id="stock"
+                                                value="<%= product.stock %>"
+                                                style="text-align: center; font-size: 15px;">
                                         </div>
                                     </div>
                                     <div class="card mb-4">
@@ -242,23 +308,37 @@
                                                 <div class="col-sm-6 mb-3">
                                                     <label class="form-label">Category</label>
                                                     <select class="form-select" name="category">
-                                                        <% categories.forEach(category => { %>
-                                                            <option value="<%= category._id %>"><%= category.name %></option>
+                                                        <% categories.forEach(category=> { %>
+                                                            <option value="<%= category._id %>" <%= product.category && product.category._id.equals(category._id) ? 'selected' : '' %>>
+                                                                <%= category.name %>
+                                                            </option>
                                                         <% }); %>
                                                     </select>
                                                 </div>
+                                                
                                                 <div class="col-sm-6 mb-3">
                                                     <label class="form-label">Sub-category</label>
                                                     <select class="form-select" name="subCategory">
-                                                        <option> EDT </option>
-                                                        <option> EDP </option>
+                                                        <% if (product.subCategory === 'EDT') { %>
+                                                            <option value="EDT" selected>EDT</option>
+                                                            <option value="EDP">EDP</option>
+                                                        <% } else if (product.subCategory === 'EDP') { %>
+                                                            <option value="EDT">EDT</option>
+                                                            <option value="EDP" selected>EDP</option>
+                                                        <% } else { %>
+                                                            <option value="EDT">EDT</option>
+                                                            <option value="EDP">EDP</option>
+                                                        <% } %>
                                                     </select>
                                                 </div>
+                                                
                                             </div> <!-- row.// -->
                                         </div>
                                     </div> <!-- card end// -->
                                     <div>
-                                        <button type="submit" class="btn btn-light rounded font-sm mr-5 text-body hover-up">Update Product</button>
+                                        <button type="submit"
+                                            class="btn btn-light rounded font-sm mr-5 text-body hover-up">Update
+                                            Product</button>
                                     </div>
                                 </div>
                             </form>
@@ -271,7 +351,7 @@
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
                     <script>
-                    document.write(new Date().getFullYear())
+                        document.write(new Date().getFullYear())
                     </script> ©, Evara - HTML Ecommerce Template .
                 </div>
                 <div class="col-sm-6">
@@ -281,7 +361,80 @@
                 </div>
             </div>
         </footer>
+        <script>
+
+            function decrementStock() {
+                const stockInput = document.getElementById('stock');
+                let stock = parseInt(stockInput.value);
+                if (stock > 0) {
+                    stock--;
+                    stockInput.value = stock;
+                }
+            }
+
+            function incrementStock() {
+                const stockInput = document.getElementById('stock');
+                let stock = parseInt(stockInput.value);
+                stock++;
+                stockInput.value = stock;
+            }
+
+            // Function to update image preview
+            function updatePreview(input, index) {
+                const preview = input.previousElementSibling;
+                const file = input.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+            function validateName(productName) {
+            const productNameError = document.getElementById('productNameError');
+            productNameError.textContent = '';
+
+            // Validation for name
+            if (!productName || !productName.trim()) {
+                productNameError.textContent = 'Valid name is required';
+                return false;
+            }
+            return true;
+        }
+
+        function validatePrice(productPrice){
+            const productPriceError =  document.getElementById('productPriceError');
+            productPriceError.textContent = '';
+
+            if(!productPrice || productPrice<0){
+                productPriceError.textContent = 'Valid price is required';
+                return false;
+            }
+            return true;
+        }
+
+        function clearError(errorId) {
+            document.getElementById(errorId).textContent = '';
+            document.getElementById(errorId).textContent = '';
+        }
+
+        function validateForm() {
+            const productName = document.getElementById('productName').value;
+            const productPrice = document.getElementById('productPrice').value;
+
+
+            if (!validateName(productName) || !validatePrice(productPrice)) {
+                return false;
+            }
+            return true;
+        }
+
+        </script>
+
     </main>
+
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/js/vendors/select2.min.js"></script>
