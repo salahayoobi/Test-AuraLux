@@ -42,6 +42,11 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 6
+    },
+    unitSold: {
+        type: Number,
+        requried: true,
+        default: 6
     }
 
 });

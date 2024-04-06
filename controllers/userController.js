@@ -68,43 +68,6 @@ const loadRegister = async (req, res) => {
 
 }
 
-
-// const insertUser = async (req, res) => {
-//     try {
-//         const spassword = await securePassword(req.body.password);
-//         const user = new User({
-//             name: req.body.name,
-//             email: req.body.email,
-//             mobile: req.body.mobile,
-//             password: spassword,
-//             is_blocked: 0,
-//             is_admin: 0
-
-//         });
-//         const userData = await user.save();
-
-//         if (userData) {
-//             sendVerifyMail(req.body.name, req.body.email, userData._id)
-//             res.render('registration', { message: "Succesfully Registered, Please verify your Email" });
-//         } else {
-//             res.render('registration', { message: "Registration Failed" });
-//         }
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
-
-// const verifyMail = async (req, res) => {
-//     try {
-//         const updateInfo = await User.updateOne({ _id: req.query.id }, { $set: { is_verified: 1 } });
-//         console.log(updateInfo);
-//         res.render("email-verified");
-//     } catch (error) {
-//         console.log(error.message);
-
-//     }
-// }
-
 // **********************AuraLux***************************
 
 const generateOtp = async (req, res) => {
@@ -157,9 +120,6 @@ const generateOtp = async (req, res) => {
         expirationTime.setMinutes(expirationTime.getMinutes() + 2); // OTP expires after 2 minutes
         req.session.registerSession = { name, email, password, mobile, userName, password, otp, expirationTime };
 
-        // Render the OTP verification page with user details and OTP
-        console.log('Variables:', req.body.name, req.body.email, req.body.mobile, req.body.password, otp);
-        console.log('Entered OTP:', otp);
         res.render('verify-otp');
     } catch (error) {
         console.log(error.message);
@@ -173,16 +133,11 @@ const verifyOtp = async (req, res) => {
         const sessionOtp = req.session.registerSession.otp;
         const expirationTime = new Date(req.session.registerSession.expirationTime);
 
-        console.log('Entered OTP:', enteredOtp);
-        console.log('Session OTP:', sessionOtp);
-
-        // Check if the OTP has expired
         if (expirationTime < new Date()) {
             return res.render('verify-otp', { message: 'OTP has expired', ...req.body });
         }
 
         if (enteredOtp === sessionOtp) {
-            // Save user details to the database
             const spassword = await securePassword(req.session.registerSession.password);
             const user = new User({
                 name: req.session.registerSession.name,
@@ -192,7 +147,7 @@ const verifyOtp = async (req, res) => {
                 password: spassword,
                 is_blocked: 0,
                 is_admin: 0,
-                is_verified: 1, // Mark the user as verified
+                is_verified: 1,
             });
 
             const userData = await user.save();
@@ -237,7 +192,7 @@ const sendVerifyOtp = async (name, email) => {
         const info = await transporter.sendMail(mailOptions);
         console.log("Email has been sent:", info.response);
 
-        return { otp, name, email }; // Return the OTP so that it can be used for verification on the server side
+        return { otp, name, email };
     } catch (error) {
         console.error(error.message);
         throw new Error("Error sending OTP via email");
@@ -252,7 +207,6 @@ const resendOtp = async (req, res) => {
         const expirationTime = new Date();
         expirationTime.setMinutes(expirationTime.getMinutes() + 2);
         req.session.registerSession.expirationTime = expirationTime
-        // Update the session with the new OTP
         req.session.registerSession.otp = otp;
 
         res.status(200).json({ message: 'OTP resent successfully' });
@@ -306,19 +260,15 @@ const sendEmailOtp = async (email) => {
 
 const verifyEmailOtp = async (req, res) => {
     try {
-        const userEmail = req.body.email.trim();
-        console.log(userEmail);
+        const userEmail = req.body.email.trim();;
         const userExists = await User.findOne({ email: userEmail });
-        console.log(userExists);
         if (userExists) {
-            console.log("Hellooo");
             const { otp, email } = await sendEmailOtp(userEmail);
             res.render('reset-password', {
                 email,
-                generatedOtp: otp, // Pass the generated OTP to the view
+                generatedOtp: otp,
             });
         } else {
-            // Render 'forgot-password' view when the user doesn't exist
             return res.render('forgot-password', { message: 'User not found', ...req.body });
         }
     } catch (error) {
@@ -330,9 +280,6 @@ const resetPassword = async (req, res) => {
     try {
         const enteredOtp = req.body.otp;
         const generatedOtp = req.body.generatedOtp;
-        console.log(enteredOtp);
-        console.log(generatedOtp);
-        console.log(req.body.email);
         const newPassword = req.body.password;
         const confirmNewPassword = req.body.confirmPassword
 
@@ -369,7 +316,6 @@ const verifyLogin = async (req, res) => {
     try {
         const userName = req.body.userName;
         const password = req.body.password;
-        // const userData = await User.findOne({ email: email });
         const userData = await User.findOne({
             $or: [
                 { email: userName },
@@ -423,70 +369,6 @@ const loadHome = async (req, res) => {
     }
 }
 
-// *************************************JWT**********************************************
-
-// const verifyLogin = async (req, res) => {
-//     try {
-//         const userName = req.body.userName;
-//         const password = req.body.password;
-
-//         const userData = await User.findOne({
-//             $or: [
-//                 { email: userName },
-//                 { userName: userName }
-//             ]
-//         });
-
-//         if (userData) {
-//             const passwordMatch = await bcrypt.compare(password, userData.password);
-
-//             if (passwordMatch) {
-//                 if (userData.is_verified === 0) {
-//                     res.render('login', { message: "Please verify your email." });
-//                 } else {
-//                     const token = jwt.sign({ userId: userData._id, username: userData.userName }, secretKey, { expiresIn: '1h' });
-//                     res.json({ token });
-//                 }
-//             } else {
-//                 res.render('login', { message: "Email and password incorrect" });
-//             }
-//         } else {
-//             res.render('login', { message: "Email and password incorrect" });
-//         }
-
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// }
-
-// const loadHome = async (req, res) => {
-//     try {
-//         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-
-//         if (!token) {
-//             return res.status(401).json({ error: 'Unauthorized' });
-//         }
-
-//         jwt.verify(token, secretKey, (err, decoded) => {
-//             if (err) {
-//                 return res.status(401).json({ error: 'Unauthorized' });
-//             } else {
-//                 const userId = decoded.userId;
-//                 User.findById(userId, (err, userData) => {
-//                     if (err || !userData) {
-//                         return res.status(401).json({ error: 'Unauthorized' });
-//                     } else {
-//                         res.render('home', { user: userData });
-//                     }
-//                 });
-//             }
-//         });
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// }
 
 const userLogout = async (req, res) => {
     try {
@@ -529,12 +411,15 @@ const updateProfile = async (req, res) => {
 const loadProductDetails = async (req, res) => {
     try {
         const id = req.query.id;
+        const isUserLogin = req.session.user_id;
         const productDetail = await Product.findById(id).populate('category');
+        if (!productDetail) {
+            return res.render('page404', { isUserLogin });
+        }
         const userId = req.session.user_id;
 
         let wishlist = await Wishlist.findOne({ userId }).populate('items.productId');
         const isWishlisted = wishlist && wishlist.items.some(item => item.productId.equals(id));
-        console.log(isWishlisted)
 
         const cartData = await Cart.findOne({ userId })
             .populate({
@@ -544,11 +429,8 @@ const loadProductDetails = async (req, res) => {
                     model: 'Category'
                 }
             });
-        const isUserLogin = req.session.user_id;
-
-        if (!productDetail) {
-            return res.render('page404', { isUserLogin });
-        }
+        
+        
 
         if (!productDetail.category) {
             return res.status(500).send('Product category is missing');
@@ -574,6 +456,7 @@ const loadPage404 = async (req, res) => {
 const loadUserAccount = async (req, res) => {
     try {
         const userId = req.session.user_id;
+        const wishlist = await Wishlist.findOne({ userId }).populate('items.productId');
         const userDetails = await User.findById(userId).populate('addresses');
         const orders = await Order.find({ userId }).sort({ createdAt: -1 }).populate('items.productId');
         const coupons = await Coupons.find({ isActive: true });
@@ -585,7 +468,7 @@ const loadUserAccount = async (req, res) => {
                     model: 'Category'
                 }
             });
-        res.render('user-account', { user: userDetails, orders: orders, cart: cartData, redirectToAddress: req.query.redirectToAddress, coupons });
+        res.render('user-account', {wishlist, user: userDetails, orders: orders, cart: cartData, redirectToAddress: req.query.redirectToAddress, coupons });
     } catch (error) {
         console.log(error.message);
     }
@@ -603,12 +486,8 @@ const addAddress = async (req, res) => {
         });
         const userAddress = await address.save();
         if (userAddress) {
-            console.log(userAddress);
             await User.findByIdAndUpdate(req.session.user_id, { $push: { addresses: userAddress._id } });
             const userData = await User.findById(req.session.user_id).populate('addresses');
-            // console.log(userData.addresses[0].street);
-            console.log(userData);
-            // Redirect the user back to the same page with the appropriate query parameter
             res.redirect('/account?redirectToAddress=true');
         }
     } catch (error) {
@@ -661,11 +540,10 @@ const editAccountDetails = async (req, res) => {
         const userId = req.session.user_id;
         const { email, mobile } = req.body;
 
-        // Update the email and mobile fields in the user document
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { email: email, mobile: mobile },
-            { new: true } // To return the updated document
+            { new: true }
         );
         if (updatedUser) {
             res.redirect('/account');
@@ -681,22 +559,18 @@ const editAccountDetails = async (req, res) => {
 
 const changePassword = async (req, res) => {
     try {
-        console.log("Inside change password");
         const userId = req.session.user_id;
         const currentPassword = req.body.currentPassword.trim();
         const newPassword = req.body.newPassword.trim();
         const confirmNewPassword = req.body.confirmNewPassword.trim();
         const userData = await User.findById(userId);
-        console.log("Inside change password", userData);
 
         const passwordMatch = await bcrypt.compare(currentPassword, userData.password);
         if (passwordMatch) {
-            console.log("Current password matched");
             if (newPassword === confirmNewPassword) {
                 const hashedPassword = await securePassword(newPassword);
                 userData.password = hashedPassword;
                 await userData.save();
-                console.log("Password updated successfully");
                 res.send({ success: true, message: "Password changed successfully" });
             } else {
                 res.send({ success: false, message: "New password and Confirm New Passwword do not match" });
@@ -713,26 +587,25 @@ const changePassword = async (req, res) => {
 
 const orderDetails = async (req, res) => {
     try {
-        const orderNumber = req.query.id; // Assuming 'id' is the parameter for the order number
+        const orderNumber = req.query.id;
         const orderData = await Order.findById(orderNumber)
             .populate('userId')
             .populate('addressId')
             .populate('billingAddressId')
             .populate({
                 path: 'items.productId',
-                model: 'Product', // Reference to the Product model
+                model: 'Product',
                 populate: {
-                    path: 'category', // Populate the 'category' field of the 'Product' model
-                    model: 'Category' // Reference to the Category model
+                    path: 'category', 
+                    model: 'Category'
                 }
             });
 
-        // Fetch address data separately
         const addressData = await Address.findById(orderData.addressId);
         const billingAddressData = await Address.findById(orderData.billingAddressId);
 
 
-        res.render('order-details', { order: orderData, address: addressData, billingAddress: billingAddressData }); // Pass both orderData and addressData to the view for rendering
+        res.render('order-details', { order: orderData, address: addressData, billingAddress: billingAddressData });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Error fetching order details');
@@ -748,10 +621,10 @@ const generateInvoice = async (req, res) => {
             .populate('billingAddressId')
             .populate({
                 path: 'items.productId',
-                model: 'Product', // Reference to the Product model
+                model: 'Product',
                 populate: {
-                    path: 'category', // Populate the 'category' field of the 'Product' model
-                    model: 'Category' // Reference to the Category model
+                    path: 'category',
+                    model: 'Category'
                 }
             });
 
@@ -765,7 +638,6 @@ const generateInvoice = async (req, res) => {
                 console.error('Error generating PDF:', err);
                 res.status(500).send('Error generating PDF');
             } else {
-                console.log('PDF generation completed');
                 res.download('invoice.pdf');
             }
         });
@@ -780,7 +652,6 @@ const cancelOrder = async (req, res) => {
     try {
         const { orderId, codCancelReason } = req.body;
 
-        // Find the order by ID and update its status to 'Cancelled' and add codCancelReason
         const order = await Order.findByIdAndUpdate(orderId, { status: 'Cancelled', codCancelReason }, { new: true });
 
         if (!order) {
@@ -790,7 +661,6 @@ const cancelOrder = async (req, res) => {
         const userId = req.session.user_id;
 
         let wallet = await Wallet.findOne({ userId });
-        console.log("Wallet details", wallet)
         if (!wallet) {
             wallet = new Wallet({ userId: userId, balance: totalRefundAmount });
         } else {
@@ -799,7 +669,6 @@ const cancelOrder = async (req, res) => {
                 wallet.credit += totalRefundAmount;
             }
         }
-        // Update product stocks for canceled items
         for (const item of order.items) {
             const product = await Product.findById(item.productId);
             if (!product) {
@@ -819,7 +688,6 @@ const cancelOrder = async (req, res) => {
             await transaction.save();
         }
 
-        // Respond with success message and updated order
         res.status(200).json({ message: 'Order cancelled successfully', order });
     } catch (error) {
         console.error(error);
@@ -827,52 +695,13 @@ const cancelOrder = async (req, res) => {
     }
 };
 
-// const loadShop = async (req, res) => {
-//     try {
-//         let sortOption = req.query.sort || 'featured'; // Default sort by featured
-//         let sortOrder = 1; // Default sort order ascending (Low to High)
-
-//         if (sortOption === 'priceLowToHigh') {
-//             sortOption = 'price';
-//             sortOrder = 1;
-//         } else if (sortOption === 'priceHighToLow') {
-//             sortOption = 'price';
-//             sortOrder = -1;
-//         }
-
-//         // Fetch products and sort based on the selected option
-//         let productsData;
-//         if (sortOption === 'featured') {
-//             productsData = await Product.find();
-//         } else {
-//             productsData = await Product.find().sort({ [sortOption]: sortOrder });
-//         }
-
-//         // Fetch user data and cart data
-//         const userData = await User.findById(req.session.user_id);
-//         const userId = req.session.user_id;
-//         const cartData = await Cart.findOne({ userId }).populate({
-//             path: 'items.productId',
-//             populate: {
-//                 path: 'category',
-//                 model: 'Category'
-//             }
-//         });
-
-//         // Render the shop view with data
-//         res.render('shop', { user: userData, products: productsData, cart: cartData });
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send('Failed to load products');
-//     }
-// };
-
 const loadShop = async (req, res) => {
     try {
-        let sortOption = req.session.sortingOption || 'featured'; // Default sort by featured
-        let sortOrder = 1; // Default sort order ascending (Low to High)
-        console.log("loaShop session", req.session.sortingOption)
-        console.log("loadShop", sortOption)
+        const userId = req.session.user_id;
+        let sortOption = req.session.sortingOption || 'featured';
+        let sortOrder = 1;
+        const wishlist = await Wishlist.findOne({ userId }).populate('items.productId');
+        const productsCount = await Product.countDocuments();
 
         if (sortOption === 'priceLowToHigh') {
             sortOption = 'price';
@@ -882,28 +711,22 @@ const loadShop = async (req, res) => {
             sortOrder = -1;
         }
 
-        // Pagination
         const page = parseInt(req.query.page) || 1;
         const limit = 6;
         const skip = (page - 1) * limit;
 
-        // Fetch products and sort based on the selected option
         let productsData;
         if (sortOption === 'featured') {
             productsData = await Product.find().skip(skip).limit(limit);
         } else {
             productsData = await Product.find().sort({ [sortOption]: sortOrder }).skip(skip).limit(limit);
         }
-        console.log("Count", productsData.length)
 
-        // Count total number of products for pagination
         const totalProducts = await Product.countDocuments();
 
-        // Calculate total pages for pagination
         const totalPages = Math.ceil(totalProducts / limit);
 
         const userData = await User.findById(req.session.user_id);
-        const userId = req.session.user_id;
         const cartData = await Cart.findOne({ userId }).populate({
             path: 'items.productId',
             populate: {
@@ -911,9 +734,7 @@ const loadShop = async (req, res) => {
                 model: 'Category'
             }
         });
-        console.log("Total Pages: ", totalPages, "currentPage:", page, "Sort option", sortOption)
-        // Render the shop view with data
-        res.render('shop', { user: userData, products: productsData, cart: cartData, totalPages, currentPage: page, sortOption });
+        res.render('shop', { user: userData, products: productsData, cart: cartData, totalPages, currentPage: page, sortOption, wishlist, productsCount });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Failed to load products');
@@ -921,38 +742,10 @@ const loadShop = async (req, res) => {
 };
 
 
-// const shopFilter = async (req, res) => {
-//     try {
-//         let sortOption = req.query.sort || 'featured'; // Default sort by featured
-//         let sortOrder = 1; // Default sort order ascending (Low to High)
-
-//         if (sortOption === 'priceLowToHigh') {
-//             sortOption = 'price';
-//             sortOrder = 1;
-//         } else if (sortOption === 'priceHighToLow') {
-//             sortOption = 'price';
-//             sortOrder = -1;
-//         }
-
-//         // Fetch products and sort based on the selected option
-//         let productsData;
-//         if (sortOption === 'featured') {
-//             productsData = await Product.find();
-//         } else {
-//             productsData = await Product.find().sort({ [sortOption]: sortOrder });
-//         }
-
-//         res.json(productsData); // Send products data as JSON response
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).json({ error: 'Failed to load products' });
-//     }
-// };
-
 const shopFilter = async (req, res) => {
     try {
-        let sortOption = req.query.sort || 'featured'; // Default sort by featured
-        let sortOrder = 1; // Default sort order ascending (Low to High)
+        let sortOption = req.query.sort || 'featured';
+        let sortOrder = 1;
         console.log("shopFilter sortOption", sortOption);
         req.session.sortingOption = sortOption;
         console.log("shopFilter session", req.session.sortingOption)
@@ -965,12 +758,10 @@ const shopFilter = async (req, res) => {
             sortOrder = -1;
         }
 
-        // Pagination
         const page = parseInt(req.query.page) || 1;
         const limit = 6;
         const skip = (page - 1) * limit;
 
-        // Fetch products and sort based on the selected option
         let productsData;
         if (sortOption === 'featured') {
             productsData = await Product.find().skip(skip).limit(limit);
@@ -978,7 +769,7 @@ const shopFilter = async (req, res) => {
             productsData = await Product.find().sort({ [sortOption]: sortOrder }).skip(skip).limit(limit);
         }
 
-        res.json(productsData); // Send products data as JSON response
+        res.json(productsData);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: 'Failed to load products' });
@@ -988,20 +779,16 @@ const shopFilter = async (req, res) => {
 
 const productSearch = async (req, res) => {
     try {
-        const query = req.query.query; // Get the search query from request query parameters
-        // Perform a case-insensitive search for products whose name or brand matches the query
+        const query = req.query.query;
 
         const products = await Product.find({
             $or: [
-                { productName: { $regex: query, $options: 'i' } }, // Match product name
-                { productBrand: { $regex: query, $options: 'i' } } // Match product brand
+                { productName: { $regex: query, $options: 'i' } },
+                { productBrand: { $regex: query, $options: 'i' } }
             ]
-        }).limit(10); // Limit the number of results to 10
-        console.log("Testing", products);
-        // Send the matching products as JSON response
+        }).limit(10);
         res.json(products);
     } catch (error) {
-        // Handle errors
         console.error('Error searching for products:', error);
         res.status(500).json({ error: 'Failed to search for products' });
     }
@@ -1011,7 +798,6 @@ const addToWishlist = async (req, res) => {
     try {
         const userId = req.session.user_id;
         const productId = req.body.productId;
-        console.log("user: ", userId, "Product: ", productId);
 
         let wishlist = await Wishlist.findOne({ userId }).populate('items.productId');
         if (!wishlist) {
@@ -1041,21 +827,16 @@ const removeFromWishlist = async (req, res) => {
         const userId = req.session.user_id;
         const productId = req.body.productId;
 
-        // Find the wishlist by user ID
         let wishlist = await Wishlist.findOne({ userId });
 
-        // If the wishlist doesn't exist, return error
         if (!wishlist) {
             return res.status(404).json({ message: 'Wishlist not found' });
         }
 
-        // Remove the product from the items array
         wishlist.items = wishlist.items.filter(item => !item.productId.equals(productId));
 
-        // Save the updated wishlist
         await wishlist.save();
 
-        // Return success response
         res.status(200).json({ message: 'Product removed from wishlist successfully', wishlist: wishlist });
     } catch (error) {
         console.error(error.message);
@@ -1093,44 +874,50 @@ const loadWishlist = async (req, res) => {
 const loadWallet = async (req, res) => {
     try {
         const userId = req.session.user_id;
-        const currentPage = parseInt(req.query.page) || 1; // Extract the page number from query parameter
+        const wishlist = await Wishlist.findOne({ userId }).populate('items.productId');
+        const cart = await Cart.findOne({ userId })
+            .populate({
+                path: 'items.productId',
+                populate: {
+                    path: 'category',
+                    model: 'Category'
+                }
+            });
 
-        // Find wallet data for the user
+        const currentPage = parseInt(req.query.page) || 1;
+
         const walletData = await Wallet.findOne({ userId });
 
-        // Find total count of transactions for the user with description 'Order Cancel'
         const transactionCount = await TransactionModel.countDocuments({
             userId,
             description: { $in: ['Order Cancel', 'Ordered using wallet'] }
         });
 
-
-        // Find transactions data for the user with description 'Order Cancel'
         const transactionsData = await TransactionModel.find({
             userId,
             description: { $in: ['Order Cancel', 'Ordered using wallet'] }
         })
             .populate({
-                path: 'orderId', // Assuming the field in TransactionModel schema that stores order reference is named 'orderId'
-                model: 'Order', // Model name for the Order schema
+                path: 'orderId',
+                model: 'Order',
                 populate: {
-                    path: 'items.productId', // Assuming 'items' array in Order schema contains productId reference
-                    model: 'Product' // Model name for the Product schema
+                    path: 'items.productId',
+                    model: 'Product'
                 }
             })
-            .sort({ date: -1 }) // Sort transactions by date in descending order
-            .skip((currentPage - 1) * 5) // Skip records based on page number
-            .limit(5); // Limit the number of records per page
+            .sort({ date: -1 })
+            .skip((currentPage - 1) * 5)
+            .limit(5);
 
-        res.render('wallet', { wallet: walletData, transaction: transactionsData, transactionCount, currentPage });
+        res.render('wallet', { wallet: walletData, transaction: transactionsData, transactionCount, currentPage, cart, wishlist });
     } catch (error) {
         console.log(error.message);
     }
 }
 
 const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_ID_KEY,
-    key_secret: process.env.RAZORPAY_SECRET_KEY
+    key_id: process.env.RAZORPAY_ID_KEY || 'rzp_test_vGryABnhipIEr8',
+    key_secret: process.env.RAZORPAY_SECRET_KEY || 'MiZtgygveiXuyxMohGrLj6QS'
 });
 
 const walletTopUp = async (req, res) => {
@@ -1139,9 +926,9 @@ const walletTopUp = async (req, res) => {
         const currency = 'INR';
 
         const options = {
-            amount: amount * 100, // amount in paise
+            amount: amount * 100,
             currency: currency,
-            payment_capture: '1', // Auto capture payment
+            payment_capture: '1',
         };
 
         const order = await razorpay.orders.create(options);
@@ -1154,24 +941,26 @@ const walletTopUp = async (req, res) => {
 
 const updateWallet = async (req, res) => {
     try {
-        const amount = req.body.amount;
-        const updatedwallet = await Wallet.findOneAndUpdate(
-            { userId: req.session.user_id }, // Assuming you have authenticated user in req.user
-            { $inc: { balance: amount, credit: amount } }, // Increment balance and credit by the amount
-            { new: true } // Return the updated document
-        );
-        console.log(updatedwallet);
-        res.json(updatedwallet);
+        const amount = Number(req.body.amount);
+        const userId = req.session.user_id;
 
+        let wallet = await Wallet.findOne({ userId });
+
+        if (!wallet) {
+            wallet = new Wallet({ userId });
+        }
+
+        wallet.balance += amount;
+        wallet.credit += amount;
+
+        const updatedWallet = await wallet.save();
+
+        res.json(updatedWallet);
     } catch (error) {
         console.log(error.message);
+        res.status(500).json({ error: 'Server Error' });
     }
 }
-
-
-
-
-
 
 module.exports = {
     loadGuest,
@@ -1181,8 +970,6 @@ module.exports = {
     verifyOtp,
     verifyEmailOtp,
     resetPassword,
-    // insertUser,
-    // verifyMail,
     loginLoad,
     verifyLogin,
     forgotPassword,

@@ -79,7 +79,7 @@
     <div class="container">
         <div class="header">
             <h1>Invoice</h1>
-            <h2>Order ID: <%= order._id %></h2>
+            <h2>Order ID: <%= order.items[0].orderId %></h2>
         </div>
         <div class="address">
             <h3>Billing Address</h3>
@@ -125,11 +125,11 @@
         <div class="total">
             <dl class="dlist">
                 <dt>Subtotal:</dt>
-                <dd>₹<%= order.totalPrice %></dd>
+                <dd>₹<%= order.totalPrice-order.shippingRate %></dd>
             </dl>
             <dl class="dlist">
                 <dt>Shipping cost:</dt>
-                <dd>₹0.00</dd>
+                <dd>₹<%= order.shippingRate %></dd>
             </dl>
             <dl class="dlist">
                 <dt>Grand total:</dt>

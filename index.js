@@ -27,7 +27,7 @@ app.use('/account', accountRoute)
 const cartRoute = require("./routes/cartRoutes")
 app.use('/cart', cartRoute)
 
-port =  process.env.PORT
+port =  process.env.PORT || 3000
 app.listen(3000, () => {
     console.log("Server is running at http://localhost:3000")
 })

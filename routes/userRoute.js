@@ -18,14 +18,9 @@ const upload = multer({ storage: storage.userStorage })
 
 
 user_route.get('/register', auth.isLogout, userController.loadRegister);
-// user_route.post('/register', upload.single('image'), userController.insertUser);
 user_route.post('/generate-otp', userController.generateOtp);
 user_route.post('/verify-otp', userController.verifyOtp);
 user_route.post('/resend-otp', userController.resendOtp);
-
-
-
-// user_route.get('/verify', userController.verifyMail);
 
 user_route.get('/', auth.isLogout, auth.preventCaching, userController.loadGuest);
 

@@ -11,9 +11,7 @@
     <meta property="og:type" content="">
     <meta property="og:url" content="">
     <meta property="og:image" content="">
-    <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/adminAssets/imgs/theme/favicon.svg">
-    <!-- Template CSS -->
     <link href="/adminAssets/css/main.css" rel="stylesheet" type="text/css" />
 
     <style>
@@ -324,26 +322,20 @@
         </footer>
     </main>
     <script>
-        // Get references to the discount and maximumDiscountAmount fields
         const discountInput = document.getElementById('discount');
         const maximumDiscountInput = document.getElementById('maximumDiscountAmount');
         const discountTypeSelect = document.getElementById('discountType');
 
-        // Add event listener to discount type select
         discountTypeSelect.addEventListener('change', function () {
             if (this.value === 'Fixed') {
-                // If discount type is fixed, set maximum discount amount same as discount
                 maximumDiscountInput.value = discountInput.value;
             } else {
-                // If discount type is percentage or any other type, clear maximum discount amount
                 maximumDiscountInput.value = '';
             }
         });
 
-        // Add event listener to discount input
         discountInput.addEventListener('input', function () {
             if (discountTypeSelect.value === 'Fixed') {
-                // If discount type is fixed, set maximum discount amount same as discount
                 maximumDiscountInput.value = this.value;
             }
         });

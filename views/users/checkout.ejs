@@ -122,8 +122,6 @@
                     <div class="col-xl-3 col-lg-4">
                         <div class="header-info">
                             <ul>
-                                <li><i class="fi-rs-smartphone"></i> <a href="#">(+01) - 2345 - 6789</a></li>
-                                <li><i class="fi-rs-marker"></i><a href="page-contact.html">Our location</a></li>
                             </ul>
                         </div>
                     </div>
@@ -131,11 +129,10 @@
                         <div class="text-center">
                             <div id="news-flash" class="d-inline-block">
                                 <ul>
-                                    <li>Get great devices up to 50% off <a href="shop-grid-right.html">View details</a>
+                                    <li>Explore scents at up to 50% off!<a href="/home/shop">View details</a></li>
+                                    <li>Save more with exclusive coupons!</li>
+                                    <li>Enjoy trendy perfumes, up to 35% off today!<a href="/home/shop">Shop now</a>
                                     </li>
-                                    <li>Supper Value Deals - Save more with coupons</li>
-                                    <li>Trendy 25silver jewelry, save up 35% off today <a
-                                            href="shop-grid-right.html">Shop now</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -143,19 +140,22 @@
                     <div class="col-xl-3 col-lg-4">
                         <div class="header-info header-info-right">
                             <ul>
-                                <li>
-                                    <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English <i
-                                            class="fi-rs-angle-small-down"></i></a>
-                                    <ul class="language-dropdown">
-                                        <li><a href="#"><img src="/assets/imgs/theme/flag-fr.png" alt="">Français</a>
-                                        </li>
-                                        <li><a href="#"><img src="/assets/imgs/theme/flag-dt.png" alt="">Deutsch</a>
-                                        </li>
-                                        <li><a href="#"><img src="/assets/imgs/theme/flag-ru.png" alt="">Pусский</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li><i class="fi-rs-user"></i><a href="page-login-register.html">Log In / Sign Up</a>
+                                <li><i class="fi-rs-user"></i><a href="/logout" class="logout-link">Logout</a></li>
+                                <li class="dropdown nav-item">
+                                    <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                                        aria-expanded="false">
+                                        <img class="img-xs rounded-circle" style="width: 30px; height: 30px;"
+                                            src="/assets/imgs/people/avatar1.png" alt="User">
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                                        <a class="dropdown-item" href="/account"><i
+                                                class="material-icons md-settings"></i>Account</a>
+                                        <a class="dropdown-item" href="/account/wallet"><i
+                                                class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="/logout"><i
+                                                class="material-icons md-exit_to_app"></i>Logout</a>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -191,56 +191,29 @@
                         <div class="header-action-right">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
-                                    <a href="shop-wishlist.html">
+                                    <a href="/home/wishlist">
                                         <img class="svgInject" alt="Evara"
                                             src="/assets/imgs/theme/icons/icon-heart.svg">
-                                        <span class="pro-count blue">4</span>
+                                        <span class="pro-count blue" id="wishlistCount">
+                                            <% if(wishlist && typeof wishlist.items !== 'undefined') { %>
+                                                <%= wishlist.items.length %>
+                                            <%} else { %>
+                                                0
+                                            <% } %>
+                                        </span>
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
                                     <a class="mini-cart-icon" href="/cart">
                                         <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg">
-                                        <span class="pro-count blue">2</span>
+                                        <span class="pro-count blue" id="cartItemCount">
+                                            <% if(cart && typeof cart.items !== 'undefined') { %>
+                                                <%= cart.items.length %>
+                                            <%} else { %>
+                                                0
+                                            <% } %>
+                                        </span>
                                     </a>
-                                    <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                        <ul>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara"
-                                                            src="/assets/imgs/shop/thumbnail-3.jpg"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Daisy Casual Bag</a></h4>
-                                                    <h4><span>1 × </span>$800.00</h4>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara"
-                                                            src="/assets/imgs/shop/thumbnail-2.jpg"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Corduroy Shirts</a></h4>
-                                                    <h4><span>1 × </span>$3200.00</h4>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div class="shopping-cart-footer">
-                                            <div class="shopping-cart-total">
-                                                <h4>Total <span>$4000.00</span></h4>
-                                            </div>
-                                            <div class="shopping-cart-button">
-                                                <a href="shop-cart.html" class="outline">View cart</a>
-                                                <a href="shop-checkout.html">Checkout</a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -933,11 +906,11 @@
                         </option>
                         <% } %>
                 </select>
-                <h3 style="margin-top: 30px;">Delivery Address</h3> <!-- Title for Delivery Address -->
+                <h3 style="margin-top: 30px;">Delivery Address</h3>
                 <% for (let i=0; i < user.addresses.length; i++) { %>
                     <div class="card mb-3" style="margin-top: 10px;">
-                        <div class="card-header address-radio"> <!-- Add class for radio button styling -->
-                            <!-- Radio button for address selection -->
+                        <div class="card-header address-radio">
+
                             <input type="radio" name="address" id="address<%= i + 1 %>"
                                 value="<%= user.addresses[i]._id %>">
                         </div>
@@ -949,10 +922,6 @@
                                             <%= user.addresses[i].postalCode %><br>
                                                 <%= user.addresses[i].country %>
                             </address>
-                            <!-- Edit and delete buttons -->
-                            <!-- <a href="/account/edit-address?id=<%= user.addresses[i]._id %>" class="btn-small">Edit</a>
-                                <a href="/account/delete-address?id=<%= user.addresses[i]._id %>"
-                                    class="btn-small delete-address">Delete</a> -->
                         </div>
                     </div>
                     <% } %>
@@ -986,11 +955,11 @@
                             </div>
                             <div class="price-detail-item">
                                 <span class="detail-label">Delivery Charges:</span>
-                                <span class="detail-value">₹0</span>
+                                <span class="detail-value" id="deliveryCharge">₹0</span>
                             </div>
                             <div class="price-detail-item">
                                 <span class="detail-label">Total Amount:</span>
-                                <span class="detail-value">₹<%= cart.totalPrice %></span>
+                                <span class="detail-value" id="totalPrice">₹<%= cart.totalPrice %></span>
                             </div>
                             <div class="price-detail-item">
                                 <span class="detail-label">You will save:</span>
@@ -1018,19 +987,21 @@
                                         RazorPay
                                     </label>
                                 </div>
+                                <% if(wallet && typeof wallet.balance !== 'undefined') { %>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="paymentMethod" id="wallet"
                                         value="WALLET" <% if (wallet.balance < cart.totalPrice) { %> disabled <% } %>>
-                                    <label class="form-check-label" for="wallet">
-                                        Wallet
-                                        <% if (wallet.balance < cart.totalPrice) { %>
-                                            <span class="text-danger">Low wallet balance</span>
-                                            Balance ₹<%= wallet.balance %>
-                                        <% } else { %>
-                                            <span class="text-success">Balance ₹<%= wallet.balance %></span>
-                                        <% } %>
-                                    </label>
+                                        <label class="form-check-label" for="wallet">
+                                            Wallet
+                                            <% if (wallet.balance < cart.totalPrice) { %>
+                                                <span class="text-danger">Low wallet balance</span>
+                                                Balance ₹<%= wallet.balance %>
+                                                    <% } else { %>
+                                                        <span class="text-success">Balance ₹<%= wallet.balance %></span>
+                                                        <% } %>
+                                        </label>
                                 </div>
+                                <% } %>
                             </form>
                             <button type="button" class="btn btn-primary btn-lg btn-block" id="place-order-button">Place
                                 Order</button>
@@ -1051,7 +1022,7 @@
                                 <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4>
                             </div>
                             <div class="col my-4 my-md-0 des">
-                                <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>$25 coupon for first
+                                <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>₹500 coupon for first
                                         shopping.</strong></h5>
                             </div>
                         </div>
@@ -1063,77 +1034,6 @@
                             <button class="btn bg-dark text-white" type="submit">Subscribe</button>
                         </form>
                         <!-- End Subscribe Form -->
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="section-padding footer-mid">
-            <div class="container pt-15 pb-20">
-                <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="widget-about font-md mb-md-5 mb-lg-0">
-                            <div class="logo logo-width-1 wow fadeIn animated">
-                                <a href="index.html"><img src="/assets/imgs/theme/logo.svg" alt="logo"></a>
-                            </div>
-                            <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
-                            <p class="wow fadeIn animated">
-                                <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
-                            </p>
-                            <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
-                            <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">About</h5>
-                        <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Delivery Information</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms &amp; Conditions</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Support Center</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-2  col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">My Account</h5>
-                        <ul class="footer-list wow fadeIn animated">
-                            <li><a href="#">Sign In</a></li>
-                            <li><a href="#">View Cart</a></li>
-                            <li><a href="#">My Wishlist</a></li>
-                            <li><a href="#">Track My Order</a></li>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Order</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-4">
-                        <h5 class="widget-title wow fadeIn animated">Install App</h5>
-                        <div class="row">
-                            <div class="col-md-8 col-lg-12">
-                                <p class="wow fadeIn animated">From App Store or Google Play</p>
-                                <div class="download-app wow fadeIn animated">
-                                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active"
-                                            src="/assets/imgs/theme/app-store.jpg" alt=""></a>
-                                    <a href="#" class="hover-up"><img src="/assets/imgs/theme/google-play.jpg"
-                                            alt=""></a>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
-                                <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
-                                <img class="wow fadeIn animated" src="/assets/imgs/theme/payment-method.png" alt="">
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1175,6 +1075,48 @@
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
+        let shippingRate = 0;
+        const totalPriceElement = document.getElementById('totalPrice');
+const addressRadioInputs = document.querySelectorAll('input[name="address"]');
+const deliveryChargesElement = document.getElementById('deliveryCharge');
+    addressRadioInputs.forEach(input => {
+        input.addEventListener('change', async () => {
+            try {
+                const selectedAddressInput = document.querySelector('input[name="address"]:checked');
+                const addressId = selectedAddressInput ? selectedAddressInput.value : null;
+
+                if (!addressId) {
+                    throw new Error('No address selected');
+                }
+
+                // Fetch shipping rate based on addressId
+                const shippingRateResponse = await fetch(`/cart/shipping-charge/?addressId=${addressId}`);
+                if (!shippingRateResponse.ok) {
+                    throw new Error('Failed to fetch shipping rate');
+                }
+                const shippingRateData = await shippingRateResponse.json();
+                shippingRate = shippingRateData.shippingCharge;
+
+                // Display shipping rate or use it as needed
+                console.log('Shipping Rate:', shippingRate);
+                deliveryChargesElement.textContent = `₹${shippingRate}`;
+                const currentTotalPrice = parseFloat(totalPriceElement.textContent.slice(1));
+                console.log("CurrentPrice", currentTotalPrice)
+                if(shippingRate === 100){
+                    const updatedTotalPrice = currentTotalPrice + shippingRate;
+            totalPriceElement.textContent = `₹${updatedTotalPrice}`;
+                }else{
+                    const updatedTotalPrice = currentTotalPrice - 100;
+            totalPriceElement.textContent = `₹${updatedTotalPrice}`;
+                }
+            
+            } catch (error) {
+                console.error(error);
+                // Handle error
+            }
+        });
+    });
+
         const placeOrderButton = document.querySelector('#place-order-button');
         placeOrderButton.addEventListener('click', async () => {
             try {
@@ -1190,7 +1132,7 @@
                 const cartIdInput = document.querySelector('#cart-id');
                 const cartId = cartIdInput ? cartIdInput.value : null;
 
-                if (!paymentMethod || !addressId || !billingAddressId) { // Check if billingAddressId is also not null
+                if (!paymentMethod || !addressId || !billingAddressId) {
                     throw new Error('Incomplete order data');
                 }
 
@@ -1201,7 +1143,7 @@
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ addressId, billingAddressId }) // Include billingAddressId
+                        body: JSON.stringify({ addressId, billingAddressId, shippingRate })
                     });
 
                     if (response.ok) {
@@ -1215,21 +1157,19 @@
                             order_id: orderId,
                             handler: async function (response) {
                                 try {
-                                    // Send the Razorpay payment ID and order ID to your server for verification
                                     const paymentId = response.razorpay_payment_id;
                                     const orderId = response.razorpay_order_id;
+                                    console.log("Verify shippingRate", shippingRate)
 
-                                    // Send payment ID, order ID, amount, and billingAddressId to server for verification and saving the order
                                     const orderResponse = await fetch('/cart/verify-and-save-order', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
                                         },
-                                        body: JSON.stringify({ paymentId, orderId, billingAddressId, addressId, cartId }) // Include billingAddressId
+                                        body: JSON.stringify({ paymentStats: true, paymentId, orderId, billingAddressId, addressId, cartId, shippingRate }) // Include billingAddressId
                                     });
 
                                     if (orderResponse.ok) {
-                                        // Redirect to order success page after successful order placement
                                         window.location.href = '/cart/order-success';
                                     } else {
                                         throw new Error('Failed to verify and save order');
@@ -1250,50 +1190,95 @@
                         };
                         const rzp1 = new Razorpay(options);
                         rzp1.open();
+                        rzp1.on('payment.failed', async function (response) {
+                            // Handle payment failure
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Payment Failed',
+                                text: response.error.description,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Redirect to order success page
+                                window.location.href = '/cart/order-success';
+                            });
+
+                            try {
+
+                                const orderResponse = await fetch('/cart/verify-and-save-order', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        paymentStats: false,
+                                        paymentId: response.error.metadata.payment_id,
+                                        orderId: response.error.metadata.order_id,
+                                        billingAddressId,
+                                        addressId,
+                                        cartId
+                                    })
+                                });
+
+                            } catch (error) {
+                                console.error(error);
+                                alert('Failed to save order');
+                            }
+                        });
+
                     } else {
                         throw new Error('Failed to initiate payment');
                     }
                 } else if (paymentMethod === 'COD') {
-                    // If COD is selected, proceed with placing order as before
-                    const response = await fetch('/cart/place-order', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ paymentMethod, addressId, billingAddressId })
-                    });
+                    const cartValue = <%- JSON.stringify(cart.totalPrice) %>;
 
-                    if (response.ok) {
-                        const data = await response.json();
+                    if (cartValue < 1000) {
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Order Placed Successfully!',
-                            text: data.message,
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            // Redirect to order success page
-                            window.location.href = '/cart/order-success';
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Minimum cart value of 1000 is required for Cash on Delivery orders.'
                         });
                     } else {
-                        const errorMessage = await response.json();
-                        if (response.status === 400) {
+                        const response = await fetch('/cart/place-order', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ paymentMethod, addressId, billingAddressId, shippingRate })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
                             Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: errorMessage.message
+                                icon: 'success',
+                                title: 'Order Placed Successfully!',
+                                text: data.message,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Redirect to order success page
+                                window.location.href = '/cart/order-success';
                             });
                         } else {
-                            throw new Error('Failed to place order');
+                            const errorMessage = await response.json();
+                            if (response.status === 400) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: errorMessage.message
+                                });
+                            } else {
+                                throw new Error('Failed to place order');
+                            }
                         }
                     }
-                } else if (paymentMethod === 'WALLET') {
+                }
+                else if (paymentMethod === 'WALLET') {
                     // If Wallet is selected, proceed with placing order
                     const response = await fetch('/cart/place-wallet-order', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ paymentMethod, addressId, billingAddressId })
+                        body: JSON.stringify({ paymentMethod, addressId, billingAddressId, shippingRate })
                     });
 
                     if (response.ok) {

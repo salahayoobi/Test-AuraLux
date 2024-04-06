@@ -31,20 +31,20 @@
         </div>
         <nav>
             <ul class="menu-aside">
-                <li class="menu-item active">
+                <li class="menu-item">
                     <a class="menu-link" href="/admin/home"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-products-list.html"> <i
-                            class="icon material-icons md-shopping_bag"></i>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/page-products-list"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                    <div class="submenu">
-                        <a href="/admin/page-products-list">Product List</a>
-                        <a href="/admin/categories">Categories</a>
-                    </div>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Categories</span>
+                    </a>
                 </li>
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-person"></i>
@@ -61,66 +61,14 @@
                         <span class="text">Offer Management</span>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/sales"> <i class="icon material-icons md-home"></i>
                         <span class="text">Sales</span>
-                    </a>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-transactions-1.html"> <i
-                            class="icon material-icons md-monetization_on"></i>
-                        <span class="text">Transactions</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-transactions-1.html">Transaction 1</a>
-                        <a href="page-transactions-2.html">Transaction 2</a>
-                        <a href="page-transactions-details.html">Transaction Details</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
-                        <span class="text">Account</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-account-login.html">User login</a>
-                        <a href="page-account-register.html">User registration</a>
-                        <a href="page-error-404.html">Error 404</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
-                        <span class="text">Reviews</span>
                     </a>
                 </li>
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-person"></i>
                         <span class="text">Users</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
-                        <span class="text">Statistics</span>
-                    </a>
-                </li>
-            </ul>
-            <hr>
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-settings"></i>
-                        <span class="text">Settings</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-settings-1.html">Setting sample 1</a>
-                        <a href="page-settings-2.html">Setting sample 2</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-blank.html"> <i class="icon material-icons md-local_offer"></i>
-                        <span class="text"> Starter page </span>
                     </a>
                 </li>
             </ul>
@@ -150,12 +98,6 @@
                         class="material-icons md-apps"></i> </button>
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
                         </a>
                     </li>
@@ -176,17 +118,10 @@
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
                             aria-expanded="false"> <img class="img-xs rounded-circle"
-                                src="/adminAssets/imgs/people/avatar2.jpg" alt="User"></a>
+                                src="/assets/imgs/people/avatar1.png" alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
                             <a class="dropdown-item" href="/admin/admin-profile"><i
                                     class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
-                                Settings</a>
-                            <a class="dropdown-item" href="#"><i
-                                    class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help
-                                center</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="/logout"><i
                                     class="material-icons md-exit_to_app"></i>Logout</a>
@@ -210,11 +145,30 @@
                         <option value="custom">Custom</option>
                     </select>
                     <div id="customDateInputs" style="display: none;">
+                        <label for="" style="margin-top: 11px; margin-right: 3px;">Start </label>
                         <input id="startDateInput" type="date" class="form-control me-2" placeholder="Start Date">
+                        <label for="" style="margin-top: 11px; margin-right: 3px;">End</label>
                         <input id="endDateInput" type="date" class="form-control me-2" placeholder="End Date">
                     </div>
-                    <button id="generateReportBtn" class="btn btn-primary">PDF</button>
-                    <button id="generateExcelBtn" class="btn btn-success" style="margin-left: 10px;">EXCEL</button>
+                    <button id="generateReportBtn" class="btn btn-primary">Generate</button>
+                </div>
+            </div>
+            <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="previewModalLabel">Sales Report Preview</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="previewModalBody" style="max-height: calc(100vh - 200px); overflow-y: auto;"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            <button id="generatePdfBtn" class="btn btn-primary" style="background-color: rgb(231, 119, 0);
+                            border-color: rgb(231, 119, 0)">Pdf</button>
+                            <button id="generateExcelBtn" class="btn btn-primary" style="background-color: rgb(15, 194, 254);
+                            border-color: rgb(15, 194, 254)">Excel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -230,13 +184,6 @@
                                 <option>Active</option>
                                 <option>Disabled</option>
                                 <option>Show all</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Show 20</option>
-                                <option>Show 30</option>
-                                <option>Show 40</option>
                             </select>
                         </div>
                     </div>
@@ -333,16 +280,14 @@
             <div class="pagination-area mt-15 mb-50">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i
-                                    class="material-icons md-chevron_right"></i></a></li>
+                        <% for(let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
                     </ul>
                 </nav>
-            </div>
+            </div>            
         </section> <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
@@ -363,9 +308,9 @@
         document.getElementById('reportInterval').addEventListener('change', function () {
     const customDateInputs = document.getElementById('customDateInputs');
     if (this.value === 'custom') {
-        customDateInputs.style.display = 'flex'; // Show custom date inputs
+        customDateInputs.style.display = 'flex';
     } else {
-        customDateInputs.style.display = 'none'; // Hide custom date inputs
+        customDateInputs.style.display = 'none';
     }
 });
 
@@ -374,11 +319,10 @@ document.getElementById('generateReportBtn').addEventListener('click', async () 
     let startDate, endDate;
 
     if (selectedInterval === 'custom') {
-        // Get start and end dates if custom option is selected
         startDate = document.getElementById('startDateInput').value;
         endDate = document.getElementById('endDateInput').value;
     } else {
-        // Calculate start and end dates based on selected interval
+
         switch (selectedInterval) {
             case 'daily':
                 startDate = 0;
@@ -403,7 +347,57 @@ document.getElementById('generateReportBtn').addEventListener('click', async () 
     }
 
     try {
-        // Send a fetch request to the server to generate the sales report
+        const response = await fetch(`/admin/sales/generate-sales-report?interval=${selectedInterval}&startDate=${startDate}&endDate=${endDate}`);
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const previewModalBody = document.getElementById('previewModalBody');
+            previewModalBody.innerHTML = `<embed src="${url}" type="application/pdf" width="100%" height="600px" />`;
+
+            const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+            previewModal.show();
+        } else {
+            console.error('Failed to generate sales report');
+            alert('Failed to generate sales report');
+        }
+    } catch (error) {
+        console.error('Error generating sales report:', error);
+        alert('Error generating sales report');
+    }
+});
+
+document.getElementById('generatePdfBtn').addEventListener('click', async () => {
+    const selectedInterval = document.getElementById('reportInterval').value;
+    let startDate, endDate;
+
+    if (selectedInterval === 'custom') {
+        startDate = document.getElementById('startDateInput').value;
+        endDate = document.getElementById('endDateInput').value;
+    } else {
+        switch (selectedInterval) {
+            case 'daily':
+                startDate = 0;
+                endDate = 0;
+                break;
+            case 'weekly':
+                startDate = 0;
+                endDate = 0;
+                break;
+            case 'monthly':
+                startDate = 0;
+                endDate = 0;
+                break;
+            case 'yearly':
+                startDate = 0;
+                endDate = 0;
+                break;
+            default:
+                startDate = 0;
+                endDate = 0;
+        }
+    }
+
+    try {
         const response = await fetch(`/admin/sales/generate-sales-report?interval=${selectedInterval}&startDate=${startDate}&endDate=${endDate}`);
         if (response.ok) {
             // If the request is successful, initiate download of the generated PDF

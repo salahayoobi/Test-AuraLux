@@ -18,8 +18,8 @@ admin_route.set('views', './views/admin');
 
 admin_route.get('/', auth.isLogout, auth.preventCaching, adminController.loadLogin);
 admin_route.post('/', auth.preventCaching, adminController.verifyLogin);
-// admin_route.get('/home', auth.isLogin, adminController.loadDashboard);
 admin_route.get('/home', auth.preventCaching, adminController.loadDashboard);
+admin_route.get('/sales-data', adminController.salesData);
 admin_route.get('/admin-profile', adminController.loadAdminProfile);
 admin_route.get('/logout', auth.isLogin, adminController.logout);
 admin_route.get('/dashboard', auth.preventCaching, auth.isLogin, adminController.adminDashboard);

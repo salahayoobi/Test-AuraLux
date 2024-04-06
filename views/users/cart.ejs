@@ -20,8 +20,51 @@
             padding: 20px;
             font-size: 18px;
             color: #999;
-            /* Adjust color as needed */
         }
+
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 15%;
+    top: 10%;
+    width: 30%;
+    max-height: 70%;
+    overflow: hidden;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+}
+
+.modal-body {
+    overflow-y: auto;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    right: 0;
+    margin: 10px;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
     </style>
 </head>
 
@@ -31,42 +74,32 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-xl-3 col-lg-4">
-                        <div class="header-info">
-                            <ul>
-                                <li><i class="fi-rs-smartphone"></i> <a href="#">(+01) - 2345 - 6789</a></li>
-                                <li><i class="fi-rs-marker"></i><a href="page-contact.html">Our location</a></li>
-                            </ul>
-                        </div>
                     </div>
                     <div class="col-xl-6 col-lg-4">
                         <div class="text-center">
                             <div id="news-flash" class="d-inline-block">
-                                <ul>
-                                    <li>Get great devices up to 50% off <a href="shop-grid-right.html">View details</a>
-                                    </li>
-                                    <li>Supper Value Deals - Save more with coupons</li>
-                                    <li>Trendy 25silver jewelry, save up 35% off today <a
-                                            href="shop-grid-right.html">Shop now</a></li>
-                                </ul>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-lg-4">
                         <div class="header-info header-info-right">
                             <ul>
-                                <li>
-                                    <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English <i
-                                            class="fi-rs-angle-small-down"></i></a>
-                                    <ul class="language-dropdown">
-                                        <li><a href="#"><img src="/assets/imgs/theme/flag-fr.png" alt="">Français</a>
-                                        </li>
-                                        <li><a href="#"><img src="/assets/imgs/theme/flag-dt.png" alt="">Deutsch</a>
-                                        </li>
-                                        <li><a href="#"><img src="/assets/imgs/theme/flag-ru.png" alt="">Pусский</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li><i class="fi-rs-user"></i><a href="page-login-register.html">Log In / Sign Up</a>
+                                <li><i class="fi-rs-user"></i><a href="/logout" class="logout-link">Logout</a></li>
+                                <li class="dropdown nav-item">
+                                    <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                                        aria-expanded="false">
+                                        <img class="img-xs rounded-circle" style="width: 30px; height: 30px;"
+                                            src="/assets/imgs/people/avatar1.png" alt="User">
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                                        <a class="dropdown-item" href="/account"><i
+                                                class="material-icons md-settings"></i>Account</a>
+                                        <a class="dropdown-item" href="/account/wallet"><i
+                                                class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="/logout"><i
+                                                class="material-icons md-exit_to_app"></i>Logout</a>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -82,22 +115,6 @@
                     </div>
                     <div class="header-right">
                         <div class="search-style-2">
-                            <form action="#">
-                                <select class="select-active">
-                                    <option>All Categories</option>
-                                    <option>Women's</option>
-                                    <option>Men's</option>
-                                    <option>Cellphones</option>
-                                    <option>Computer</option>
-                                    <option>Electronics</option>
-                                    <option> Accessories</option>
-                                    <option>Home & Garden</option>
-                                    <option>Luggage</option>
-                                    <option>Shoes</option>
-                                    <option>Mother & Kids</option>
-                                </select>
-                                <input type="text" placeholder="Search for items...">
-                            </form>
                         </div>
                         <div class="header-action-right">
                             <div class="header-action-2">
@@ -106,7 +123,11 @@
                                         <img class="svgInject" alt="Evara"
                                             src="/assets/imgs/theme/icons/icon-heart.svg">
                                         <span class="pro-count blue">
-                                            <%= wishlist.items.length %>
+                                            <% if(wishlist && typeof wishlist.items !== 'undefined') { %>
+                                                <%= wishlist.items.length %>
+                                            <%} else { %>
+                                                0
+                                            <% } %>
                                         </span>
                                     </a>
                                 </div>
@@ -114,49 +135,13 @@
                                     <a class="mini-cart-icon" href="/cart">
                                         <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg">
                                         <span class="pro-count blue" id="cartItemCount">
-                                            <%= cart.items.length %>
+                                            <% if(cart && typeof cart.items !== 'undefined') { %>
+                                                <%= cart.items.length %>
+                                            <%} else { %>
+                                                0
+                                            <% } %>
                                         </span>
                                     </a>
-
-                                    <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                        <ul>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara"
-                                                            src="/assets/imgs/shop/thumbnail-3.jpg"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Daisy Casual Bag</a></h4>
-                                                    <h4><span>1 × </span>$800.00</h4>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara"
-                                                            src="/assets/imgs/shop/thumbnail-2.jpg"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Corduroy Shirts</a></h4>
-                                                    <h4><span>1 × </span>$3200.00</h4>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div class="shopping-cart-footer">
-                                            <div class="shopping-cart-total">
-                                                <h4>Total <span>$4000.00</span></h4>
-                                            </div>
-                                            <div class="shopping-cart-button">
-                                                <a href="shop-cart.html" class="outline">View cart</a>
-                                                <a href="shop-checkout.html">Checkout</a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -177,246 +162,14 @@
                             </a>
                             <div class="categori-dropdown-wrap categori-dropdown-active-large">
                                 <ul>
-                                    <li class="has-children">
-                                        <a href="shop-grid-right.html"><i class="evara-font-dress"></i>Women's
-                                            Clothing</a>
-                                        <div class="dropdown-menu">
-                                            <ul class="mega-menu d-lg-flex">
-                                                <li class="mega-menu-col col-lg-7">
-                                                    <ul class="d-lg-flex">
-                                                        <li class="mega-menu-col col-lg-6">
-                                                            <ul>
-                                                                <li><span class="submenu-title">Hot & Trending</span>
-                                                                </li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Dresses</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Blouses & Shirts</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Hoodies & Sweatshirts</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Women's Sets</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Suits & Blazers</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Bodysuits</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Tanks & Camis</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Coats & Jackets</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li class="mega-menu-col col-lg-6">
-                                                            <ul>
-                                                                <li><span class="submenu-title">Bottoms</span></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Leggings</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Skirts</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Shorts</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Jeans</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Pants & Capris</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Bikini Sets</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Cover-Ups</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Swimwear</a></li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li class="mega-menu-col col-lg-5">
-                                                    <div class="header-banner2">
-                                                        <img src="/assets/imgs/banner/menu-banner-2.jpg"
-                                                            alt="menu_banner1">
-                                                        <div class="banne_info">
-                                                            <h6>10% Off</h6>
-                                                            <h4>New Arrival</h4>
-                                                            <a href="#">Shop now</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="header-banner2">
-                                                        <img src="/assets/imgs/banner/menu-banner-3.jpg"
-                                                            alt="menu_banner2">
-                                                        <div class="banne_info">
-                                                            <h6>15% Off</h6>
-                                                            <h4>Hot Deals</h4>
-                                                            <a href="#">Shop now</a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li class="has-children">
-                                        <a href="shop-grid-right.html"><i class="evara-font-tshirt"></i>Men's
-                                            Clothing</a>
-                                        <div class="dropdown-menu">
-                                            <ul class="mega-menu d-lg-flex">
-                                                <li class="mega-menu-col col-lg-7">
-                                                    <ul class="d-lg-flex">
-                                                        <li class="mega-menu-col col-lg-6">
-                                                            <ul>
-                                                                <li><span class="submenu-title">Jackets & Coats</span>
-                                                                </li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Down Jackets</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Jackets</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Parkas</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Faux Leather Coats</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Trench</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Wool & Blends</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Vests & Waistcoats</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Leather Coats</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li class="mega-menu-col col-lg-6">
-                                                            <ul>
-                                                                <li><span class="submenu-title">Suits & Blazers</span>
-                                                                </li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Blazers</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Suit Jackets</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Suit Pants</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Suits</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Vests</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Tailor-made Suits</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Cover-Ups</a></li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li class="mega-menu-col col-lg-5">
-                                                    <div class="header-banner2">
-                                                        <img src="/assets/imgs/banner/menu-banner-4.jpg"
-                                                            alt="menu_banner1">
-                                                        <div class="banne_info">
-                                                            <h6>10% Off</h6>
-                                                            <h4>New Arrival</h4>
-                                                            <a href="#">Shop now</a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li class="has-children">
-                                        <a href="shop-grid-right.html"><i class="evara-font-smartphone"></i>
-                                            Cellphones</a>
-                                        <div class="dropdown-menu">
-                                            <ul class="mega-menu d-lg-flex">
-                                                <li class="mega-menu-col col-lg-7">
-                                                    <ul class="d-lg-flex">
-                                                        <li class="mega-menu-col col-lg-6">
-                                                            <ul>
-                                                                <li><span class="submenu-title">Hot & Trending</span>
-                                                                </li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Cellphones</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">iPhones</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Refurbished Phones</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Mobile Phone</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Mobile Phone Parts</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Phone Bags & Cases</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Communication Equipments</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Walkie Talkie</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li class="mega-menu-col col-lg-6">
-                                                            <ul>
-                                                                <li><span class="submenu-title">Accessories</span></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Screen Protectors</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Wire Chargers</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Wireless Chargers</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Car Chargers</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Power Bank</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Armbands</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Dust Plug</a></li>
-                                                                <li><a class="dropdown-item nav-link nav_item"
-                                                                        href="#">Signal Boosters</a></li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li class="mega-menu-col col-lg-5">
-                                                    <div class="header-banner2">
-                                                        <img src="/assets/imgs/banner/menu-banner-5.jpg"
-                                                            alt="menu_banner1">
-                                                        <div class="banne_info">
-                                                            <h6>10% Off</h6>
-                                                            <h4>New Arrival</h4>
-                                                            <a href="#">Shop now</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="header-banner2">
-                                                        <img src="/assets/imgs/banner/menu-banner-6.jpg"
-                                                            alt="menu_banner2">
-                                                        <div class="banne_info">
-                                                            <h6>15% Off</h6>
-                                                            <h4>Hot Deals</h4>
-                                                            <a href="#">Shop now</a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Computer &
-                                            Office</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Consumer
-                                            Electronics</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-diamond"></i>Jewelry &
-                                            Accessories</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a>
-                                    </li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a>
-                                    </li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother &
-                                            Kids</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a>
+                                    <li>
+                                        <a href="#">Men's Perfumes</a>
                                     </li>
                                     <li>
-                                        <ul class="more_slide_open" style="display: none;">
-                                            <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Beauty,
-                                                    Health</a></li>
-                                            <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Bags and
-                                                    Shoes</a></li>
-                                            <li><a href="shop-grid-right.html"><i
-                                                        class="evara-font-diamond"></i>Consumer Electronics</a></li>
-                                            <li><a href="shop-grid-right.html"><i
-                                                        class="evara-font-home"></i>Automobiles & Motorcycles</a></li>
-                                        </ul>
+                                        <a href="#">Women's Perfumes</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Unisex Perfumes</a>
                                     </li>
                                 </ul>
                                 <div class="more_categories">Show more...</div>
@@ -425,134 +178,15 @@
                         <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
                             <nav>
                                 <ul>
-                                    <li><a class="active" href="index.html">Home <i class="fi-rs-angle-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="index.html">Home 1</a></li>
-                                            <li><a href="index-2.html">Home 2</a></li>
-                                            <li><a href="index-3.html">Home 3</a></li>
-                                            <li><a href="index-4.html">Home 4</a></li>
-                                        </ul>
+                                    <li><a class="active" href="#">Home</a>
                                     </li>
+                                    <li><a href="/home/shop">Shop</a></li>
                                     <li>
-                                        <a href="page-about.html">About</a>
-                                    </li>
-                                    <li><a href="shop-grid-right.html">Shop <i class="fi-rs-angle-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
-                                            <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
-                                            <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
-                                            <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
-                                            <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                                            <li><a href="#">Single Product <i class="fi-rs-angle-right"></i></a>
-                                                <ul class="level-menu">
-                                                    <li><a href="shop-product-right.html">Product – Right Sidebar</a>
-                                                    </li>
-                                                    <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
-                                                    <li><a href="shop-product-full.html">Product – No sidebar</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="shop-filter.html">Shop – Filter</a></li>
-                                            <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                            <li><a href="shop-cart.html">Shop – Cart</a></li>
-                                            <li><a href="shop-checkout.html">Shop – Checkout</a></li>
-                                            <li><a href="shop-compare.html">Shop – Compare</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="position-static"><a href="#">Mega menu <i
-                                                class="fi-rs-angle-down"></i></a>
-                                        <ul class="mega-menu">
-                                            <li class="sub-mega-menu sub-mega-menu-width-22">
-                                                <a class="menu-title" href="#">Women's Fashion</a>
-                                                <ul>
-                                                    <li><a href="shop-product-right.html">Dresses</a></li>
-                                                    <li><a href="shop-product-right.html">Blouses & Shirts</a></li>
-                                                    <li><a href="shop-product-right.html">Hoodies & Sweatshirts</a></li>
-                                                    <li><a href="shop-product-right.html">Wedding Dresses</a></li>
-                                                    <li><a href="shop-product-right.html">Prom Dresses</a></li>
-                                                    <li><a href="shop-product-right.html">Cosplay Costumes</a></li>
-                                                </ul>
-                                            </li>
-                                            <li class="sub-mega-menu sub-mega-menu-width-22">
-                                                <a class="menu-title" href="#">Men's Fashion</a>
-                                                <ul>
-                                                    <li><a href="shop-product-right.html">Jackets</a></li>
-                                                    <li><a href="shop-product-right.html">Casual Faux Leather</a></li>
-                                                    <li><a href="shop-product-right.html">Genuine Leather</a></li>
-                                                    <li><a href="shop-product-right.html">Casual Pants</a></li>
-                                                    <li><a href="shop-product-right.html">Sweatpants</a></li>
-                                                    <li><a href="shop-product-right.html">Harem Pants</a></li>
-                                                </ul>
-                                            </li>
-                                            <li class="sub-mega-menu sub-mega-menu-width-22">
-                                                <a class="menu-title" href="#">Technology</a>
-                                                <ul>
-                                                    <li><a href="shop-product-right.html">Gaming Laptops</a></li>
-                                                    <li><a href="shop-product-right.html">Ultraslim Laptops</a></li>
-                                                    <li><a href="shop-product-right.html">Tablets</a></li>
-                                                    <li><a href="shop-product-right.html">Laptop Accessories</a></li>
-                                                    <li><a href="shop-product-right.html">Tablet Accessories</a></li>
-                                                </ul>
-                                            </li>
-                                            <li class="sub-mega-menu sub-mega-menu-width-34">
-                                                <div class="menu-banner-wrap">
-                                                    <a href="shop-product-right.html"><img
-                                                            src="/assets/imgs/banner/menu-banner.jpg" alt="Evara"></a>
-                                                    <div class="menu-banner-content">
-                                                        <h4>Hot deals</h4>
-                                                        <h3>Don't miss<br> Trending</h3>
-                                                        <div class="menu-banner-price">
-                                                            <span class="new-price text-success">Save to 50%</span>
-                                                        </div>
-                                                        <div class="menu-banner-btn">
-                                                            <a href="shop-product-right.html">Shop now</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="menu-banner-discount">
-                                                        <h3>
-                                                            <span>35%</span>
-                                                            off
-                                                        </h3>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="blog-category-grid.html">Blog <i class="fi-rs-angle-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
-                                            <li><a href="blog-category-list.html">Blog Category List</a></li>
-                                            <li><a href="blog-category-big.html">Blog Category Big</a></li>
-                                            <li><a href="blog-category-fullwidth.html">Blog Category Wide</a></li>
-                                            <li><a href="#">Single Post <i class="fi-rs-angle-right"></i></a>
-                                                <ul class="level-menu level-menu-modify">
-                                                    <li><a href="blog-post-left.html">Left Sidebar</a></li>
-                                                    <li><a href="blog-post-right.html">Right Sidebar</a></li>
-                                                    <li><a href="blog-post-fullwidth.html">No Sidebar</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="#">Pages <i class="fi-rs-angle-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="page-about.html">About Us</a></li>
-                                            <li><a href="page-contact.html">Contact</a></li>
-                                            <li><a href="page-account.html">My Account</a></li>
-                                            <li><a href="page-login-register.html">login/register</a></li>
-                                            <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
-                                            <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                                            <li><a href="page-terms.html">Terms of Service</a></li>
-                                            <li><a href="page-404.html">404 Page</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="page-contact.html">Contact</a>
+                                        <a href="#">About</a>
                                     </li>
                                 </ul>
                             </nav>
                         </div>
-                    </div>
-                    <div class="hotline d-none d-lg-block">
-                        <p><i class="fi-rs-headset"></i><span>Hotline</span> 1900 - 888 </p>
                     </div>
                     <p class="mobile-promotion">Happy <span class="text-brand">Mother's Day</span>. Big Sale Up to 40%
                     </p>
@@ -801,8 +435,9 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
-                    <span></span> Shop
+                    <a href="/home" rel="nofollow">Home</a>
+                    <span></span>
+                    <a href="/home/shop" rel="nofollow">Shop</a>
                     <span></span> Your Cart
                 </div>
             </div>
@@ -897,287 +532,11 @@
 
                         </div>
                         <div class="cart-action text-end">
-                            <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
-                            <a class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                            <a class="btn" href="/home"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
                         </div>
                         <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
                         <div class="row mb-50">
                             <div class="col-lg-6 col-md-12">
-                                <div class="heading_s1 mb-3">
-                                    <h4>Calculate Shipping</h4>
-                                </div>
-                                <p class="mt-15 mb-30">Flat rate: <span class="font-xl text-brand fw-900">5%</span></p>
-                                <form class="field_form shipping_calculator">
-                                    <div class="form-row">
-                                        <div class="form-group col-lg-12">
-                                            <div class="custom_select">
-                                                <select class="form-control select-active">
-                                                    <option value="">Choose a option...</option>
-                                                    <option value="AX">Aland Islands</option>
-                                                    <option value="AF">Afghanistan</option>
-                                                    <option value="AL">Albania</option>
-                                                    <option value="DZ">Algeria</option>
-                                                    <option value="AD">Andorra</option>
-                                                    <option value="AO">Angola</option>
-                                                    <option value="AI">Anguilla</option>
-                                                    <option value="AQ">Antarctica</option>
-                                                    <option value="AG">Antigua and Barbuda</option>
-                                                    <option value="AR">Argentina</option>
-                                                    <option value="AM">Armenia</option>
-                                                    <option value="AW">Aruba</option>
-                                                    <option value="AU">Australia</option>
-                                                    <option value="AT">Austria</option>
-                                                    <option value="AZ">Azerbaijan</option>
-                                                    <option value="BS">Bahamas</option>
-                                                    <option value="BH">Bahrain</option>
-                                                    <option value="BD">Bangladesh</option>
-                                                    <option value="BB">Barbados</option>
-                                                    <option value="BY">Belarus</option>
-                                                    <option value="PW">Belau</option>
-                                                    <option value="BE">Belgium</option>
-                                                    <option value="BZ">Belize</option>
-                                                    <option value="BJ">Benin</option>
-                                                    <option value="BM">Bermuda</option>
-                                                    <option value="BT">Bhutan</option>
-                                                    <option value="BO">Bolivia</option>
-                                                    <option value="BQ">Bonaire, Saint Eustatius and Saba</option>
-                                                    <option value="BA">Bosnia and Herzegovina</option>
-                                                    <option value="BW">Botswana</option>
-                                                    <option value="BV">Bouvet Island</option>
-                                                    <option value="BR">Brazil</option>
-                                                    <option value="IO">British Indian Ocean Territory</option>
-                                                    <option value="VG">British Virgin Islands</option>
-                                                    <option value="BN">Brunei</option>
-                                                    <option value="BG">Bulgaria</option>
-                                                    <option value="BF">Burkina Faso</option>
-                                                    <option value="BI">Burundi</option>
-                                                    <option value="KH">Cambodia</option>
-                                                    <option value="CM">Cameroon</option>
-                                                    <option value="CA">Canada</option>
-                                                    <option value="CV">Cape Verde</option>
-                                                    <option value="KY">Cayman Islands</option>
-                                                    <option value="CF">Central African Republic</option>
-                                                    <option value="TD">Chad</option>
-                                                    <option value="CL">Chile</option>
-                                                    <option value="CN">China</option>
-                                                    <option value="CX">Christmas Island</option>
-                                                    <option value="CC">Cocos (Keeling) Islands</option>
-                                                    <option value="CO">Colombia</option>
-                                                    <option value="KM">Comoros</option>
-                                                    <option value="CG">Congo (Brazzaville)</option>
-                                                    <option value="CD">Congo (Kinshasa)</option>
-                                                    <option value="CK">Cook Islands</option>
-                                                    <option value="CR">Costa Rica</option>
-                                                    <option value="HR">Croatia</option>
-                                                    <option value="CU">Cuba</option>
-                                                    <option value="CW">CuraÇao</option>
-                                                    <option value="CY">Cyprus</option>
-                                                    <option value="CZ">Czech Republic</option>
-                                                    <option value="DK">Denmark</option>
-                                                    <option value="DJ">Djibouti</option>
-                                                    <option value="DM">Dominica</option>
-                                                    <option value="DO">Dominican Republic</option>
-                                                    <option value="EC">Ecuador</option>
-                                                    <option value="EG">Egypt</option>
-                                                    <option value="SV">El Salvador</option>
-                                                    <option value="GQ">Equatorial Guinea</option>
-                                                    <option value="ER">Eritrea</option>
-                                                    <option value="EE">Estonia</option>
-                                                    <option value="ET">Ethiopia</option>
-                                                    <option value="FK">Falkland Islands</option>
-                                                    <option value="FO">Faroe Islands</option>
-                                                    <option value="FJ">Fiji</option>
-                                                    <option value="FI">Finland</option>
-                                                    <option value="FR">France</option>
-                                                    <option value="GF">French Guiana</option>
-                                                    <option value="PF">French Polynesia</option>
-                                                    <option value="TF">French Southern Territories</option>
-                                                    <option value="GA">Gabon</option>
-                                                    <option value="GM">Gambia</option>
-                                                    <option value="GE">Georgia</option>
-                                                    <option value="DE">Germany</option>
-                                                    <option value="GH">Ghana</option>
-                                                    <option value="GI">Gibraltar</option>
-                                                    <option value="GR">Greece</option>
-                                                    <option value="GL">Greenland</option>
-                                                    <option value="GD">Grenada</option>
-                                                    <option value="GP">Guadeloupe</option>
-                                                    <option value="GT">Guatemala</option>
-                                                    <option value="GG">Guernsey</option>
-                                                    <option value="GN">Guinea</option>
-                                                    <option value="GW">Guinea-Bissau</option>
-                                                    <option value="GY">Guyana</option>
-                                                    <option value="HT">Haiti</option>
-                                                    <option value="HM">Heard Island and McDonald Islands</option>
-                                                    <option value="HN">Honduras</option>
-                                                    <option value="HK">Hong Kong</option>
-                                                    <option value="HU">Hungary</option>
-                                                    <option value="IS">Iceland</option>
-                                                    <option value="IN">India</option>
-                                                    <option value="ID">Indonesia</option>
-                                                    <option value="IR">Iran</option>
-                                                    <option value="IQ">Iraq</option>
-                                                    <option value="IM">Isle of Man</option>
-                                                    <option value="IL">Israel</option>
-                                                    <option value="IT">Italy</option>
-                                                    <option value="CI">Ivory Coast</option>
-                                                    <option value="JM">Jamaica</option>
-                                                    <option value="JP">Japan</option>
-                                                    <option value="JE">Jersey</option>
-                                                    <option value="JO">Jordan</option>
-                                                    <option value="KZ">Kazakhstan</option>
-                                                    <option value="KE">Kenya</option>
-                                                    <option value="KI">Kiribati</option>
-                                                    <option value="KW">Kuwait</option>
-                                                    <option value="KG">Kyrgyzstan</option>
-                                                    <option value="LA">Laos</option>
-                                                    <option value="LV">Latvia</option>
-                                                    <option value="LB">Lebanon</option>
-                                                    <option value="LS">Lesotho</option>
-                                                    <option value="LR">Liberia</option>
-                                                    <option value="LY">Libya</option>
-                                                    <option value="LI">Liechtenstein</option>
-                                                    <option value="LT">Lithuania</option>
-                                                    <option value="LU">Luxembourg</option>
-                                                    <option value="MO">Macao S.A.R., China</option>
-                                                    <option value="MK">Macedonia</option>
-                                                    <option value="MG">Madagascar</option>
-                                                    <option value="MW">Malawi</option>
-                                                    <option value="MY">Malaysia</option>
-                                                    <option value="MV">Maldives</option>
-                                                    <option value="ML">Mali</option>
-                                                    <option value="MT">Malta</option>
-                                                    <option value="MH">Marshall Islands</option>
-                                                    <option value="MQ">Martinique</option>
-                                                    <option value="MR">Mauritania</option>
-                                                    <option value="MU">Mauritius</option>
-                                                    <option value="YT">Mayotte</option>
-                                                    <option value="MX">Mexico</option>
-                                                    <option value="FM">Micronesia</option>
-                                                    <option value="MD">Moldova</option>
-                                                    <option value="MC">Monaco</option>
-                                                    <option value="MN">Mongolia</option>
-                                                    <option value="ME">Montenegro</option>
-                                                    <option value="MS">Montserrat</option>
-                                                    <option value="MA">Morocco</option>
-                                                    <option value="MZ">Mozambique</option>
-                                                    <option value="MM">Myanmar</option>
-                                                    <option value="NA">Namibia</option>
-                                                    <option value="NR">Nauru</option>
-                                                    <option value="NP">Nepal</option>
-                                                    <option value="NL">Netherlands</option>
-                                                    <option value="AN">Netherlands Antilles</option>
-                                                    <option value="NC">New Caledonia</option>
-                                                    <option value="NZ">New Zealand</option>
-                                                    <option value="NI">Nicaragua</option>
-                                                    <option value="NE">Niger</option>
-                                                    <option value="NG">Nigeria</option>
-                                                    <option value="NU">Niue</option>
-                                                    <option value="NF">Norfolk Island</option>
-                                                    <option value="KP">North Korea</option>
-                                                    <option value="NO">Norway</option>
-                                                    <option value="OM">Oman</option>
-                                                    <option value="PK">Pakistan</option>
-                                                    <option value="PS">Palestinian Territory</option>
-                                                    <option value="PA">Panama</option>
-                                                    <option value="PG">Papua New Guinea</option>
-                                                    <option value="PY">Paraguay</option>
-                                                    <option value="PE">Peru</option>
-                                                    <option value="PH">Philippines</option>
-                                                    <option value="PN">Pitcairn</option>
-                                                    <option value="PL">Poland</option>
-                                                    <option value="PT">Portugal</option>
-                                                    <option value="QA">Qatar</option>
-                                                    <option value="IE">Republic of Ireland</option>
-                                                    <option value="RE">Reunion</option>
-                                                    <option value="RO">Romania</option>
-                                                    <option value="RU">Russia</option>
-                                                    <option value="RW">Rwanda</option>
-                                                    <option value="ST">São Tomé and Príncipe</option>
-                                                    <option value="BL">Saint Barthélemy</option>
-                                                    <option value="SH">Saint Helena</option>
-                                                    <option value="KN">Saint Kitts and Nevis</option>
-                                                    <option value="LC">Saint Lucia</option>
-                                                    <option value="SX">Saint Martin (Dutch part)</option>
-                                                    <option value="MF">Saint Martin (French part)</option>
-                                                    <option value="PM">Saint Pierre and Miquelon</option>
-                                                    <option value="VC">Saint Vincent and the Grenadines</option>
-                                                    <option value="SM">San Marino</option>
-                                                    <option value="SA">Saudi Arabia</option>
-                                                    <option value="SN">Senegal</option>
-                                                    <option value="RS">Serbia</option>
-                                                    <option value="SC">Seychelles</option>
-                                                    <option value="SL">Sierra Leone</option>
-                                                    <option value="SG">Singapore</option>
-                                                    <option value="SK">Slovakia</option>
-                                                    <option value="SI">Slovenia</option>
-                                                    <option value="SB">Solomon Islands</option>
-                                                    <option value="SO">Somalia</option>
-                                                    <option value="ZA">South Africa</option>
-                                                    <option value="GS">South Georgia/Sandwich Islands</option>
-                                                    <option value="KR">South Korea</option>
-                                                    <option value="SS">South Sudan</option>
-                                                    <option value="ES">Spain</option>
-                                                    <option value="LK">Sri Lanka</option>
-                                                    <option value="SD">Sudan</option>
-                                                    <option value="SR">Suriname</option>
-                                                    <option value="SJ">Svalbard and Jan Mayen</option>
-                                                    <option value="SZ">Swaziland</option>
-                                                    <option value="SE">Sweden</option>
-                                                    <option value="CH">Switzerland</option>
-                                                    <option value="SY">Syria</option>
-                                                    <option value="TW">Taiwan</option>
-                                                    <option value="TJ">Tajikistan</option>
-                                                    <option value="TZ">Tanzania</option>
-                                                    <option value="TH">Thailand</option>
-                                                    <option value="TL">Timor-Leste</option>
-                                                    <option value="TG">Togo</option>
-                                                    <option value="TK">Tokelau</option>
-                                                    <option value="TO">Tonga</option>
-                                                    <option value="TT">Trinidad and Tobago</option>
-                                                    <option value="TN">Tunisia</option>
-                                                    <option value="TR">Turkey</option>
-                                                    <option value="TM">Turkmenistan</option>
-                                                    <option value="TC">Turks and Caicos Islands</option>
-                                                    <option value="TV">Tuvalu</option>
-                                                    <option value="UG">Uganda</option>
-                                                    <option value="UA">Ukraine</option>
-                                                    <option value="AE">United Arab Emirates</option>
-                                                    <option value="GB">United Kingdom (UK)</option>
-                                                    <option value="US">USA (US)</option>
-                                                    <option value="UY">Uruguay</option>
-                                                    <option value="UZ">Uzbekistan</option>
-                                                    <option value="VU">Vanuatu</option>
-                                                    <option value="VA">Vatican</option>
-                                                    <option value="VE">Venezuela</option>
-                                                    <option value="VN">Vietnam</option>
-                                                    <option value="WF">Wallis and Futuna</option>
-                                                    <option value="EH">Western Sahara</option>
-                                                    <option value="WS">Western Samoa</option>
-                                                    <option value="YE">Yemen</option>
-                                                    <option value="ZM">Zambia</option>
-                                                    <option value="ZW">Zimbabwe</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-row row">
-                                        <div class="form-group col-lg-6">
-                                            <input required="required" placeholder="State / Country" name="name"
-                                                type="text">
-                                        </div>
-                                        <div class="form-group col-lg-6">
-                                            <input required="required" placeholder="PostCode / ZIP" name="name"
-                                                type="text">
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-lg-12">
-                                            <button class="btn  btn-sm"><i
-                                                    class="fi-rs-shuffle mr-10"></i>Update</button>
-                                        </div>
-                                    </div>
-                                </form>
                                 <div class="mb-30 mt-50">
                                     <div class="heading_s1 mb-3">
                                         <h4>Apply Coupon</h4>
@@ -1194,17 +553,39 @@
                                                         <div class="form-group col-lg-6">
                                                             <button id="applyCouponBtn" class="btn btn-sm"><i
                                                                     class="fi-rs-label mr-10"></i>Apply</button>
-                                                                    <button id="removeCouponBtn" class="btn btn-sm" style="display: none;"><i
-                                                                        class="fi-rs-label mr-10"></i>Remove</button>
-                                                            
+                                                            <button id="removeCouponBtn" class="btn btn-sm"
+                                                                style="display: none;"><i
+                                                                    class="fi-rs-label mr-10"></i>Remove</button>
                                                         </div>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
+                                    <button id="viewCouponsBtn" class="btn btn-sm btn-primary">View Coupons</button>
                                 </div>
                             </div>
+                            <!-- Coupons Modal -->
+                            <div id="couponsModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h5 class="modal-title">Available Coupons</h5>
+                                    <div class="modal-body">
+                                        <!-- List of available coupons -->
+                                        <% coupons.forEach((coupon, index)=> { %>
+                                            <% if (coupon.isActive) { %>
+                                                <div class="card border-primary mb-4">
+                                                    <div class="card-body" style="background-color: #e3f1ff;">
+                                                        <p class="card-text">Coupon Code: <%= coupon.couponCode %></p>
+                                                        <button class="btn btn-primary btn-sm apply-coupon-btn" data-coupon-code="<%= coupon.couponCode %>">Apply</button>
+                                                    </div>
+                                                </div>
+                                            <% } %>
+                                        <% }) %>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-lg-6 col-md-12">
                                 <div class="border p-md-4 p-30 border-radius cart-totals">
                                     <div class="heading_s1 mb-3">
@@ -1280,7 +661,7 @@
                                 <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4>
                             </div>
                             <div class="col my-4 my-md-0 des">
-                                <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>$25 coupon for first
+                                <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>₹500 coupon for first
                                         shopping.</strong></h5>
                             </div>
                         </div>
@@ -1292,77 +673,6 @@
                             <button class="btn bg-dark text-white" type="submit">Subscribe</button>
                         </form>
                         <!-- End Subscribe Form -->
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="section-padding footer-mid">
-            <div class="container pt-15 pb-20">
-                <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="widget-about font-md mb-md-5 mb-lg-0">
-                            <div class="logo logo-width-1 wow fadeIn animated">
-                                <a href="index.html"><img src="/assets/imgs/theme/logo.svg" alt="logo"></a>
-                            </div>
-                            <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
-                            <p class="wow fadeIn animated">
-                                <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
-                            </p>
-                            <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
-                            <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                                <a href="#"><img src="/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">About</h5>
-                        <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Delivery Information</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms &amp; Conditions</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Support Center</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-2  col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">My Account</h5>
-                        <ul class="footer-list wow fadeIn animated">
-                            <li><a href="#">Sign In</a></li>
-                            <li><a href="#">View Cart</a></li>
-                            <li><a href="#">My Wishlist</a></li>
-                            <li><a href="#">Track My Order</a></li>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Order</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-4">
-                        <h5 class="widget-title wow fadeIn animated">Install App</h5>
-                        <div class="row">
-                            <div class="col-md-8 col-lg-12">
-                                <p class="wow fadeIn animated">From App Store or Google Play</p>
-                                <div class="download-app wow fadeIn animated">
-                                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active"
-                                            src="/assets/imgs/theme/app-store.jpg" alt=""></a>
-                                    <a href="#" class="hover-up"><img src="/assets/imgs/theme/google-play.jpg"
-                                            alt=""></a>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
-                                <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
-                                <img class="wow fadeIn animated" src="/assets/imgs/theme/payment-method.png" alt="">
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1386,20 +696,6 @@
         </div>
     </footer>
     <!-- Preloader Start -->
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="text-center">
-                    <h5 class="mb-5">Now Loading</h5>
-                    <div class="loader">
-                        <div class="bar bar1"></div>
-                        <div class="bar bar2"></div>
-                        <div class="bar bar3"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Vendor JS-->
     <script>
         function removeCartItem(productId) {
@@ -1414,7 +710,6 @@
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // If confirmed, send request to remove the item with productId
                     fetch('/cart/remove-item', {
                         method: 'POST',
                         headers: {
@@ -1424,23 +719,19 @@
                     })
                         .then(response => {
                             if (response.ok) {
-                                // If the item is removed successfully, remove it from the DOM
                                 const itemRow = document.getElementById('item-' + productId);
                                 if (itemRow) {
                                     itemRow.remove();
                                 }
-                                // Check if all items are removed
                                 const remainingItems = document.querySelectorAll('.table.shopping-summery tbody tr');
                                 console.log(remainingItems.length);
                                 if (remainingItems.length === 1) {
-                                    // If no items remaining, display "Cart is empty" message
                                     window.location.reload();
                                     const emptyCartMessage = document.querySelector('.empty-cart');
                                     if (emptyCartMessage) {
                                         emptyCartMessage.style.display = 'block';
                                     }
                                 }
-                                // Show success message
                                 Swal.fire({
                                     title: "Deleted!",
                                     text: "Your item has been removed from the cart.",
@@ -1448,7 +739,6 @@
                                 });
                             } else {
                                 console.error('Failed to remove item from cart');
-                                // Show error message
                                 Swal.fire({
                                     title: "Error",
                                     text: "Failed to remove item from cart.",
@@ -1458,7 +748,6 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            // Show error message
                             Swal.fire({
                                 title: "Error",
                                 text: "An error occurred while removing the item.",
@@ -1471,19 +760,21 @@
 
         function updateQuantity(productId, newQuantity) {
             if (newQuantity === 0) {
-                // If new quantity is zero, remove the item from the cart
                 removeCartItem(productId);
             } else if (newQuantity > 5) {
-                // Show SweetAlert if quantity exceeds the limit
                 Swal.fire({
                     icon: 'error',
                     title: 'Quantity Limit Exceeded',
                     text: 'You can order a maximum of 5 quantities for the same product.',
                     confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
                 });
-                return; // Prevent updating the quantity if it exceeds the limit
+
+                return;
             } else {
-                // Otherwise, update the quantity
                 const data = { productId, quantity: newQuantity };
                 fetch('/cart/update-cart-item-quantity', {
                     method: 'POST',
@@ -1495,16 +786,14 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.error) {
-                            // Show SweetAlert if there is an error
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
                                 text: data.error,
                                 confirmButtonText: 'OK',
-                                allowOutsideClick: false // Prevent closing the alert by clicking outside
+                                allowOutsideClick: false
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    // Reload the page only if user confirms
                                     window.location.reload();
                                 }
                             });
@@ -1512,9 +801,9 @@
                         } else {
                             window.location.reload();
                             document.querySelector(`#item-${productId} .qty-val`).innerText = data.quantity;
-                            document.querySelector(`#item-${productId} .text-right span`).innerText = `₹${data.price}`; // Update item price
-                            document.querySelector('.cart_total_amount .font-lg').innerText = `₹${data.totalPrice}`; // Update total price
-                            document.querySelector('.cart_total_amount .font-xl').innerText = `₹${data.totalPrice}`; // Update total price
+                            document.querySelector(`#item-${productId} .text-right span`).innerText = `₹${data.price}`;
+                            document.querySelector('.cart_total_amount .font-lg').innerText = `₹${data.totalPrice}`;
+                            document.querySelector('.cart_total_amount .font-xl').innerText = `₹${data.totalPrice}`;
                         }
                     })
                     .catch(error => {
@@ -1526,7 +815,6 @@
 
 
         function removeAllItemsFromCart() {
-            // Show confirmation dialog
             Swal.fire({
                 title: "Are you sure?",
                 text: "This will remove all items from your cart!",
@@ -1537,7 +825,6 @@
                 confirmButtonText: "Yes, delete all items!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Send request to remove all items from the cart
                     fetch('/cart/clear-cart', {
                         method: 'POST',
                         headers: {
@@ -1546,8 +833,8 @@
                     })
                         .then(response => {
                             if (response.ok) {
-                                // If successful, reload the page or update UI as needed
-                                window.location.reload(); // Example: Reload the page
+
+                                window.location.reload(); 
                                 Swal.fire({
                                     title: "Deleted!",
                                     text: "All items have been removed from the cart.",
@@ -1555,7 +842,6 @@
                                 });
                             } else {
                                 console.error('Failed to remove all items from cart');
-                                // Show error message
                                 Swal.fire({
                                     title: "Error",
                                     text: "Failed to remove all items from cart.",
@@ -1565,7 +851,6 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            // Show error message
                             Swal.fire({
                                 title: "Error",
                                 text: "An error occurred while removing all items.",
@@ -1577,110 +862,169 @@
         }
 
         document.getElementById('applyCouponBtn').addEventListener('click', function (event) {
-    event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
-    // Get the coupon code from the input field
-    const couponCodeInput = document.getElementById('couponInput');
-    const couponCode = couponCodeInput.value.trim();
+            const couponCodeInput = document.getElementById('couponInput');
+            const couponCode = couponCodeInput.value.trim();
 
-    // Check if coupon code is empty
-    if (!couponCode) {
-        Swal.fire({
-            title: "Coupon Code Required",
-            text: "Please enter a coupon code.",
-            icon: "error"
+            if (!couponCode) {
+                Swal.fire({
+                    title: "Coupon Code Required",
+                    text: "Please enter a coupon code.",
+                    icon: "error"
+                });
+                return;
+            }
+
+            fetch('/cart/apply-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ couponCode: couponCode })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelector('.cart_total_amount .font-xl').innerText = `₹${data.updatedTotal}`;
+                    document.querySelector('.cart_total_amount.coupon_discount_amount').innerText = `₹${data.discountPrice}`;
+                    const applyButton = document.getElementById('applyCouponBtn');
+                    const removeButton = document.getElementById('removeCouponBtn');
+                    if (data.discountPrice) {
+                        removeButton.style.display = 'inline-block';
+                        applyButton.style.display = 'none';
+                    } else {
+                        applyButton.style.display = 'inline-block';
+                        removeButton.style.display = 'none';
+                    }
+                    Swal.fire({
+                        title: "Coupon Applied!",
+                        text: "Your coupon has been applied successfully.",
+                        icon: "success"
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "An error occurred while applying the coupon.",
+                        icon: "error"
+                    });
+                });
+
+            couponCodeInput.value = couponCode;
         });
-        return;
-    }
 
-    // Send fetch request to apply coupon
-    fetch('/cart/apply-coupon', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ couponCode: couponCode })
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Update total price on the page
-        document.querySelector('.cart_total_amount .font-xl').innerText = `₹${data.updatedTotal}`;
-        document.querySelector('.cart_total_amount.coupon_discount_amount').innerText = `₹${data.discountPrice}`;
-        const applyButton = document.getElementById('applyCouponBtn');
         const removeButton = document.getElementById('removeCouponBtn');
-        if (data.discountPrice) {
-        // If coupon is applied, show the Remove button and hide the Apply button
-        removeButton.style.display = 'inline-block';
-        applyButton.style.display = 'none';
-    } else {
-        // If no coupon is applied, show the Apply button and hide the Remove button
-        applyButton.style.display = 'inline-block';
-        removeButton.style.display = 'none';
-    }
-        // Show success message
-        Swal.fire({
-            title: "Coupon Applied!",
-            text: "Your coupon has been applied successfully.",
-            icon: "success"
+
+        removeButton.addEventListener('click', function () {
+            fetch('/cart/remove-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        updateUI({ couponApplied: false });
+                        Swal.fire({
+                            title: "Coupon Removed",
+                            text: "Your coupon has been removed successfully.",
+                            icon: "success"
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Failed to remove coupon.",
+                            icon: "error"
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "An error occurred while removing the coupon.",
+                        icon: "error"
+                    });
+                });
         });
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // Show error message
-        Swal.fire({
-            title: "Error",
-            text: "An error occurred while applying the coupon.",
-            icon: "error"
-        });
-    });
-
-    // Retain the entered coupon value in the input field
-    couponCodeInput.value = couponCode;
-});
-
-
-    // Get a reference to the Remove button
-const removeButton = document.getElementById('removeCouponBtn');
-
-// Add event listener to the Remove button
-removeButton.addEventListener('click', function() {
-    // Send fetch request to remove coupon
-    fetch('/cart/remove-coupon', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            // If the coupon is removed successfully, update UI accordingly
-            updateUI({ couponApplied: false }); // Assuming coupon is no longer applied
-            Swal.fire({
-                title: "Coupon Removed",
-                text: "Your coupon has been removed successfully.",
-                icon: "success"
-            });
-        } else {
-            // If there's an error, display error message
-            Swal.fire({
-                title: "Error",
-                text: "Failed to remove coupon.",
-                icon: "error"
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // Show error message
-        Swal.fire({
-            title: "Error",
-            text: "An error occurred while removing the coupon.",
-            icon: "error"
-        });
-    });
-});
 
     </script>
+    <script>
+    var modal = document.getElementById('couponsModal');
+
+    var btn = document.getElementById("viewCouponsBtn");
+
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const applyCouponBtns = document.querySelectorAll('.apply-coupon-btn');
+        var modal = document.getElementById('couponsModal');
+        
+
+        applyCouponBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const couponCode = btn.getAttribute('data-coupon-code');
+
+                fetch('/cart/apply-coupon', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ couponCode: couponCode })
+                })
+                .then(response => response.json())
+                .then(data => {
+
+                    modal.style.display = "none";
+                    document.querySelector('.cart_total_amount .font-xl').innerText = `₹${data.updatedTotal}`;
+                    document.querySelector('.cart_total_amount.coupon_discount_amount').innerText = `₹${data.discountPrice}`;
+                    const applyButton = document.getElementById('applyCouponBtn');
+                    const removeButton = document.getElementById('removeCouponBtn');
+                    if (data.discountPrice) {
+                        // If coupon is applied, show the Remove button and hide the Apply button
+                        removeButton.style.display = 'inline-block';
+                        applyButton.style.display = 'none';
+                        document.getElementById('couponInput').value = couponCode;
+                    } else {
+                        // If no coupon is applied, show the Apply button and hide the Remove button
+                        applyButton.style.display = 'inline-block';
+                        removeButton.style.display = 'none';
+                    }
+                    Swal.fire({
+                        title: "Coupon Applied!",
+                        text: "Your coupon has been applied successfully.",
+                        icon: "success"
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "An error occurred while applying the coupon.",
+                        icon: "error"
+                    });
+                });
+            });
+        });
+    });
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/assets/js/vendor/modernizr-3.6.0.min.js"></script>

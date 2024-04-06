@@ -15,6 +15,38 @@
     <link rel="shortcut icon" type="image/x-icon" href="/adminAssets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/adminAssets/css/main.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        .interval-button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .selected {
+            background-color: rgba(255, 99, 132, 1);
+        }
+
+        #weeklyButton {
+            background-color: rgba(54, 162, 235, 1);
+        }
+
+        #monthlyButton {
+            background-color: rgb(255, 152, 49);
+        }
+
+        #yearlyButton {
+            background-color: rgb(0, 163, 14);
+        }
+
+        #chartHeading {
+            font-size: 22px;
+            font-weight: 800;
+        }
+    </style>
 </head>
 
 <body>
@@ -36,15 +68,15 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-products-list.html"> <i
-                            class="icon material-icons md-shopping_bag"></i>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/page-products-list"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                    <div class="submenu">
-                        <a href="/admin/page-products-list">Product List</a>
-                        <a href="/admin/categories">Categories</a>
-                    </div>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Categories</span>
+                    </a>
                 </li>
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-person"></i>
@@ -64,32 +96,6 @@
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/sales"> <i class="icon material-icons md-home"></i>
                         <span class="text">Sales</span>
-                    </a>    
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-transactions-1.html"> <i
-                            class="icon material-icons md-monetization_on"></i>
-                        <span class="text">Transactions</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-transactions-1.html">Transaction 1</a>
-                        <a href="page-transactions-2.html">Transaction 2</a>
-                        <a href="page-transactions-details.html">Transaction Details</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
-                        <span class="text">Account</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-account-login.html">User login</a>
-                        <a href="page-account-register.html">User registration</a>
-                        <a href="page-error-404.html">Error 404</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
-                        <span class="text">Reviews</span>
                     </a>
                 </li>
                 <li class="menu-item">
@@ -97,33 +103,8 @@
                         <span class="text">Users</span>
                     </a>
                 </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
-                        <span class="text">Statistics</span>
-                    </a>
-                </li>
             </ul>
             <hr>
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-settings"></i>
-                        <span class="text">Settings</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-settings-1.html">Setting sample 1</a>
-                        <a href="page-settings-2.html">Setting sample 2</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-blank.html"> <i class="icon material-icons md-local_offer"></i>
-                        <span class="text"> Starter page </span>
-                    </a>
-                </li>
-            </ul>
             <br>
             <br>
         </nav>
@@ -150,12 +131,6 @@
                         class="material-icons md-apps"></i> </button>
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
                         </a>
                     </li>
@@ -176,17 +151,10 @@
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
                             aria-expanded="false"> <img class="img-xs rounded-circle"
-                                src="/adminAssets/imgs/people/avatar2.jpg" alt="User"></a>
+                                src="/assets/imgs/people/avatar1.png" alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
                             <a class="dropdown-item" href="/admin/admin-profile"><i
                                     class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
-                                Settings</a>
-                            <a class="dropdown-item" href="#"><i
-                                    class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help
-                                center</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="/logout"><i
                                     class="material-icons md-exit_to_app"></i>Logout</a>
@@ -202,7 +170,7 @@
                     <p>Whole data about your business here</p>
                 </div>
                 <div>
-                    <a href="#" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create
+                    <a href="/admin/sales" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create
                         report</a>
                 </div>
             </div>
@@ -214,7 +182,7 @@
                                     class="text-primary material-icons md-monetization_on"></i></span>
                             <div class="text">
                                 <h6 class="mb-1 card-title">Revenue</h6>
-                                <span>$13,456.5</span>
+                                <span>₹<%= totalRevenue.toLocaleString('en-IN') %></span>
                                 <span class="text-sm">
                                     Shipping fees are not included
                                 </span>
@@ -228,7 +196,9 @@
                             <span class="icon icon-sm rounded-circle bg-success-light"><i
                                     class="text-success material-icons md-local_shipping"></i></span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Orders</h6> <span>53.668</span>
+                                <h6 class="mb-1 card-title">Orders</h6> <span>
+                                    <%= totalOrders %>
+                                </span>
                                 <span class="text-sm">
                                     Excluding orders in transit
                                 </span>
@@ -242,9 +212,11 @@
                             <span class="icon icon-sm rounded-circle bg-warning-light"><i
                                     class="text-warning material-icons md-qr_code"></i></span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Products</h6> <span>9.856</span>
+                                <h6 class="mb-1 card-title">Products</h6> <span>
+                                    <%= productCount %>
+                                </span>
                                 <span class="text-sm">
-                                    In 19 Categories
+                                    In <%= categoryCount %> categories
                                 </span>
                             </div>
                         </article>
@@ -256,7 +228,8 @@
                             <span class="icon icon-sm rounded-circle bg-info-light"><i
                                     class="text-info material-icons md-shopping_basket"></i></span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Monthly Earning</h6> <span>$6,982</span>
+                                <h6 class="mb-1 card-title">Monthly Earning</h6> <span>₹<%=
+                                        monthlyEarnings.toLocaleString('en-IN') %></span>
                                 <span class="text-sm">
                                     Based in your local time.
                                 </span>
@@ -269,148 +242,85 @@
                 <div class="col-xl-8 col-lg-12">
                     <div class="card mb-4">
                         <article class="card-body">
-                            <h5 class="card-title">Sale statistics</h5>
-                            <canvas id="myChart" height="120px"></canvas>
+                            <h3 class="card-title">Sale statistics</h3>
+                            <h4 id="chartHeading" style="text-align: center; color: rgba(255, 159, 64, 1);">Monthly
+                                Sales</h4>
+                            <div class="interval-buttons">
+                                <button id="dailyButton" class="interval-button selected">Daily</button>
+                                <button id="weeklyButton" class="interval-button">Weekly</button>
+                                <button id="monthlyButton" class="interval-button">Monthly</button>
+                                <button id="yearlyButton" class="interval-button">Yearly</button>
+                            </div>
+                            <canvas id="mySalesChart" height="120px"></canvas>
                         </article>
                     </div>
                     <div class="row">
-                        <div class="col-lg-5">
+                        <div class="col-lg-6">
                             <div class="card mb-4">
                                 <article class="card-body">
-                                    <h5 class="card-title">New Members</h5>
-                                    <div class="new-member-list">
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="/adminAssets/imgs/people/avatar4.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Patric Adams</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
+                                    <h4 class="card-title"><strong>Top Selling Products</strong></h4>
+                                    <% if(topSellingProducts.length>0) { %>
+                                        <% for (let i=0; i < topSellingProducts.length; i++) { %>
+                                            <div class="new-member-list">
+                                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="/productImages/<%= topSellingProducts[i].image[0] %>"
+                                                            alt="<%= topSellingProducts[i].image[0] %>" class="avatar"
+                                                            style="width: 50px; height: 50px;">
+                                                        <div>
+                                                            <h5>
+                                                                <%= topSellingProducts[i].productName %>
+                                                            </h5>
+                                                            <p>
+                                                                <%= topSellingProducts[i].category.name %>
+                                                                    <%= topSellingProducts[i].subCategory %>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <% const colors=["#ff0000", "#ff4d00" , "#ff9900" , "#fff700"
+                                                        , "#84ff00" ]; %>
+                                                        <div style="text-align: center;">
+                                                            <h6>Sold</h6>
+                                                            <h4 style="color: <%= colors[i % colors.length] %>;">
+                                                                <%= topSellingProducts[i].unitSold %>
+                                                            </h4>
+                                                        </div>
+                                                        <% %>
                                                 </div>
                                             </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="/adminAssets/imgs/people/avatar2.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Dilan Specter</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="/adminAssets/imgs/people/avatar3.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Tomas Baker</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                        </div>
-                                    </div>
+                                            <% } %>
+                                                <% } %>
                                 </article>
                             </div>
                         </div>
-                        <div class="col-lg-7">
+                        <div class="col-lg-6">
                             <div class="card mb-4">
                                 <article class="card-body">
-                                    <h5 class="card-title">Recent activities</h5>
-                                    <ul class="verti-timeline list-unstyled font-sm">
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>Today</span> <i
-                                                            class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                    </h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Lorem ipsum dolor sit amet consectetur
+                                    <h4 class="card-title"><strong>Top Selling Brands</strong></h4>
+                                    <% if(topBrands.length>0) { %>
+                                        <% for (let i=0; i < topBrands.length; i++) { %>
+                                            <div class="new-member-list">
+                                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                                    <div class="d-flex align-items-center">
+                                                        <div>
+                                                            <h5>
+                                                                <%= topBrands[i]._id %>
+                                                            </h5>
+                                                        </div>
                                                     </div>
+                                                    <% const colors=["#ff0000", "#ff4d00" , "#ff9900" , "#fff700"
+                                                        , "#84ff00" ]; %>
+                                                        <div style="text-align: center;">
+                                                            <h6>Sold</h6>
+                                                            <h4 style="color: <%= colors[i % colors.length] %>;">
+                                                                <%= topBrands[i].totalUnitsSold %>
+                                                            </h4>
+                                                        </div>
+                                                        <% %>
                                                 </div>
                                             </div>
-                                        </li>
-                                        <li class="event-list active">
-                                            <div class="event-timeline-dot">
-                                                <i
-                                                    class="material-icons md-play_circle_outline font-xxl animation-fade-right"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>17 May</span> <i
-                                                            class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                    </h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Debitis nesciunt voluptatum dicta reprehenderit
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>13 May</span> <i
-                                                            class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                    </h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Accusamus voluptatibus voluptas.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>05 April</span> <i
-                                                            class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                    </h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        At vero eos et accusamus et iusto odio dignissi
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>26 Mar</span> <i
-                                                            class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                    </h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Responded to need “Volunteer Activities
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                            <% } %>
+                                                <% } %>
                                 </article>
                             </div>
                         </div>
@@ -419,266 +329,104 @@
                 <div class="col-xl-4 col-lg-12">
                     <div class="card mb-4">
                         <article class="card-body">
-                            <h5 class="card-title">Revenue Base on Area</h5>
-                            <canvas id="myChart2" height="217"></canvas>
+                            <h5 class="card-title">Total Sales</h5>
+                            <div id="pieChartContainer" style="width: 100%; height: 400px;">
+                                <canvas id="myPieChart"></canvas>
+                            </div>
                         </article>
                     </div>
                     <div class="card mb-4">
                         <article class="card-body">
-                            <h5 class="card-title">Marketing Chanel</h5>
-                            <span class="text-muted font-xs">Facebook</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 15%">15%</div>
-                            </div>
-                            <span class="text-muted font-xs">Instagram</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 65%">65% </div>
-                            </div>
-                            <span class="text-muted font-xs">Google</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 51%"> 51% </div>
-                            </div>
-                            <span class="text-muted font-xs">Twitter</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 80%"> 80%</div>
-                            </div>
-                            <span class="text-muted font-xs">Other</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 80%"> 80%</div>
-                            </div>
+                            <h5 class="card-title">Top Categories</h5>
+                            <% topCategories.forEach(category=> { %>
+                                <span class="font-s" style="font-weight: 600;">
+                                    <%= category.name %>
+                                </span>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar"
+                                        style="width: <%= category.percentage.toFixed(2) %>%">
+                                        <%= category.percentage.toFixed(2) %>%
+                                    </div>
+                                </div>
+                                <% }) %>
                         </article>
                     </div>
                 </div>
             </div>
-            <div class="card mb-4">
-                <header class="card-header">
-                    <h4 class="card-title">Latest orders</h4>
-                    <div class="row align-items-center">
-                        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                            <div class="custom_select">
-                                <select class="form-select select-nice">
-                                    <option selected>All Categories</option>
-                                    <option>Women's Clothing</option>
-                                    <option>Men's Clothing</option>
-                                    <option>Cellphones</option>
-                                    <option>Computer & Office</option>
-                                    <option>Consumer Electronics</option>
-                                    <option>Jewelry & Accessories</option>
-                                    <option>Home & Garden</option>
-                                    <option>Luggage & Bags</option>
-                                    <option>Shoes</option>
-                                    <option>Mother & Kids</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-6">
-                            <input type="date" value="02.05.2022" class="form-control">
-                        </div>
-                        <div class="col-md-2 col-6">
-                            <div class="custom_select">
-                                <select class="form-select select-nice">
-                                    <option selected>Status</option>
-                                    <option>All</option>
-                                    <option>Paid</option>
-                                    <option>Chargeback</option>
-                                    <option>Refund</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <div class="table-responsive">
-                            <table class="table align-middle table-nowrap mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col" class="text-center">
-                                            <div class="form-check align-middle">
-                                                <input class="form-check-input" type="checkbox" id="transactionCheck01">
-                                                <label class="form-check-label" for="transactionCheck01"></label>
+            <!-- *********************************************************************************************************************** -->
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <article class="card-body">
+                        <h4 class="card-title"><strong>Recent Orders</strong></h4>
+                        <ul class="verti-timeline list-unstyled font-sm">
+                            <% if(recentlyPlacedOrders.length>0) { %>
+                                <% for (let i=0; i < recentlyPlacedOrders.length; i++) { %>
+                                    <li class="event-list">
+                                        <div class="event-timeline-dot">
+                                            <% if(recentlyPlacedOrders[i].status=='Pending' ||
+                                                recentlyPlacedOrders[i].status=='Processing' ) { %>
+                                                <img src="/adminAssets/imgs/theme/process1.png" style="width: 30px;"
+                                                    alt="">
+
+                                                <% } else if(recentlyPlacedOrders[i].status=='Shipped' ) {%>
+                                                    <i class="material-icons  font-xxl animation-fade-right"><img
+                                                            src="/adminAssets/imgs/theme/delivered1.svg"
+                                                            style="width: 30px;" alt=""></i>
+                                                    <!-- <i class="material-icons md-play_circle_outline font-xxl"></i> -->
+                                                    <% } else {%>
+                                                        <img src="/adminAssets/imgs/theme/delivered2.png"
+                                                            style="width: 35px;" alt=""></i>
+                                                        <!-- <i class="material-icons md-play_circle_outline font-xxl"></i> -->
+                                                        <% } %>
+                                        </div>
+                                        <div class="media">
+                                            <div class="me-3">
+                                                <h6>
+                                                    <span>
+                                                        <% const orderDate=recentlyPlacedOrders[i].createdAt; const
+                                                            today=new Date(); const yesterday=new Date(today);
+                                                            yesterday.setDate(yesterday.getDate() - 1); const
+                                                            formattedDate=orderDate.toLocaleDateString(); if
+                                                            (orderDate.toDateString()===today.toDateString()) { %> Today
+                                                            <% } else if
+                                                                (orderDate.toDateString()===yesterday.toDateString()) {
+                                                                %> Yesterday <% } else { %>
+                                                                    <%= formattedDate %>
+                                                                        <% } %>
+                                                    </span>
+                                                    <i
+                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
+                                                </h6>
                                             </div>
-                                        </th>
-                                        <th class="align-middle" scope="col">Order ID</th>
-                                        <th class="align-middle" scope="col">Billing Name</th>
-                                        <th class="align-middle" scope="col">Date</th>
-                                        <th class="align-middle" scope="col">Total</th>
-                                        <th class="align-middle" scope="col">Payment Status</th>
-                                        <th class="align-middle" scope="col">Payment Method</th>
-                                        <th class="align-middle" scope="col">View Details</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="transactionCheck02">
-                                                <label class="form-check-label" for="transactionCheck02"></label>
+                                            <div class="media-body">
+                                                <div>
+                                                    <h6 style="color: rgb(16, 157, 0);">
+                                                        <%= recentlyPlacedOrders[i].userId.name %> ordered
+                                                    </h6>
+
+                                                    <h6>
+                                                        <% if (recentlyPlacedOrders[i].items.length> 1) { %>
+                                                            <% for (let j=0; j < recentlyPlacedOrders[i].items.length -
+                                                                1; j++) { %>
+                                                                <%= recentlyPlacedOrders[i].items[j].productId.productName
+                                                                    %>,
+                                                                    <% } %>
+                                                                        <%= recentlyPlacedOrders[i].items[recentlyPlacedOrders[i].items.length
+                                                                            - 1].productId.productName %>
+                                                                            <% } else { %>
+                                                                                <%= recentlyPlacedOrders[i].items[0].productId.productName
+                                                                                    %>
+                                                                                    <% } %>
+                                                    </h6>
+                                                </div>
                                             </div>
-                                        </td>
-                                        <td><a href="#" class="fw-bold">#SK2540</a> </td>
-                                        <td>Neal Matthews</td>
-                                        <td>
-                                            07 Oct, 2022
-                                        </td>
-                                        <td>
-                                            $400
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-pill badge-soft-success">Paid</span>
-                                        </td>
-                                        <td>
-                                            <i class="material-icons md-payment font-xxl text-muted mr-5"></i>
-                                            Mastercard
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-xs"> View details</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="transactionCheck03">
-                                                <label class="form-check-label" for="transactionCheck03"></label>
-                                            </div>
-                                        </td>
-                                        <td><a href="#" class="fw-bold">#SK2541</a> </td>
-                                        <td>Jamal Burnett</td>
-                                        <td>
-                                            07 Oct, 2022
-                                        </td>
-                                        <td>
-                                            $380
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-pill badge-soft-danger">Chargeback</span>
-                                        </td>
-                                        <td>
-                                            <i class="material-icons md-payment font-xxl text-muted mr-5"></i> Visa
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-xs"> View details</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="transactionCheck04">
-                                                <label class="form-check-label" for="transactionCheck04"></label>
-                                            </div>
-                                        </td>
-                                        <td><a href="#" class="fw-bold">#SK2542</a> </td>
-                                        <td>Juan Mitchell</td>
-                                        <td>
-                                            06 Oct, 2022
-                                        </td>
-                                        <td>
-                                            $384
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-pill badge-soft-success">Paid</span>
-                                        </td>
-                                        <td>
-                                            <i class="material-icons md-payment font-xxl text-muted mr-5"></i> Paypal
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-xs"> View details</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="transactionCheck05">
-                                                <label class="form-check-label" for="transactionCheck05"></label>
-                                            </div>
-                                        </td>
-                                        <td><a href="#" class="fw-bold">#SK2543</a> </td>
-                                        <td>Barry Dick</td>
-                                        <td>
-                                            05 Oct, 2022
-                                        </td>
-                                        <td>
-                                            $412
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-pill badge-soft-success">Paid</span>
-                                        </td>
-                                        <td>
-                                            <i class="material-icons md-payment font-xxl text-muted mr-5"></i>
-                                            Mastercard
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-xs"> View details</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="transactionCheck06">
-                                                <label class="form-check-label" for="transactionCheck06"></label>
-                                            </div>
-                                        </td>
-                                        <td><a href="#" class="fw-bold">#SK2544</a> </td>
-                                        <td>Ronald Taylor</td>
-                                        <td>
-                                            04 Oct, 2022
-                                        </td>
-                                        <td>
-                                            $404
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-pill badge-soft-warning">Refund</span>
-                                        </td>
-                                        <td>
-                                            <i class="material-icons md-payment font-xxl text-muted mr-5"></i> Visa
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-xs"> View details</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="transactionCheck07">
-                                                <label class="form-check-label" for="transactionCheck07"></label>
-                                            </div>
-                                        </td>
-                                        <td><a href="#" class="fw-bold">#SK2545</a> </td>
-                                        <td>Jacob Hunter</td>
-                                        <td>
-                                            04 Oct, 2022
-                                        </td>
-                                        <td>
-                                            $392
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-pill badge-soft-success">Paid</span>
-                                        </td>
-                                        <td>
-                                            <i class="material-icons md-payment font-xxl text-muted mr-5"></i> Paypal
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-xs"> View details</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div> <!-- table-responsive end// -->
+                                        </div>
+                                    </li>
+                                    <% } %>
+                                        <% } %>
+                        </ul>
+                    </article>
                 </div>
-            </div>
-            <div class="pagination-area mt-30 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i
-                                    class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
             </div>
         </section> <!-- content-main end// -->
         <footer class="main-footer font-xs">
@@ -696,6 +444,156 @@
             </div>
         </footer>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Sales Chart
+        document.addEventListener('DOMContentLoaded', async function () {
+            const ctx = document.getElementById('mySalesChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Monthly'],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [], // Empty data initially
+                        backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+                        borderColor: ['rgba(255, 99, 132, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            const updateChart = async (interval) => {
+                try {
+                    const response = await fetch(`/admin/sales-data?interval=${interval}`);
+                    const salesData = await response.json();
+
+                    switch (interval) {
+                        case 'daily':
+                            myChart.data.datasets[0].data = salesData.dailySales.salesData;
+                            myChart.data.labels = salesData.dailySales.labels;
+                            myChart.data.datasets[0].backgroundColor = ['rgba(255, 99, 132, 0.6)'];
+                            myChart.data.datasets[0].borderColor = ['rgba(255, 99, 132, 1)'];
+                            const dailyHeading = document.getElementById('chartHeading');
+                            dailyHeading.textContent = 'Daily Sales';
+                            dailyHeading.style.color = 'rgba(255, 99, 132, 1)';
+                            break;
+                        case 'weekly':
+                            myChart.data.datasets[0].data = salesData.weeklySales.salesData;
+                            myChart.data.labels = salesData.weeklySales.labels;
+                            myChart.data.datasets[0].backgroundColor = ['rgba(54, 162, 235, 0.6)'];
+                            myChart.data.datasets[0].borderColor = ['rgba(54, 162, 235, 1)'];
+                            const weeklyHeading = document.getElementById('chartHeading');
+                            weeklyHeading.textContent = 'Weekly Sales';
+                            weeklyHeading.style.color = 'rgba(54, 162, 235, 1)';
+
+                            break;
+                        case 'monthly':
+                            myChart.data.datasets[0].data = salesData.monthlySales.salesData;
+                            myChart.data.labels = salesData.monthlySales.labels;
+                            myChart.data.datasets[0].backgroundColor = ['rgba(255, 152, 49, 0.6)'];
+                            myChart.data.datasets[0].borderColor = ['rgba(255, 152, 49, 1)'];
+                            const monthlyHeading = document.getElementById('chartHeading');
+                            monthlyHeading.textContent = 'Monthly Sales';
+                            monthlyHeading.style.color = 'rgba(255, 152, 49, 1)';
+                            break;
+                        case 'yearly':
+                            myChart.data.datasets[0].data = salesData.yearlySales.salesData;
+                            myChart.data.labels = salesData.yearlySales.labels;
+                            myChart.data.datasets[0].backgroundColor = ['rgba(0, 163, 14, 0.6)'];
+                            myChart.data.datasets[0].borderColor = ['rgba(0, 163, 14, 1)'];
+                            const yearlyHeading = document.getElementById('chartHeading');
+                            yearlyHeading.textContent = 'Yearly Sales';
+                            yearlyHeading.style.color = 'rgba(0, 163, 14, 1)';
+                            break;
+                        default:
+                            break;
+                    }
+
+                    myChart.update();
+                } catch (error) {
+                    console.error('Error updating chart:', error);
+                }
+            };
+
+            document.getElementById('monthlyButton').addEventListener('click', () => {
+                updateChart('monthly');
+            });
+            document.getElementById('dailyButton').addEventListener('click', () => {
+                updateChart('daily');
+            });
+            document.getElementById('weeklyButton').addEventListener('click', () => {
+                updateChart('weekly');
+            });
+            document.getElementById('yearlyButton').addEventListener('click', () => {
+                updateChart('yearly');
+            });
+
+            const intervals = ['yearly', 'daily', 'weekly', 'monthly'];
+            let currentIntervalIndex = 0;
+            const updateChartLoop = () => {
+                setInterval(() => {
+                    const nextIntervalIndex = (currentIntervalIndex + 1) % intervals.length;
+                    const nextInterval = intervals[nextIntervalIndex];
+                    updateChart(nextInterval);
+                    currentIntervalIndex = nextIntervalIndex;
+                }, 5000);
+            };
+
+            updateChartLoop();
+
+            updateChart('monthly');
+        });
+
+        // Pie Chart
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('myPieChart').getContext('2d');
+            var myPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Delivered', 'Processing', 'Cancelled', 'Returned'],
+                    datasets: [{
+                        label: 'Total Sales',
+                        data: ["<%= delivered %>", "<%= processing %>", "<%= cancelled %>", "<%= returned %>"],
+                        backgroundColor: [
+                            'rgba(0, 163, 14, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(255, 0, 0, 0.6)',
+                            'rgba(170, 0, 255, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 163, 14, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(255, 0, 0, 1)',
+                            'rgba(170, 0, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            display: false
+                        }],
+                        xAxes: [{
+                            display: false
+                        }]
+                    }
+                }
+            });
+        });
+    </script>
+
+
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/js/vendors/select2.min.js"></script>

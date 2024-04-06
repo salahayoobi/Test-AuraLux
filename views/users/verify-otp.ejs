@@ -74,9 +74,9 @@
     </main>
 
     <script>
-        let resendCountdownValue = 60; // Resend countdown value in seconds (1 minute)
-        let resendCountdownInterval; // Interval ID for resend countdown timer
-        let resendCountdownRunning = false; // Flag to track if the countdown is running
+        let resendCountdownValue = 60;
+        let resendCountdownInterval;
+        let resendCountdownRunning = false;
     
         function startResendCountdown() {
             if (!resendCountdownRunning) {
@@ -106,14 +106,14 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({}) // No need to send any data in the body
+                    body: JSON.stringify({})
                 });
     
                 if (response.ok) {
                     console.log('OTP resent successfully');
-                    resendCountdownValue = 60; // Reset resend countdown value to 60 seconds
-                    startResendCountdown(); // Start resend countdown again
-                    document.getElementById('resend-otp-btn').disabled = true; // Disable resend OTP button
+                    resendCountdownValue = 60;
+                    startResendCountdown();
+                    document.getElementById('resend-otp-btn').disabled = true;
                     document.getElementById('resend-otp-btn').style.cursor = 'not-allowed';
                     document.getElementById('resend-otp-btn').style.opacity = '0.5';
                 } else {
