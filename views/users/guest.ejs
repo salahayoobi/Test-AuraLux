@@ -611,16 +611,19 @@
                                             <h2><a href="/home-product-details">
                                                     <%= products[i].productName %>
                                                 </a></h2>
-                                            <div class="rating-result" title="90%">
-                                                <span><span>90%</span></span>
-                                            </div>
-                                            <div class="product-price">
-                                                <span>₹<%= products[i].price %> </span>
-                                                <span class="old-price">$245.8</span>
-                                            </div>
+                                            <% if(products[i].price> products[i].offerPrice){ %>
+                                                <div class="product-price">
+                                                    <span>₹<%= products[i].offerPrice %> </span>
+                                                    <span class="old-price">₹<%= products[i].price %></span>
+                                                </div>
+                                                <% }else{ %>
+                                                    <div class="product-price">
+                                                        <span>₹<%= products[i].price %> </span>
+                                                    </div>
+                                                    <% } %>
                                             <div class="product-action-1 show">
                                                 <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                    href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    href="/login"><i class="fi-rs-shopping-bag-add"></i></a>
                                             </div>
                                         </div>
                                     </div>
